@@ -172,7 +172,7 @@ $filters = $filters ?? [];
     </div>
 </div>
 
-<script src="/areports/public/vendor/chartjs/chart.min.js"></script>
+<script src="/areports/vendor/chartjs/chart.min.js"></script>
 <script>
 // Disposition Pie Chart
 const pieCtx = document.getElementById('dispositionPieChart').getContext('2d');

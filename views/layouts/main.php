@@ -7,20 +7,20 @@
     <title><?= $this->e($title ?? 'Dashboard') ?> - aReports</title>
 
     <!-- Bootstrap CSS -->
-    <link href="/areports/public/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/areports/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="/areports/public/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/areports/vendor/fontawesome/css/all.min.css" rel="stylesheet">
     <!-- DataTables -->
-    <link href="/areports/public/vendor/datatables/datatables.min.css" rel="stylesheet">
+    <link href="/areports/vendor/datatables/datatables.min.css" rel="stylesheet">
     <!-- DateRangePicker -->
-    <link href="/areports/public/vendor/daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="/areports/vendor/daterangepicker/daterangepicker.css" rel="stylesheet">
     <!-- Select2 -->
-    <link href="/areports/public/vendor/select2/select2.min.css" rel="stylesheet">
-    <link href="/areports/public/vendor/select2/select2-bootstrap-5-theme.min.css" rel="stylesheet">
+    <link href="/areports/vendor/select2/select2.min.css" rel="stylesheet">
+    <link href="/areports/vendor/select2/select2-bootstrap-5-theme.min.css" rel="stylesheet">
     <!-- Toastr -->
-    <link href="/areports/public/vendor/toastr/toastr.min.css" rel="stylesheet">
+    <link href="/areports/vendor/toastr/toastr.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/areports/public/css/app.css" rel="stylesheet">
+    <link href="/areports/css/app.css" rel="stylesheet">
 
     <?php if ($this->hasSection('styles')): ?>
     <?php $this->yield('styles'); ?>
@@ -300,15 +300,15 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/areports/public/vendor/jquery/jquery.min.js"></script>
-    <script src="/areports/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/areports/public/vendor/chartjs/chart.min.js"></script>
-    <script src="/areports/public/vendor/datatables/datatables.min.js"></script>
-    <script src="/areports/public/vendor/daterangepicker/moment.min.js"></script>
-    <script src="/areports/public/vendor/daterangepicker/daterangepicker.min.js"></script>
-    <script src="/areports/public/vendor/select2/select2.min.js"></script>
-    <script src="/areports/public/vendor/toastr/toastr.min.js"></script>
-    <script src="/areports/public/js/app.js"></script>
+    <script src="/areports/vendor/jquery/jquery.min.js"></script>
+    <script src="/areports/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/areports/vendor/chartjs/chart.min.js"></script>
+    <script src="/areports/vendor/datatables/datatables.min.js"></script>
+    <script src="/areports/vendor/daterangepicker/moment.min.js"></script>
+    <script src="/areports/vendor/daterangepicker/daterangepicker.min.js"></script>
+    <script src="/areports/vendor/select2/select2.min.js"></script>
+    <script src="/areports/vendor/toastr/toastr.min.js"></script>
+    <script src="/areports/js/app.js"></script>
 
     <?php if ($this->hasSection('scripts')): ?>
     <?php $this->yield('scripts'); ?>

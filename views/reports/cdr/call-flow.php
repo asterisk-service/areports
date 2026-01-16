@@ -143,7 +143,7 @@ $filters = $filters ?? [];
     </div>
 </div>
 
-<script src="/areports/public/vendor/chartjs/chart.min.js"></script>
+<script src="/areports/vendor/chartjs/chart.min.js"></script>
 <script>
 // Hourly chart
 const hourlyData = <?= json_encode($flowData['hourly'] ?? []) ?>;

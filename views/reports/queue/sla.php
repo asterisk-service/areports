@@ -103,7 +103,7 @@
 <?php $this->endSection(); ?>
 
 <?php $this->section('scripts'); ?>
-<script src="/areports/public/vendor/chartjs/chart.min.js"></script>
+<script src="/areports/vendor/chartjs/chart.min.js"></script>
 <script>
 <?php if (!empty($trend)): ?>
 const trendData = <?= json_encode($trend) ?>;

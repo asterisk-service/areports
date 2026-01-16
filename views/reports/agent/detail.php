@@ -163,7 +163,7 @@
 <?php $this->endSection(); ?>
 
 <?php $this->section('scripts'); ?>
-<script src="/areports/public/vendor/chartjs/chart.min.js"></script>
+<script src="/areports/vendor/chartjs/chart.min.js"></script>
 <script>
 // Hourly Chart
 const hourlyData = <?= json_encode($hourly) ?>;

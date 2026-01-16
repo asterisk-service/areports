@@ -140,7 +140,7 @@ $filters = $filters ?? [];
     </div>
 </div>
 
-<script src="/areports/public/vendor/chartjs/chart.min.js"></script>
+<script src="/areports/vendor/chartjs/chart.min.js"></script>
 <script>
 const dispositions = <?= json_encode($dispositions) ?>;
 if (dispositions.length > 0) {

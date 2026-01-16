@@ -137,7 +137,7 @@
 <?php $this->endSection(); ?>
 
 <?php $this->section('scripts'); ?>
-<script src="/areports/public/vendor/chartjs/chart.min.js"></script>
+<script src="/areports/vendor/chartjs/chart.min.js"></script>
 <script>
 const distribution = <?= json_encode($distribution) ?>;
 const ctx = document.getElementById('distributionChart').getContext('2d');

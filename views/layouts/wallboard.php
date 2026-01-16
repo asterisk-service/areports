@@ -7,11 +7,11 @@
     <title>Wallboard - aReports</title>
 
     <!-- Bootstrap CSS -->
-    <link href="/areports/public/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/areports/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="/areports/public/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/areports/vendor/fontawesome/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/areports/public/css/wallboard.css" rel="stylesheet">
+    <link href="/areports/css/wallboard.css" rel="stylesheet">
 </head>
 <body class="wallboard-body">
     <div class="wallboard-container">
@@ -37,10 +37,10 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/areports/public/vendor/jquery/jquery.min.js"></script>
-    <script src="/areports/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/areports/public/vendor/chartjs/chart.min.js"></script>
-    <script src="/areports/public/js/wallboard.js"></script>
+    <script src="/areports/vendor/jquery/jquery.min.js"></script>
+    <script src="/areports/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/areports/vendor/chartjs/chart.min.js"></script>
+    <script src="/areports/js/wallboard.js"></script>
 
     <?php if ($this->hasSection('scripts')): ?>
     <?php $this->yield('scripts'); ?>

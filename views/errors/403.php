@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>403 - Access Denied</title>
-    <link href="/areports/public/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/areports/public/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/areports/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/areports/vendor/fontawesome/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
     <div class="container">

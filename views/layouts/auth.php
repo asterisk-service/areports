@@ -7,11 +7,11 @@
     <title><?= $this->e($title ?? 'Login') ?> - aReports</title>
 
     <!-- Bootstrap CSS -->
-    <link href="/areports/public/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/areports/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="/areports/public/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    <link href="/areports/vendor/fontawesome/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/areports/public/css/auth.css" rel="stylesheet">
+    <link href="/areports/css/auth.css" rel="stylesheet">
 </head>
 <body class="bg-light">
     <div class="container">
@@ -56,7 +56,7 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="/areports/public/vendor/jquery/jquery.min.js"></script>
-    <script src="/areports/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/areports/vendor/jquery/jquery.min.js"></script>
+    <script src="/areports/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
