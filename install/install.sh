@@ -294,6 +294,7 @@ import_schema() {
     log_step "Importing database schema..."
 
     SCHEMA_FILE="$INSTALL_DIR/install/schema.sql"
+    SEED_FILE="$INSTALL_DIR/install/seed.sql"
 
     if [ -f "$SCHEMA_FILE" ]; then
         mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$SCHEMA_FILE"
@@ -303,33 +304,73 @@ import_schema() {
         exit 1
     fi
 
-    # Import schema updates if exists
-    UPDATES_FILE="$INSTALL_DIR/install/schema_updates.sql"
-    if [ -f "$UPDATES_FILE" ]; then
-        log_info "Importing schema updates..."
-        mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$UPDATES_FILE" 2>/dev/null || true
+    # Import seed data
+    if [ -f "$SEED_FILE" ]; then
+        log_info "Importing seed data..."
+        mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$SEED_FILE"
+        log_info "Seed data imported successfully"
     fi
 }
 
 create_admin_user() {
-    log_step "Creating admin user..."
+    log_step "Updating admin user..."
 
     # Hash password using PHP
     HASHED_PASS=$(php -r "echo password_hash('$ADMIN_PASS', PASSWORD_DEFAULT);")
 
     mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" <<EOF
-INSERT INTO roles (name, display_name, description, is_system) VALUES
-('admin', 'Administrator', 'Full system access', 1)
-ON DUPLICATE KEY UPDATE name=name;
-
-SET @role_id = (SELECT id FROM roles WHERE name = 'admin' LIMIT 1);
-
-INSERT INTO users (username, email, password_hash, first_name, last_name, role_id, is_active, created_at)
-VALUES ('$ADMIN_USER', '$ADMIN_EMAIL', '$HASHED_PASS', '$ADMIN_FIRST', '$ADMIN_LAST', @role_id, 1, NOW())
-ON DUPLICATE KEY UPDATE email='$ADMIN_EMAIL';
+UPDATE users SET
+    username = '$ADMIN_USER',
+    email = '$ADMIN_EMAIL',
+    password_hash = '$HASHED_PASS',
+    first_name = '$ADMIN_FIRST',
+    last_name = '$ADMIN_LAST'
+WHERE id = 1;
 EOF
 
-    log_info "Admin user created: $ADMIN_USER"
+    log_info "Admin user updated: $ADMIN_USER"
+}
+
+create_ami_user() {
+    log_step "Creating AMI user..."
+
+    if [ -z "$AMI_USER" ]; then
+        log_info "Skipping AMI configuration (not configured)"
+        return
+    fi
+
+    AMI_CONFIG="/etc/asterisk/manager_custom.conf"
+
+    # Generate random secret if not provided
+    if [ -z "$AMI_PASS" ]; then
+        AMI_PASS=$(openssl rand -hex 12)
+    fi
+
+    # Create manager_custom.conf entry
+    cat >> "$AMI_CONFIG" <<EOF
+
+[areports]
+secret = $AMI_PASS
+deny = 0.0.0.0/0.0.0.0
+permit = 127.0.0.1/255.255.255.255
+read = system,call,agent,user,config,command,reporting
+write = system,call,agent,user,config,command,reporting
+writetimeout = 5000
+EOF
+
+    # Update AMI settings in database
+    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" <<EOF
+UPDATE settings SET setting_value = 'areports' WHERE category = 'ami' AND setting_key = 'username';
+UPDATE settings SET setting_value = '$AMI_PASS' WHERE category = 'ami' AND setting_key = 'secret';
+EOF
+
+    # Reload Asterisk manager
+    if command -v asterisk &> /dev/null; then
+        asterisk -rx "manager reload" 2>/dev/null || true
+        log_info "AMI user created and Asterisk reloaded"
+    else
+        log_info "AMI configuration added. Reload Asterisk manually: asterisk -rx 'manager reload'"
+    fi
 }
 
 create_config() {
@@ -628,6 +669,7 @@ main() {
     create_database
     import_schema
     create_admin_user
+    create_ami_user
     create_config
     set_permissions
     configure_apache

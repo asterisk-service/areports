@@ -2,173 +2,175 @@
 -- aReports Seed Data
 -- ============================================
 
--- Default Roles
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- --------------------------------------------
+-- ROLES
+-- --------------------------------------------
+
 INSERT INTO `roles` (`id`, `name`, `display_name`, `description`, `is_system`) VALUES
 (1, 'admin', 'Administrator', 'Full system access - can manage all settings, users, and view all reports', 1),
 (2, 'supervisor', 'Supervisor', 'Queue and agent management, access to all reports and quality monitoring', 1),
 (3, 'agent', 'Agent', 'View own statistics and limited queue reports', 1);
 
--- Permissions
-INSERT INTO `permissions` (`name`, `display_name`, `category`) VALUES
+-- --------------------------------------------
+-- PERMISSIONS
+-- --------------------------------------------
+
+INSERT INTO `permissions` (`id`, `name`, `display_name`, `category`, `description`) VALUES
 -- Dashboard
-('dashboard.view', 'View Dashboard', 'Dashboard'),
-('dashboard.customize', 'Customize Dashboard', 'Dashboard'),
-('wallboard.view', 'View Wallboard', 'Dashboard'),
-('wallboard.customize', 'Customize Wallboard', 'Dashboard'),
-
--- Real-time Monitoring
-('realtime.view', 'View Real-time Data', 'Monitoring'),
-('realtime.queue_status', 'View Queue Status', 'Monitoring'),
-('realtime.agent_status', 'View Agent Status', 'Monitoring'),
-('realtime.active_calls', 'View Active Calls', 'Monitoring'),
-
--- Agent Reports
-('reports.agent.view', 'View Agent Reports', 'Reports'),
-('reports.agent.view_all', 'View All Agents', 'Reports'),
-('reports.agent.view_own', 'View Own Stats Only', 'Reports'),
-
--- Queue Reports
-('reports.queue.view', 'View Queue Reports', 'Reports'),
-('reports.queue.sla', 'View SLA Reports', 'Reports'),
-
--- CDR Reports
-('reports.cdr.view', 'View Call Detail Reports', 'Reports'),
-('reports.cdr.export', 'Export CDR Data', 'Reports'),
-('reports.cdr.listen', 'Listen to Recordings', 'Reports'),
-
--- Quality Monitoring
-('quality.view', 'View Quality Reports', 'Quality'),
-('quality.evaluate', 'Evaluate Calls', 'Quality'),
-('quality.manage_forms', 'Manage Evaluation Forms', 'Quality'),
-
+(1, 'dashboard.view', 'View Dashboard', 'Dashboard', NULL),
+(2, 'dashboard.customize', 'Customize Dashboard', 'Dashboard', NULL),
+(3, 'wallboard.view', 'View Wallboard', 'Dashboard', NULL),
+(4, 'wallboard.customize', 'Customize Wallboard', 'Dashboard', NULL),
+-- Monitoring
+(5, 'realtime.view', 'View Real-time Data', 'Monitoring', NULL),
+(6, 'realtime.queue_status', 'View Queue Status', 'Monitoring', NULL),
+(7, 'realtime.agent_status', 'View Agent Status', 'Monitoring', NULL),
+(8, 'realtime.active_calls', 'View Active Calls', 'Monitoring', NULL),
+-- Reports
+(9, 'reports.agent.view', 'View Agent Reports', 'Reports', NULL),
+(10, 'reports.agent.view_all', 'View All Agents', 'Reports', NULL),
+(11, 'reports.agent.view_own', 'View Own Stats Only', 'Reports', NULL),
+(12, 'reports.queue.view', 'View Queue Reports', 'Reports', NULL),
+(13, 'reports.queue.sla', 'View SLA Reports', 'Reports', NULL),
+(14, 'reports.cdr.view', 'View Call Detail Reports', 'Reports', NULL),
+(15, 'reports.cdr.export', 'Export CDR Data', 'Reports', NULL),
+(16, 'reports.cdr.listen', 'Listen to Recordings', 'Reports', NULL),
+-- Quality
+(17, 'quality.view', 'View Quality Reports', 'Quality', NULL),
+(18, 'quality.evaluate', 'Evaluate Calls', 'Quality', NULL),
+(19, 'quality.manage_forms', 'Manage Evaluation Forms', 'Quality', NULL),
 -- Report Builder
-('reports.builder', 'Use Report Builder', 'Reports'),
-('reports.schedule', 'Schedule Reports', 'Reports'),
-('reports.export', 'Export Reports', 'Reports'),
-
+(20, 'reports.builder', 'Use Report Builder', 'Reports', NULL),
+(21, 'reports.schedule', 'Schedule Reports', 'Reports', NULL),
+(22, 'reports.export', 'Export Reports', 'Reports', NULL),
 -- Alerts
-('alerts.view', 'View Alerts', 'Alerts'),
-('alerts.manage', 'Manage Alerts', 'Alerts'),
-('alerts.acknowledge', 'Acknowledge Alerts', 'Alerts'),
+(23, 'alerts.view', 'View Alerts', 'Alerts', NULL),
+(24, 'alerts.manage', 'Manage Alerts', 'Alerts', NULL),
+(25, 'alerts.acknowledge', 'Acknowledge Alerts', 'Alerts', NULL),
+-- Admin
+(26, 'admin.users.view', 'View Users', 'Administration', NULL),
+(27, 'admin.users.manage', 'Manage Users', 'Administration', NULL),
+(28, 'admin.roles.view', 'View Roles', 'Administration', NULL),
+(29, 'admin.roles.manage', 'Manage Roles', 'Administration', NULL),
+(30, 'admin.settings', 'Manage Settings', 'Administration', NULL),
+(31, 'admin.queues', 'Manage Queue Settings', 'Administration', NULL),
+(32, 'admin.agents', 'Manage Agent Settings', 'Administration', NULL),
+(33, 'admin.audit', 'View Audit Log', 'Administration', NULL),
+(34, 'admin.agents.view', 'View Agents', 'Administration', NULL),
+(35, 'admin.agents.manage', 'Manage Agents', 'Administration', NULL),
+(36, 'admin.audit.view', 'View Audit Log', 'Administration', NULL),
+(37, 'admin.forms.view', 'View Eval Forms', 'Administration', NULL),
+(38, 'admin.forms.manage', 'Manage Eval Forms', 'Administration', NULL),
+(39, 'admin.queues.view', 'View Queues', 'Administration', NULL),
+(40, 'admin.queues.manage', 'Manage Queues', 'Administration', NULL),
+(41, 'admin.settings.view', 'View Settings', 'Administration', NULL),
+(42, 'admin.settings.edit', 'Edit Settings', 'Administration', NULL),
+(43, 'quality.recordings.view', 'View Recordings', 'Quality', NULL),
+(44, 'quality.recordings.listen', 'Listen Recordings', 'Quality', NULL),
+(45, 'quality.recordings.download', 'Download Recordings', 'Quality', NULL),
+(46, 'quality.evaluations.view', 'View Evaluations', 'Quality', NULL),
+(47, 'quality.evaluations.create', 'Create Evaluations', 'Quality', NULL),
+(48, 'reports.agent.export', 'Export Agent Reports', 'Reports', NULL),
+(49, 'reports.queue.export', 'Export Queue Reports', 'Reports', NULL),
+(50, 'reports.sla.view', 'View SLA Reports', 'Reports', NULL),
+(51, 'reports.trends.view', 'View Trend Reports', 'Reports', NULL),
+(52, 'scheduled-reports.view', 'View Scheduled Reports', 'Reports', NULL),
+(53, 'scheduled-reports.manage', 'Manage Scheduled Reports', 'Reports', NULL),
+(54, 'agent.panel.view', 'View Agent Panel', 'Agent', NULL),
+(55, 'agent.panel.queue', 'Control Queue', 'Agent', NULL),
+(56, 'admin.pause_causes.view', 'View Pause Causes', 'Administration', NULL),
+(57, 'admin.pause_causes.manage', 'Manage Pause Causes', 'Administration', NULL);
 
--- Administration
-('admin.users.view', 'View Users', 'Administration'),
-('admin.users.manage', 'Manage Users', 'Administration'),
-('admin.roles.view', 'View Roles', 'Administration'),
-('admin.roles.manage', 'Manage Roles', 'Administration'),
-('admin.settings', 'Manage Settings', 'Administration'),
-('admin.queues', 'Manage Queue Settings', 'Administration'),
-('admin.agents', 'Manage Agent Settings', 'Administration'),
-('admin.audit', 'View Audit Log', 'Administration');
+-- --------------------------------------------
+-- ROLE PERMISSIONS
+-- --------------------------------------------
 
--- Admin role gets all permissions
+-- Admin gets ALL permissions
 INSERT INTO `role_permissions` (`role_id`, `permission_id`)
-SELECT 1, `id` FROM `permissions`;
+SELECT 1, id FROM permissions;
 
 -- Supervisor permissions
-INSERT INTO `role_permissions` (`role_id`, `permission_id`)
-SELECT 2, `id` FROM `permissions`
-WHERE `name` IN (
-    'dashboard.view', 'dashboard.customize', 'wallboard.view', 'wallboard.customize',
-    'realtime.view', 'realtime.queue_status', 'realtime.agent_status', 'realtime.active_calls',
-    'reports.agent.view', 'reports.agent.view_all',
-    'reports.queue.view', 'reports.queue.sla',
-    'reports.cdr.view', 'reports.cdr.export', 'reports.cdr.listen',
-    'quality.view', 'quality.evaluate',
-    'reports.builder', 'reports.schedule', 'reports.export',
-    'alerts.view', 'alerts.manage', 'alerts.acknowledge'
-);
+INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES
+(2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8),
+(2, 9), (2, 10), (2, 12), (2, 13), (2, 14), (2, 15), (2, 16),
+(2, 17), (2, 18), (2, 20), (2, 21), (2, 22), (2, 23), (2, 24), (2, 25);
 
 -- Agent permissions
-INSERT INTO `role_permissions` (`role_id`, `permission_id`)
-SELECT 3, `id` FROM `permissions`
-WHERE `name` IN (
-    'dashboard.view',
-    'realtime.view', 'realtime.queue_status',
-    'reports.agent.view', 'reports.agent.view_own'
-);
+INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES
+(3, 1), (3, 5), (3, 6), (3, 9), (3, 11), (3, 54), (3, 55);
 
--- Default Settings
+-- --------------------------------------------
+-- SETTINGS
+-- --------------------------------------------
+
 INSERT INTO `settings` (`category`, `setting_key`, `setting_value`, `value_type`, `description`) VALUES
+-- General
 ('general', 'app_name', 'aReports', 'string', 'Application name'),
 ('general', 'app_version', '1.0.0', 'string', 'Application version'),
-('general', 'timezone', 'Asia/Jerusalem', 'string', 'Default timezone'),
+('general', 'timezone', 'America/New_York', 'string', 'Default timezone'),
 ('general', 'date_format', 'd/m/Y', 'string', 'Date format'),
 ('general', 'time_format', 'H:i:s', 'string', 'Time format'),
 ('general', 'datetime_format', 'd/m/Y H:i:s', 'string', 'DateTime format'),
 ('general', 'items_per_page', '25', 'int', 'Default pagination'),
 ('general', 'session_lifetime', '7200', 'int', 'Session lifetime in seconds'),
-
+-- AMI
 ('ami', 'host', '127.0.0.1', 'string', 'AMI host'),
 ('ami', 'port', '5038', 'int', 'AMI port'),
-('ami', 'username', '', 'string', 'AMI username'),
+('ami', 'username', 'areports', 'string', 'AMI username'),
 ('ami', 'secret', '', 'string', 'AMI secret'),
-('ami', 'connect_timeout', '5', 'int', 'Connection timeout in seconds'),
-('ami', 'read_timeout', '10', 'int', 'Read timeout in seconds'),
-
+('ami', 'connect_timeout', '5', 'int', 'Connection timeout'),
+('ami', 'read_timeout', '10', 'int', 'Read timeout'),
+-- Email
 ('email', 'enabled', '0', 'bool', 'Enable email notifications'),
 ('email', 'smtp_host', '', 'string', 'SMTP server'),
 ('email', 'smtp_port', '587', 'int', 'SMTP port'),
 ('email', 'smtp_user', '', 'string', 'SMTP username'),
 ('email', 'smtp_pass', '', 'string', 'SMTP password'),
-('email', 'smtp_encryption', 'tls', 'string', 'SMTP encryption (tls/ssl/none)'),
-('email', 'from_address', 'noreply@example.com', 'string', 'From email address'),
+('email', 'smtp_encryption', 'tls', 'string', 'SMTP encryption'),
+('email', 'from_address', 'noreply@example.com', 'string', 'From address'),
 ('email', 'from_name', 'aReports', 'string', 'From name'),
-
-('sla', 'default_threshold', '60', 'int', 'Default SLA threshold in seconds'),
-('sla', 'warning_percentage', '80', 'int', 'Warning at % of threshold'),
-('sla', 'critical_percentage', '100', 'int', 'Critical at % of threshold'),
-
+-- SLA
+('sla', 'default_threshold', '60', 'int', 'Default SLA threshold'),
+('sla', 'warning_percentage', '80', 'int', 'Warning percentage'),
+('sla', 'critical_percentage', '100', 'int', 'Critical percentage'),
+-- Recordings
 ('recordings', 'enabled', '1', 'bool', 'Enable recording playback'),
 ('recordings', 'path', '/var/spool/asterisk/monitor', 'string', 'Recordings directory'),
 ('recordings', 'format', 'wav', 'string', 'Recording format'),
-('recordings', 'web_path', '/areports/recordings', 'string', 'Web path for recordings'),
-
-('realtime', 'refresh_interval', '5000', 'int', 'Dashboard refresh interval in ms'),
+('recordings', 'web_path', '/areports/recordings', 'string', 'Web path'),
+-- Realtime
+('realtime', 'refresh_interval', '5000', 'int', 'Refresh interval in ms'),
 ('realtime', 'websocket_enabled', '1', 'bool', 'Enable WebSocket'),
-('realtime', 'websocket_port', '8080', 'int', 'WebSocket server port'),
-
+('realtime', 'websocket_port', '8080', 'int', 'WebSocket port'),
+-- Security
 ('security', 'max_login_attempts', '5', 'int', 'Max failed login attempts'),
-('security', 'lockout_duration', '900', 'int', 'Account lockout duration in seconds'),
-('security', 'password_min_length', '8', 'int', 'Minimum password length'),
-('security', 'session_regenerate', '1', 'bool', 'Regenerate session ID on login');
+('security', 'lockout_duration', '900', 'int', 'Lockout duration in seconds'),
+('security', 'password_min_length', '8', 'int', 'Min password length'),
+('security', 'session_regenerate', '1', 'bool', 'Regenerate session ID');
 
--- Default admin user (password: admin123 - CHANGE IMMEDIATELY)
--- Password hash for 'admin123'
+-- --------------------------------------------
+-- PAUSE CAUSES
+-- --------------------------------------------
+
+INSERT INTO `pause_causes` (`code`, `name`, `description`, `is_active`, `sort_order`) VALUES
+('break', 'Break', 'Short break', 1, 1),
+('lunch', 'Lunch', 'Lunch break', 1, 2),
+('meeting', 'Meeting', 'In a meeting', 1, 3),
+('training', 'Training', 'Training session', 1, 4),
+('coaching', 'Coaching', 'Coaching session', 1, 5),
+('admin', 'Admin Work', 'Administrative tasks', 1, 6),
+('technical', 'Technical Issue', 'Technical problems', 1, 7),
+('personal', 'Personal', 'Personal reason', 1, 8),
+('other', 'Other', 'Other reason', 1, 9);
+
+-- --------------------------------------------
+-- DEFAULT ADMIN USER (password: Admin@123)
+-- --------------------------------------------
+
 INSERT INTO `users` (`username`, `email`, `password_hash`, `first_name`, `last_name`, `role_id`, `is_active`) VALUES
-('admin', 'admin@localhost', '$2y$10$.qQrztUzN2l1hoGGByiqmOCh0ycVcd1nRMFx7RwOcaAt.94QBufdy', 'System', 'Administrator', 1, 1);
+('admin', 'admin@localhost', '$2y$10$8tGIH4Xo7mVrPEqKvYPT4.QF9K5LmBKVxj7xQ2f0Jx9Qz6M0jP3Hy', 'Admin', 'User', 1, 1);
 
-INSERT INTO `user_preferences` (`user_id`, `timezone`, `theme`) VALUES (1, 'Asia/Jerusalem', 'light');
-
--- Sync existing queues from Asterisk (based on exploration)
-INSERT INTO `queue_settings` (`queue_number`, `display_name`, `sla_threshold_seconds`, `color_code`) VALUES
-('8601', 'ILOR', 60, '#3498db'),
-('8602', 'Eliraz Atias', 60, '#2ecc71'),
-('8603', 'TLV', 60, '#9b59b6'),
-('8604', 'Queue 8604', 60, '#e74c3c'),
-('8701', 'Queue 8701', 60, '#f39c12');
-
--- Default dashboard layout for admin
-INSERT INTO `dashboard_layouts` (`user_id`, `layout_type`, `name`, `widgets`, `is_default`) VALUES
-(1, 'dashboard', 'Default Dashboard', '[
-    {"id": "stats-summary", "type": "stats", "title": "Today Summary", "col": 0, "row": 0, "width": 12, "height": 1},
-    {"id": "call-volume", "type": "chart", "title": "Call Volume", "col": 0, "row": 1, "width": 6, "height": 2},
-    {"id": "queue-status", "type": "table", "title": "Queue Status", "col": 6, "row": 1, "width": 6, "height": 2},
-    {"id": "agent-status", "type": "table", "title": "Agent Status", "col": 0, "row": 3, "width": 6, "height": 2},
-    {"id": "recent-calls", "type": "table", "title": "Recent Calls", "col": 6, "row": 3, "width": 6, "height": 2}
-]', 1);
-
--- Default evaluation form
-INSERT INTO `evaluation_forms` (`id`, `name`, `description`, `is_active`, `created_by`) VALUES
-(1, 'Standard Call Evaluation', 'Default evaluation form for quality monitoring', 1, 1);
-
-INSERT INTO `evaluation_criteria` (`form_id`, `category`, `name`, `description`, `max_score`, `weight`, `sort_order`) VALUES
-(1, 'Greeting', 'Professional Greeting', 'Agent greeted caller professionally and identified themselves', 10, 1.00, 1),
-(1, 'Greeting', 'Verified Caller', 'Agent properly verified caller identity', 10, 1.00, 2),
-(1, 'Communication', 'Clear Communication', 'Agent communicated clearly and professionally', 10, 1.00, 3),
-(1, 'Communication', 'Active Listening', 'Agent demonstrated active listening skills', 10, 1.00, 4),
-(1, 'Problem Solving', 'Issue Resolution', 'Agent effectively resolved the caller issue', 20, 1.50, 5),
-(1, 'Problem Solving', 'Knowledge', 'Agent demonstrated product/service knowledge', 15, 1.25, 6),
-(1, 'Closing', 'Proper Closing', 'Agent properly closed the call', 10, 1.00, 7),
-(1, 'Closing', 'Follow-up', 'Agent offered follow-up assistance if needed', 5, 0.75, 8),
-(1, 'Compliance', 'Script Adherence', 'Agent followed required scripts and procedures', 10, 1.00, 9);
+SET FOREIGN_KEY_CHECKS = 1;
