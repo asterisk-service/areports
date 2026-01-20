@@ -11,7 +11,7 @@ return [
     'version' => '1.0.0',
 
     // Debug mode (set to false in production)
-    'debug' => true,
+    'debug' => false,
 
     // Default timezone
     'timezone' => 'Asia/Jerusalem',
@@ -52,8 +52,8 @@ return [
 
     // Security settings
     'security' => [
-        'max_login_attempts' => 5,
-        'lockout_duration' => 900, // 15 minutes
+        'max_login_attempts' => 10,
+        'lockout_duration' => 60, // 1 minute
         'password_min_length' => 8,
         'csrf_enabled' => true,
     ],

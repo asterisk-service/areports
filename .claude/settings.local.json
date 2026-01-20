@@ -27,7 +27,10 @@
       "Bash(git commit:*)",
       "Bash(grep:*)",
       "Bash(mysql:*)",
-      "Bash(mysqldump:*)"
+      "Bash(mysqldump:*)",
+      "Bash(ln:*)",
+      "Bash(sudo chown:*)",
+      "Bash(git reset:*)"
     ]
   }
 }

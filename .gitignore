@@ -44,3 +44,9 @@ debug.log
 # Temporary files
 *.tmp
 *.bak
+
+# Root symlinks to public
+/css
+/js
+/img
+/vendor

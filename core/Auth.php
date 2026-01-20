@@ -274,8 +274,8 @@ class Auth
      */
     private function isRateLimited(string $username): bool
     {
-        $maxAttempts = 5;
-        $lockoutDuration = 900; // 15 minutes
+        $maxAttempts = 10;
+        $lockoutDuration = 60; // 1 minute
 
         $sql = "SELECT COUNT(*) FROM login_attempts
                 WHERE username = ?
@@ -304,7 +304,7 @@ class Auth
      */
     public function getLockoutTime(string $username): int
     {
-        $lockoutDuration = 900;
+        $lockoutDuration = 60; // 1 minute
 
         $sql = "SELECT MAX(attempted_at) as last_attempt FROM login_attempts
                 WHERE username = ? AND success = 0";
