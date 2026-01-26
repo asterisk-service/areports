@@ -1,7 +1,7 @@
 <?php
 /**
  * Realtime Controller
- * Provides real-time data via AJAX API endpoints
+ * Provides real-time data via AJAX API endpoints and realtime panel view
  */
 
 namespace aReports\Controllers;
@@ -14,6 +14,25 @@ use aReports\Services\CDRService;
 
 class RealtimeController extends Controller
 {
+    /**
+     * Display the realtime panel
+     */
+    public function index(): void
+    {
+        $this->requirePermission('realtime.view');
+
+        // Get queue settings for the filter dropdown
+        $queues = $this->db->fetchAll(
+            "SELECT * FROM queue_settings WHERE is_monitored = 1 ORDER BY display_name ASC"
+        );
+
+        $this->render('realtime/panel', [
+            'title' => 'Realtime Panel',
+            'currentPage' => 'realtime',
+            'queues' => $queues ?: []
+        ]);
+    }
+
     /**
      * Get real-time queue status
      */
