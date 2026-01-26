@@ -67,6 +67,7 @@
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
                     <ul id="realtime-submenu" class="sidebar-submenu collapse">
+                        <li><a href="/areports/realtime">Realtime Panel</a></li>
                         <?php if ($this->can('realtime.queue_status')): ?>
                         <li><a href="/areports/wallboard">Wallboard</a></li>
                         <?php endif; ?>

@@ -25,6 +25,9 @@ $router->group(['middleware' => ['aReports\\Middleware\\AuthMiddleware']], funct
     $router->get('/dashboard', 'DashboardController@index', 'dashboard');
     $router->get('/dashboard/data', 'DashboardController@getData', 'dashboard.data');
 
+    // Realtime Panel
+    $router->get('/realtime', 'RealtimeController@index', 'realtime');
+
     // Wallboard
     $router->get('/wallboard', 'WallboardController@index', 'wallboard');
     $router->get('/wallboard/data', 'WallboardController@getData', 'wallboard.data');
