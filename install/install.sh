@@ -32,6 +32,17 @@ FREEPBX_DB_HOST="localhost"
 FREEPBX_DB_NAME="asterisk"
 CDR_DB_NAME="asteriskcdrdb"
 
+# AMI settings
+AMI_HOST="127.0.0.1"
+AMI_PORT="5038"
+AMI_USER="areports"
+AMI_PASS=""
+
+# Auto-generate passwords
+generate_password() {
+    openssl rand -base64 16 | tr -dc 'a-zA-Z0-9' | head -c 16
+}
+
 echo -e "${BLUE}"
 echo "╔════════════════════════════════════════════════════════════════╗"
 echo "║                                                                ║"
@@ -156,6 +167,10 @@ get_database_credentials() {
     log_step "Database Configuration"
 
     echo ""
+    echo "aReports needs its own database and a MySQL user with access to"
+    echo "Asterisk CDR database for reporting."
+    echo ""
+
     read -p "MySQL Host [localhost]: " input
     DB_HOST=${input:-localhost}
 
@@ -165,21 +180,28 @@ get_database_credentials() {
     read -p "aReports Database User [areports]: " input
     DB_USER=${input:-areports}
 
-    while true; do
-        read -sp "aReports Database Password: " DB_PASS
-        echo ""
-        if [ -z "$DB_PASS" ]; then
-            log_warn "Password cannot be empty"
-        else
-            read -sp "Confirm Password: " DB_PASS_CONFIRM
+    # Auto-generate or manual password
+    read -p "Auto-generate database password? [Y/n]: " auto_pass
+    if [[ ! "$auto_pass" =~ ^[Nn]$ ]]; then
+        DB_PASS=$(generate_password)
+        log_info "Database password auto-generated"
+    else
+        while true; do
+            read -sp "aReports Database Password: " DB_PASS
             echo ""
-            if [ "$DB_PASS" = "$DB_PASS_CONFIRM" ]; then
-                break
+            if [ -z "$DB_PASS" ]; then
+                log_warn "Password cannot be empty"
             else
-                log_warn "Passwords do not match"
+                read -sp "Confirm Password: " DB_PASS_CONFIRM
+                echo ""
+                if [ "$DB_PASS" = "$DB_PASS_CONFIRM" ]; then
+                    break
+                else
+                    log_warn "Passwords do not match"
+                fi
             fi
-        fi
-    done
+        done
+    fi
 
     echo ""
     read -p "MySQL Root Password (for creating database): " -s MYSQL_ROOT_PASS
@@ -188,6 +210,9 @@ get_database_credentials() {
     # FreePBX database settings
     echo ""
     log_info "FreePBX/Asterisk Database Settings"
+    echo "The aReports user will be granted SELECT access to these databases."
+    echo ""
+
     read -p "FreePBX Database Host [localhost]: " input
     FREEPBX_DB_HOST=${input:-localhost}
 
@@ -197,11 +222,19 @@ get_database_credentials() {
     read -p "CDR Database Name [asteriskcdrdb]: " input
     CDR_DB_NAME=${input:-asteriskcdrdb}
 
-    read -p "FreePBX Database User [freepbxuser]: " FREEPBX_DB_USER
-    FREEPBX_DB_USER=${FREEPBX_DB_USER:-freepbxuser}
-
-    read -sp "FreePBX Database Password: " FREEPBX_DB_PASS
+    # Check if we should use same user for FreePBX access
     echo ""
+    read -p "Use aReports user for FreePBX database access? [Y/n]: " same_user
+    if [[ ! "$same_user" =~ ^[Nn]$ ]]; then
+        FREEPBX_DB_USER="$DB_USER"
+        FREEPBX_DB_PASS="$DB_PASS"
+        log_info "Using aReports user for all database access"
+    else
+        read -p "FreePBX Database User [freepbxuser]: " FREEPBX_DB_USER
+        FREEPBX_DB_USER=${FREEPBX_DB_USER:-freepbxuser}
+        read -sp "FreePBX Database Password: " FREEPBX_DB_PASS
+        echo ""
+    fi
 }
 
 get_admin_credentials() {
@@ -245,45 +278,92 @@ get_ami_credentials() {
 
     echo ""
     echo "AMI is used for real-time queue and agent monitoring."
-    echo "You can configure this later in Settings if you skip now."
     echo ""
 
-    read -p "Configure AMI now? [y/N]: " configure_ami
+    read -p "Configure AMI automatically? [Y/n]: " configure_ami
 
-    if [[ "$configure_ami" =~ ^[Yy]$ ]]; then
-        read -p "AMI Host [127.0.0.1]: " input
-        AMI_HOST=${input:-127.0.0.1}
+    if [[ ! "$configure_ami" =~ ^[Nn]$ ]]; then
+        # Auto-generate AMI credentials
+        AMI_HOST="127.0.0.1"
+        AMI_PORT="5038"
+        AMI_USER="areports"
+        AMI_PASS=$(generate_password)
 
-        read -p "AMI Port [5038]: " input
-        AMI_PORT=${input:-5038}
+        log_info "AMI credentials will be auto-generated:"
+        log_info "  Username: $AMI_USER"
+        log_info "  Password: (auto-generated)"
 
-        read -p "AMI Username: " AMI_USER
-
-        read -sp "AMI Password: " AMI_PASS
-        echo ""
+        read -p "Use custom AMI username? [y/N]: " custom_ami
+        if [[ "$custom_ami" =~ ^[Yy]$ ]]; then
+            read -p "AMI Username [areports]: " input
+            AMI_USER=${input:-areports}
+        fi
     else
         AMI_HOST=""
         AMI_PORT=""
         AMI_USER=""
         AMI_PASS=""
+        log_info "Skipping AMI configuration. Configure later in Settings."
     fi
 }
 
 create_database() {
-    log_step "Creating database..."
+    log_step "Creating database and MySQL user..."
 
-    # Create database and user
+    # Test MySQL connection first
+    if ! mysql -h "$DB_HOST" -u root -p"$MYSQL_ROOT_PASS" -e "SELECT 1" &>/dev/null; then
+        log_error "Cannot connect to MySQL. Check root password."
+        exit 1
+    fi
+
+    log_info "Creating aReports database..."
+
+    # Create database and user with all required permissions
     mysql -h "$DB_HOST" -u root -p"$MYSQL_ROOT_PASS" <<EOF
+-- Create aReports database
 CREATE DATABASE IF NOT EXISTS \`$DB_NAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Create or update user
+CREATE USER IF NOT EXISTS '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';
+CREATE USER IF NOT EXISTS '$DB_USER'@'127.0.0.1' IDENTIFIED BY '$DB_PASS';
 CREATE USER IF NOT EXISTS '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS';
+
+-- Update password in case user exists
+ALTER USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';
+ALTER USER '$DB_USER'@'127.0.0.1' IDENTIFIED BY '$DB_PASS';
+
+-- Grant full access to aReports database
+GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'localhost';
+GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'127.0.0.1';
 GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'$DB_HOST';
+
+-- Grant SELECT access to Asterisk CDR database
+GRANT SELECT ON \`$CDR_DB_NAME\`.* TO '$DB_USER'@'localhost';
+GRANT SELECT ON \`$CDR_DB_NAME\`.* TO '$DB_USER'@'127.0.0.1';
 GRANT SELECT ON \`$CDR_DB_NAME\`.* TO '$DB_USER'@'$DB_HOST';
+
+-- Grant SELECT access to FreePBX database
+GRANT SELECT ON \`$FREEPBX_DB_NAME\`.* TO '$DB_USER'@'localhost';
+GRANT SELECT ON \`$FREEPBX_DB_NAME\`.* TO '$DB_USER'@'127.0.0.1';
 GRANT SELECT ON \`$FREEPBX_DB_NAME\`.* TO '$DB_USER'@'$DB_HOST';
+
 FLUSH PRIVILEGES;
 EOF
 
     if [ $? -eq 0 ]; then
-        log_info "Database created successfully"
+        log_info "Database and user created successfully"
+        echo ""
+        log_info "MySQL Credentials:"
+        echo "  Host:     $DB_HOST"
+        echo "  Database: $DB_NAME"
+        echo "  Username: $DB_USER"
+        echo "  Password: $DB_PASS"
+        echo ""
+        log_info "Permissions granted:"
+        echo "  - Full access to: $DB_NAME"
+        echo "  - SELECT access to: $CDR_DB_NAME"
+        echo "  - SELECT access to: $FREEPBX_DB_NAME"
+        echo ""
     else
         log_error "Failed to create database"
         exit 1
@@ -332,7 +412,7 @@ EOF
 }
 
 create_ami_user() {
-    log_step "Creating AMI user..."
+    log_step "Creating AMI user in Asterisk..."
 
     if [ -z "$AMI_USER" ]; then
         log_info "Skipping AMI configuration (not configured)"
@@ -341,145 +421,152 @@ create_ami_user() {
 
     AMI_CONFIG="/etc/asterisk/manager_custom.conf"
 
-    # Generate random secret if not provided
-    if [ -z "$AMI_PASS" ]; then
-        AMI_PASS=$(openssl rand -hex 12)
+    # Check if Asterisk directory exists
+    if [ ! -d "/etc/asterisk" ]; then
+        log_warn "Asterisk config directory not found. Skipping AMI setup."
+        log_warn "Manually add AMI user to your Asterisk installation."
+        return
     fi
 
-    # Create manager_custom.conf entry
+    # Create manager_custom.conf if it doesn't exist
+    if [ ! -f "$AMI_CONFIG" ]; then
+        touch "$AMI_CONFIG"
+        chown asterisk:asterisk "$AMI_CONFIG" 2>/dev/null || true
+        log_info "Created $AMI_CONFIG"
+    fi
+
+    # Check if areports user already exists
+    if grep -q "^\[areports\]" "$AMI_CONFIG" 2>/dev/null; then
+        log_warn "AMI user 'areports' already exists in $AMI_CONFIG"
+        log_info "Updating existing configuration..."
+        # Remove existing areports section
+        sed -i '/^\[areports\]/,/^$/d' "$AMI_CONFIG"
+    fi
+
+    # Add AMI user configuration
     cat >> "$AMI_CONFIG" <<EOF
 
-[areports]
+; aReports AMI User - Auto-generated $(date '+%Y-%m-%d %H:%M:%S')
+[$AMI_USER]
 secret = $AMI_PASS
 deny = 0.0.0.0/0.0.0.0
 permit = 127.0.0.1/255.255.255.255
 read = system,call,agent,user,config,command,reporting
-write = system,call,agent,user,config,command,reporting
+write = system,call,agent,user,config,command,reporting,originate
 writetimeout = 5000
+eventfilter = !Event: RTCP*
+eventfilter = !Event: VarSet
+eventfilter = !Event: Newexten
 EOF
 
-    # Update AMI settings in database
-    mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" "$DB_NAME" <<EOF
-UPDATE settings SET setting_value = 'areports' WHERE category = 'ami' AND setting_key = 'username';
-UPDATE settings SET setting_value = '$AMI_PASS' WHERE category = 'ami' AND setting_key = 'secret';
-EOF
+    log_info "AMI user added to $AMI_CONFIG"
 
     # Reload Asterisk manager
     if command -v asterisk &> /dev/null; then
-        asterisk -rx "manager reload" 2>/dev/null || true
-        log_info "AMI user created and Asterisk reloaded"
+        if asterisk -rx "manager reload" 2>/dev/null; then
+            log_info "Asterisk manager reloaded successfully"
+        else
+            log_warn "Could not reload Asterisk. Run manually: asterisk -rx 'manager reload'"
+        fi
     else
-        log_info "AMI configuration added. Reload Asterisk manually: asterisk -rx 'manager reload'"
+        log_warn "Asterisk not found. Reload manager manually after installing Asterisk."
     fi
+
+    echo ""
+    log_info "AMI Credentials:"
+    echo "  Host:     $AMI_HOST"
+    echo "  Port:     $AMI_PORT"
+    echo "  Username: $AMI_USER"
+    echo "  Password: $AMI_PASS"
+    echo ""
 }
 
 create_config() {
-    log_step "Creating configuration file..."
+    log_step "Creating configuration files..."
 
-    CONFIG_FILE="$INSTALL_DIR/config/config.php"
-
-    cat > "$CONFIG_FILE" <<EOF
+    # Create database.php config
+    DB_CONFIG_FILE="$INSTALL_DIR/config/database.php"
+    cat > "$DB_CONFIG_FILE" <<EOF
 <?php
 /**
- * aReports Configuration File
+ * Database Configuration
  * Generated by installer on $(date)
  */
 
 return [
-    // Application
-    'app' => [
-        'name' => 'aReports',
-        'version' => '1.0.0',
-        'url' => '/areports',
-        'timezone' => 'America/New_York',
-        'debug' => false,
-    ],
-
-    // Main Database (aReports)
-    'database' => [
+    // Main aReports database
+    'default' => [
+        'driver' => 'mysql',
         'host' => '$DB_HOST',
-        'name' => '$DB_NAME',
-        'user' => '$DB_USER',
-        'pass' => '$DB_PASS',
+        'port' => 3306,
+        'database' => '$DB_NAME',
+        'username' => '$DB_USER',
+        'password' => '$DB_PASS',
         'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
     ],
 
-    // CDR Database (Asterisk)
-    'cdr_database' => [
+    // Asterisk CDR database
+    'asteriskcdrdb' => [
+        'driver' => 'mysql',
         'host' => '$FREEPBX_DB_HOST',
-        'name' => '$CDR_DB_NAME',
-        'user' => '$FREEPBX_DB_USER',
-        'pass' => '$FREEPBX_DB_PASS',
+        'port' => 3306,
+        'database' => '$CDR_DB_NAME',
+        'username' => '$DB_USER',
+        'password' => '$DB_PASS',
         'charset' => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
     ],
 
-    // FreePBX Database
-    'freepbx_database' => [
+    // FreePBX database
+    'freepbx' => [
+        'driver' => 'mysql',
         'host' => '$FREEPBX_DB_HOST',
-        'name' => '$FREEPBX_DB_NAME',
-        'user' => '$FREEPBX_DB_USER',
-        'pass' => '$FREEPBX_DB_PASS',
+        'port' => 3306,
+        'database' => '$FREEPBX_DB_NAME',
+        'username' => '$DB_USER',
+        'password' => '$DB_PASS',
         'charset' => 'utf8mb4',
-    ],
-
-    // Asterisk Manager Interface
-    'ami' => [
-        'host' => '$AMI_HOST',
-        'port' => ${AMI_PORT:-5038},
-        'username' => '$AMI_USER',
-        'password' => '$AMI_PASS',
-        'timeout' => 5,
-    ],
-
-    // Session
-    'session' => [
-        'name' => 'areports_session',
-        'lifetime' => 7200,
-        'secure' => false,
-        'httponly' => true,
-    ],
-
-    // Security
-    'security' => [
-        'secret_key' => '$(openssl rand -hex 32)',
-        'password_min_length' => 6,
-        'max_login_attempts' => 5,
-        'lockout_time' => 900,
-    ],
-
-    // File Storage
-    'storage' => [
-        'recordings' => '/var/spool/asterisk/monitor',
-        'exports' => '$INSTALL_DIR/storage/exports',
-        'logs' => '$INSTALL_DIR/storage/logs',
-        'temp' => '$INSTALL_DIR/storage/temp',
-    ],
-
-    // Email (configure in admin panel)
-    'email' => [
-        'enabled' => false,
-        'smtp_host' => '',
-        'smtp_port' => 587,
-        'smtp_user' => '',
-        'smtp_pass' => '',
-        'smtp_secure' => 'tls',
-        'from_email' => '',
-        'from_name' => 'aReports',
-    ],
-
-    // Telegram (configure in admin panel)
-    'telegram' => [
-        'enabled' => false,
-        'bot_token' => '',
-        'default_chat_id' => '',
+        'collation' => 'utf8mb4_unicode_ci',
     ],
 ];
 EOF
 
-    chmod 640 "$CONFIG_FILE"
-    chown $APACHE_USER:$APACHE_GROUP "$CONFIG_FILE"
+    chmod 640 "$DB_CONFIG_FILE"
+    chown $APACHE_USER:$APACHE_GROUP "$DB_CONFIG_FILE"
+    log_info "Database config created: $DB_CONFIG_FILE"
 
-    log_info "Configuration file created"
+    # Create ami.php config
+    AMI_CONFIG_FILE="$INSTALL_DIR/config/ami.php"
+    cat > "$AMI_CONFIG_FILE" <<EOF
+<?php
+/**
+ * Asterisk Manager Interface Configuration
+ * Generated by installer on $(date)
+ */
+
+return [
+    'host' => '${AMI_HOST:-127.0.0.1}',
+    'port' => ${AMI_PORT:-5038},
+    'username' => '${AMI_USER:-}',
+    'secret' => '${AMI_PASS:-}',
+    'connect_timeout' => 5,
+    'read_timeout' => 5,
+];
+EOF
+
+    chmod 640 "$AMI_CONFIG_FILE"
+    chown $APACHE_USER:$APACHE_GROUP "$AMI_CONFIG_FILE"
+    log_info "AMI config created: $AMI_CONFIG_FILE"
+
+    # Update app.php debug setting
+    APP_CONFIG_FILE="$INSTALL_DIR/config/app.php"
+    if [ -f "$APP_CONFIG_FILE" ]; then
+        sed -i "s/'debug' => true/'debug' => false/" "$APP_CONFIG_FILE"
+        log_info "Debug mode disabled in app.php"
+    fi
+
+    log_info "Configuration files created successfully"
 }
 
 set_permissions() {
@@ -610,7 +697,64 @@ EOF
     log_info "Cron jobs configured"
 }
 
+save_credentials() {
+    log_step "Saving credentials to file..."
+
+    CREDS_FILE="$INSTALL_DIR/install/credentials.txt"
+
+    cat > "$CREDS_FILE" <<EOF
+================================================================================
+aReports Installation Credentials
+Generated: $(date '+%Y-%m-%d %H:%M:%S')
+================================================================================
+
+WEB ACCESS
+----------
+URL:      http://your-server/areports
+Username: $ADMIN_USER
+Password: (as entered during installation)
+
+MYSQL DATABASE
+--------------
+Host:     $DB_HOST
+Database: $DB_NAME
+Username: $DB_USER
+Password: $DB_PASS
+
+Database Permissions:
+  - Full access to: $DB_NAME
+  - SELECT access to: $CDR_DB_NAME
+  - SELECT access to: $FREEPBX_DB_NAME
+
+AMI (ASTERISK MANAGER INTERFACE)
+--------------------------------
+Host:     ${AMI_HOST:-Not configured}
+Port:     ${AMI_PORT:-5038}
+Username: ${AMI_USER:-Not configured}
+Password: ${AMI_PASS:-Not configured}
+
+Config file: /etc/asterisk/manager_custom.conf
+
+CONFIGURATION FILES
+-------------------
+Main config:  $INSTALL_DIR/config/database.php
+AMI config:   $INSTALL_DIR/config/ami.php
+App config:   $INSTALL_DIR/config/app.php
+
+================================================================================
+IMPORTANT: Delete this file after noting down the credentials!
+           File location: $CREDS_FILE
+================================================================================
+EOF
+
+    chmod 600 "$CREDS_FILE"
+    log_info "Credentials saved to: $CREDS_FILE"
+}
+
 print_summary() {
+    # Save credentials to file
+    save_credentials
+
     echo ""
     echo -e "${GREEN}"
     echo "╔════════════════════════════════════════════════════════════════╗"
@@ -620,24 +764,34 @@ print_summary() {
     echo ""
     echo "Access aReports at: http://your-server/areports"
     echo ""
-    echo "Login credentials:"
+    echo -e "${YELLOW}=== LOGIN CREDENTIALS ===${NC}"
     echo "  Username: $ADMIN_USER"
     echo "  Password: (the password you entered)"
     echo ""
-    echo "Important next steps:"
-    echo "  1. Configure AMI settings if not done during install"
-    echo "  2. Set up email notifications in Settings > Email"
-    echo "  3. Configure Telegram bot in Settings > Telegram"
-    echo "  4. Create user roles and permissions"
-    echo "  5. Set up queues and agents"
+    echo -e "${YELLOW}=== MYSQL DATABASE ===${NC}"
+    echo "  Host:     $DB_HOST"
+    echo "  Database: $DB_NAME"
+    echo "  Username: $DB_USER"
+    echo "  Password: $DB_PASS"
     echo ""
-    echo "Configuration file: $INSTALL_DIR/config/config.php"
-    echo "Log files: $INSTALL_DIR/storage/logs/"
+    if [ -n "$AMI_USER" ]; then
+        echo -e "${YELLOW}=== AMI CREDENTIALS ===${NC}"
+        echo "  Host:     $AMI_HOST"
+        echo "  Port:     $AMI_PORT"
+        echo "  Username: $AMI_USER"
+        echo "  Password: $AMI_PASS"
+        echo "  Config:   /etc/asterisk/manager_custom.conf"
+        echo ""
+    fi
+    echo -e "${YELLOW}=== FILES ===${NC}"
+    echo "  Credentials file: $INSTALL_DIR/install/credentials.txt"
+    echo "  Configuration:    $INSTALL_DIR/config/"
+    echo "  Logs:             $INSTALL_DIR/storage/logs/"
     echo ""
-    echo -e "${YELLOW}Please secure your installation:${NC}"
-    echo "  - Use HTTPS in production"
-    echo "  - Change default passwords"
-    echo "  - Restrict database access"
+    echo -e "${RED}IMPORTANT:${NC}"
+    echo "  1. Note down the credentials above"
+    echo "  2. Delete credentials.txt after saving: rm $INSTALL_DIR/install/credentials.txt"
+    echo "  3. Use HTTPS in production"
     echo ""
 }
 
