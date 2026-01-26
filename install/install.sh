@@ -590,8 +590,13 @@ set_permissions() {
     # Make storage writable
     chmod -R 775 "$INSTALL_DIR/storage"
 
-    # Protect config
-    chmod 640 "$INSTALL_DIR/config/config.php"
+    # Protect config files with sensitive credentials
+    if [ -f "$INSTALL_DIR/config/database.php" ]; then
+        chmod 640 "$INSTALL_DIR/config/database.php"
+    fi
+    if [ -f "$INSTALL_DIR/config/ami.php" ]; then
+        chmod 640 "$INSTALL_DIR/config/ami.php"
+    fi
 
     log_info "Permissions set successfully"
 }
