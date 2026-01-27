@@ -49,26 +49,31 @@
                 <thead>
                     <tr>
                         <th>Time</th>
+                        <th>Caller ID</th>
                         <th>Queue</th>
-                        <th>Call ID</th>
                         <th class="text-center">Wait Time</th>
                         <th class="text-center">Position</th>
-                        <th class="text-center">Original Position</th>
+                        <th>Call ID</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($records as $record): ?>
                     <tr>
                         <td><?= $this->formatDateTime($record['time']) ?></td>
+                        <td>
+                            <strong><?= $this->e($record['caller_id'] ?: 'Unknown') ?></strong>
+                            <?php if (!empty($record['caller_name'])): ?>
+                            <br><small class="text-muted"><?= $this->e($record['caller_name']) ?></small>
+                            <?php endif; ?>
+                        </td>
                         <td><?= $this->e($record['queuename']) ?></td>
-                        <td><small class="text-muted"><?= $this->e($record['callid']) ?></small></td>
                         <td class="text-center">
                             <span class="badge bg-<?= ($record['wait_time'] ?? 0) > 60 ? 'danger' : 'warning' ?>">
                                 <?= $this->formatDuration($record['wait_time'] ?? 0) ?>
                             </span>
                         </td>
                         <td class="text-center"><?= $record['wait_position'] ?? '-' ?></td>
-                        <td class="text-center"><?= $record['original_position'] ?? '-' ?></td>
+                        <td><small class="text-muted"><?= $this->e($record['callid']) ?></small></td>
                     </tr>
                     <?php endforeach; ?>
                     <?php if (empty($records)): ?>

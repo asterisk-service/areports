@@ -169,31 +169,35 @@ class QueueService
      */
     public function getAbandonedCalls(string $dateFrom, string $dateTo, ?string $queueFilter = null, int $limit = 100, int $offset = 0): array
     {
-        $where = "DATE(time) BETWEEN ? AND ? AND event = 'ABANDON'";
+        $where = "DATE(q.time) BETWEEN ? AND ? AND q.event = 'ABANDON'";
         $params = [$dateFrom, $dateTo];
 
         if ($queueFilter) {
-            $where .= " AND queuename = ?";
+            $where .= " AND q.queuename = ?";
             $params[] = $queueFilter;
         }
 
         // Count total
-        $countSql = "SELECT COUNT(*) FROM queuelog WHERE {$where}";
+        $countSql = "SELECT COUNT(*) FROM queuelog q WHERE " . str_replace('q.', '', $where);
+        $countParams = array_slice($params, 0, $queueFilter ? 3 : 2);
         $stmt = $this->cdrDb->prepare($countSql);
-        $stmt->execute($params);
+        $stmt->execute($countParams);
         $total = (int) $stmt->fetchColumn();
 
-        // Get records
+        // Get records with caller ID from CDR
         $sql = "SELECT
-                    time,
-                    queuename,
-                    callid,
-                    data1 as wait_position,
-                    data2 as original_position,
-                    data3 as wait_time
-                FROM queuelog
+                    q.time,
+                    q.queuename,
+                    q.callid,
+                    q.data1 as wait_position,
+                    q.data2 as original_position,
+                    q.data3 as wait_time,
+                    COALESCE(c.src, c.cnum, '') as caller_id,
+                    COALESCE(c.cnam, '') as caller_name
+                FROM queuelog q
+                LEFT JOIN cdr c ON q.callid = c.uniqueid
                 WHERE {$where}
-                ORDER BY time DESC
+                ORDER BY q.time DESC
                 LIMIT ? OFFSET ?";
 
         $params[] = $limit;

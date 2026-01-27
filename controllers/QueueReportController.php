@@ -35,7 +35,7 @@ class QueueReportController extends Controller
     {
         $this->requirePermission('reports.queue.view');
 
-        $dateFrom = $this->get('date_from', date('Y-m-d', strtotime('-7 days')));
+        $dateFrom = $this->get('date_from', date('Y-m-d'));
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $queueFilter = $this->get('queue');
 
@@ -84,7 +84,7 @@ class QueueReportController extends Controller
     {
         $this->requirePermission('reports.queue.view');
 
-        $dateFrom = $this->get('date_from', date('Y-m-d', strtotime('-7 days')));
+        $dateFrom = $this->get('date_from', date('Y-m-d'));
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $queueFilter = $this->get('queue');
 

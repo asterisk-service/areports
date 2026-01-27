@@ -27,7 +27,7 @@ class AgentReportController extends Controller
     {
         $this->requirePermission('reports.agent.view');
 
-        $dateFrom = $this->get('date_from', date('Y-m-d', strtotime('-7 days')));
+        $dateFrom = $this->get('date_from', date('Y-m-d'));
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $agentFilter = $this->get('agent');
 
