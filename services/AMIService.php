@@ -257,8 +257,9 @@ class AMIService
                     case 'QueueMember':
                         $queueName = $data['Queue'];
                         $member = [
-                            'name' => $data['Name'] ?? $data['Interface'],
-                            'interface' => $data['Interface'] ?? '',
+                            'name' => $data['Name'] ?? $data['Location'] ?? '',
+                            'interface' => $data['Location'] ?? $data['Interface'] ?? '',
+                            'location' => $data['Location'] ?? '',
                             'stateinterface' => $data['StateInterface'] ?? '',
                             'membership' => $data['Membership'] ?? 'dynamic',
                             'penalty' => (int) ($data['Penalty'] ?? 0),
