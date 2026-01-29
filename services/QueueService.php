@@ -207,6 +207,12 @@ class QueueService
         $stmt->execute($params);
         $records = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+        // Enrich with display names
+        $queueSettings = $this->getQueueSettings();
+        foreach ($records as &$record) {
+            $record['display_name'] = $queueSettings[$record['queuename']]['display_name'] ?? $record['queuename'];
+        }
+
         return [
             'records' => $records,
             'total' => $total
@@ -314,6 +320,28 @@ class QueueService
         $settings = [];
         foreach ($rows as $row) {
             $settings[$row['queue_number']] = $row;
+        }
+
+        // Get queue names from FreePBX as fallback
+        try {
+            $freepbxService = new FreePBXService();
+            $freepbxQueues = $freepbxService->getQueues();
+            foreach ($freepbxQueues as $q) {
+                $ext = $q['extension'];
+                if (!isset($settings[$ext])) {
+                    $settings[$ext] = [
+                        'queue_number' => $ext,
+                        'display_name' => $q['name'],
+                        'sla_threshold' => 20,
+                        'sla_warning' => 80,
+                        'color' => '#007bff',
+                    ];
+                } elseif (empty($settings[$ext]['display_name']) || $settings[$ext]['display_name'] === $ext) {
+                    $settings[$ext]['display_name'] = $q['name'];
+                }
+            }
+        } catch (\Exception $e) {
+            // FreePBX not available, use existing settings only
         }
 
         return $settings;

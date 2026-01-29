@@ -66,7 +66,7 @@
                             <br><small class="text-muted"><?= $this->e($record['caller_name']) ?></small>
                             <?php endif; ?>
                         </td>
-                        <td><?= $this->e($record['queuename']) ?></td>
+                        <td><?= $this->e($record['display_name'] ?? $record['queuename']) ?></td>
                         <td class="text-center">
                             <span class="badge bg-<?= ($record['wait_time'] ?? 0) > 60 ? 'danger' : 'warning' ?>">
                                 <?= $this->formatDuration($record['wait_time'] ?? 0) ?>

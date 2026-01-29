@@ -67,7 +67,7 @@
                 <tbody>
                     <?php foreach ($data['queues'] as $queue): ?>
                     <tr>
-                        <td><?= $this->e($queue['queuename']) ?></td>
+                        <td><?= $this->e($queue['display_name'] ?? $queue['queuename']) ?></td>
                         <td class="text-center"><?= number_format($queue['calls_handled']) ?></td>
                         <td class="text-center"><?= $this->formatDuration($queue['talk_time']) ?></td>
                         <td class="text-center"><?= round($queue['avg_ring_time'] ?? 0) ?>s</td>

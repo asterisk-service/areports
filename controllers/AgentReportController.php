@@ -104,6 +104,10 @@ class AgentReportController extends Controller
         $efficiency = $this->agentService->getAgentEfficiency($dateFrom, $dateTo, $agentFilter);
         $agentList = $this->agentService->getAgentList();
 
+        // Get queue display names
+        $queueService = new \aReports\Services\QueueService();
+        $queueSettings = $queueService->getQueueSettings();
+
         // Group by agent
         $groupedData = [];
         foreach ($efficiency as $row) {
@@ -116,6 +120,7 @@ class AgentReportController extends Controller
                     'total_talk_time' => 0
                 ];
             }
+            $row['display_name'] = $queueSettings[$row['queuename']]['display_name'] ?? $row['queuename'];
             $groupedData[$agent]['queues'][] = $row;
             $groupedData[$agent]['total_calls'] += $row['calls_handled'];
             $groupedData[$agent]['total_talk_time'] += $row['talk_time'];

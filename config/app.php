@@ -14,7 +14,7 @@ return [
     'debug' => false,
 
     // Default timezone
-    'timezone' => 'Asia/Jerusalem',
+    'timezone' => 'Europe/Moscow',
 
     // Session lifetime in seconds (2 hours)
     'session_lifetime' => 7200,

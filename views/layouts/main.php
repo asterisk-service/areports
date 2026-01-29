@@ -58,6 +58,7 @@
                 </li>
                 <?php endif; ?>
 
+                <?php if (($user['role_id'] ?? 0) != 3): ?>
                 <!-- Real-Time -->
                 <?php if ($this->can('realtime.view')): ?>
                 <li class="sidebar-item">
@@ -203,6 +204,7 @@
                 </li>
                 <?php endif; ?>
                 <?php endif; ?>
+                <?php endif; /* end agent role check */ ?>
             </ul>
         </nav>
 
