@@ -7,6 +7,7 @@
 namespace aReports\Controllers;
 
 use aReports\Core\Controller;
+use aReports\Services\QueueService;
 
 class AlertController extends Controller
 {
@@ -20,7 +21,7 @@ class AlertController extends Controller
         $alerts = $this->db->fetchAll(
             "SELECT a.*, u.first_name, u.last_name
              FROM alerts a
-             LEFT JOIN users u ON a.created_by = u.id
+             LEFT JOIN users u ON a.user_id = u.id
              ORDER BY a.is_active DESC, a.name"
         );
 
@@ -68,9 +69,13 @@ class AlertController extends Controller
     {
         $this->requirePermission('alerts.manage');
 
+        $queueService = new QueueService();
+        $queues = $queueService->getQueueList();
+
         $this->render('alerts/create', [
             'title' => 'Create Alert',
-            'currentPage' => 'alerts'
+            'currentPage' => 'alerts',
+            'queues' => $queues
         ]);
     }
 
@@ -83,20 +88,42 @@ class AlertController extends Controller
 
         $data = $this->validate($_POST, [
             'name' => 'required|max:100',
+            'alert_type' => 'required|in:queue,agent,system',
             'metric' => 'required',
-            'condition' => 'required|in:gt,lt,eq,gte,lte',
-            'threshold' => 'required|numeric'
+            'operator' => 'required|in:gt,lt,eq,gte,lte',
+            'threshold_value' => 'required|numeric'
         ]);
+
+        // Build notification channels and recipients
+        $channels = [];
+        $recipients = [];
+
+        $notifyEmail = $this->post('notify_email');
+        if (!empty($notifyEmail)) {
+            $channels[] = 'email';
+            $recipients['email'] = array_map('trim', explode(',', $notifyEmail));
+        }
+
+        $telegramChatId = $this->post('telegram_chat_id');
+        if (!empty($telegramChatId)) {
+            $channels[] = 'telegram';
+            $recipients['telegram'] = array_map('trim', explode(',', $telegramChatId));
+        }
+
+        $queueId = $this->post('queue_id');
 
         $alertId = $this->db->insert('alerts', [
             'name' => $data['name'],
+            'alert_type' => $data['alert_type'],
             'metric' => $data['metric'],
-            'condition' => $data['condition'],
-            'threshold' => $data['threshold'],
-            'queue_filter' => $this->post('queue_filter'),
-            'notify_email' => $this->post('notify_email'),
+            'operator' => $data['operator'],
+            'threshold_value' => $data['threshold_value'],
+            'queue_id' => !empty($queueId) ? (int) $queueId : null,
+            'cooldown_minutes' => (int) ($this->post('cooldown_minutes') ?: 15),
+            'notification_channels' => json_encode($channels),
+            'recipients' => json_encode($recipients),
             'is_active' => 1,
-            'created_by' => $this->user['id']
+            'user_id' => $this->user['id']
         ]);
 
         $this->audit('create', 'alert', $alertId);
@@ -115,10 +142,18 @@ class AlertController extends Controller
             $this->abort(404, 'Alert not found');
         }
 
+        // Decode JSON fields
+        $alert['notification_channels'] = json_decode($alert['notification_channels'] ?? '[]', true) ?: [];
+        $alert['recipients'] = json_decode($alert['recipients'] ?? '{}', true) ?: [];
+
+        $queueService = new QueueService();
+        $queues = $queueService->getQueueList();
+
         $this->render('alerts/edit', [
             'title' => 'Edit Alert',
             'currentPage' => 'alerts',
-            'alert' => $alert
+            'alert' => $alert,
+            'queues' => $queues
         ]);
     }
 
@@ -131,18 +166,41 @@ class AlertController extends Controller
 
         $data = $this->validate($_POST, [
             'name' => 'required|max:100',
+            'alert_type' => 'required|in:queue,agent,system',
             'metric' => 'required',
-            'condition' => 'required|in:gt,lt,eq,gte,lte',
-            'threshold' => 'required|numeric'
+            'operator' => 'required|in:gt,lt,eq,gte,lte',
+            'threshold_value' => 'required|numeric'
         ]);
+
+        // Build notification channels and recipients
+        $channels = [];
+        $recipients = [];
+
+        $notifyEmail = $this->post('notify_email');
+        if (!empty($notifyEmail)) {
+            $channels[] = 'email';
+            $recipients['email'] = array_map('trim', explode(',', $notifyEmail));
+        }
+
+        $telegramChatId = $this->post('telegram_chat_id');
+        if (!empty($telegramChatId)) {
+            $channels[] = 'telegram';
+            $recipients['telegram'] = array_map('trim', explode(',', $telegramChatId));
+        }
+
+        $queueId = $this->post('queue_id');
 
         $this->db->update('alerts', [
             'name' => $data['name'],
+            'alert_type' => $data['alert_type'],
             'metric' => $data['metric'],
-            'condition' => $data['condition'],
-            'threshold' => $data['threshold'],
-            'queue_filter' => $this->post('queue_filter'),
-            'notify_email' => $this->post('notify_email')
+            'operator' => $data['operator'],
+            'threshold_value' => $data['threshold_value'],
+            'queue_id' => !empty($queueId) ? (int) $queueId : null,
+            'cooldown_minutes' => (int) ($this->post('cooldown_minutes') ?: 15),
+            'notification_channels' => json_encode($channels),
+            'recipients' => json_encode($recipients),
+            'is_active' => $this->post('is_active') ? 1 : 0
         ], ['id' => $id]);
 
         $this->audit('update', 'alert', $id);

@@ -40,7 +40,7 @@ class QueueService
                     COUNT(CASE WHEN event = 'ABANDON' THEN 1 END) as abandoned,
                     COUNT(CASE WHEN event IN ('EXITWITHTIMEOUT', 'EXITEMPTY') THEN 1 END) as timeout,
                     AVG(CASE WHEN event = 'CONNECT' THEN CAST(data1 AS UNSIGNED) END) as avg_wait_time,
-                    AVG(CASE WHEN event = 'CONNECT' THEN CAST(data2 AS UNSIGNED) END) as avg_talk_time,
+                    AVG(CASE WHEN event IN ('COMPLETECALLER', 'COMPLETEAGENT') THEN CAST(data2 AS UNSIGNED) END) as avg_talk_time,
                     MAX(CASE WHEN event = 'CONNECT' THEN CAST(data1 AS UNSIGNED) END) as max_wait_time,
                     MIN(CASE WHEN event = 'CONNECT' THEN CAST(data1 AS UNSIGNED) END) as min_wait_time
                 FROM queuelog
@@ -264,7 +264,7 @@ class QueueService
                     COUNT(CASE WHEN event = 'CONNECT' THEN 1 END) as answered,
                     COUNT(CASE WHEN event = 'ABANDON' THEN 1 END) as abandoned,
                     AVG(CASE WHEN event = 'CONNECT' THEN CAST(data1 AS UNSIGNED) END) as avg_wait,
-                    AVG(CASE WHEN event = 'CONNECT' THEN CAST(data2 AS UNSIGNED) END) as avg_talk
+                    AVG(CASE WHEN event IN ('COMPLETECALLER', 'COMPLETEAGENT') THEN CAST(data2 AS UNSIGNED) END) as avg_talk
                 FROM queuelog
                 WHERE DATE(time) = ?";
 
