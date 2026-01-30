@@ -110,6 +110,17 @@ class AgentPanelController extends Controller
             // Get user's assigned queues (if any)
             $assignedQueues = $this->getUserAssignedQueues();
 
+            // Get queue display names from FreePBX
+            $queueDisplayNames = [];
+            try {
+                $freepbxService = new FreePBXService();
+                foreach ($freepbxService->getQueues() as $q) {
+                    $queueDisplayNames[$q['extension']] = $q['name'];
+                }
+            } catch (\Exception $e) {
+                // FreePBX not available
+            }
+
             // Find which queues the agent is in and their status
             $agentQueues = [];
             $interface = "Local/{$extension}@from-queue/n";
@@ -166,7 +177,7 @@ class AgentPanelController extends Controller
                 }
                 $agentQueues[] = [
                     'queue' => $queueName,
-                    'name' => $queueName,
+                    'display_name' => $queueDisplayNames[$queueName] ?? $queueName,
                     'in_queue' => $inQueue,
                     'status' => $status,
                     'paused' => $paused,

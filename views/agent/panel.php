@@ -255,7 +255,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <i class="fas ${statusIcon} me-2"></i>
-                            <strong>${queue.queue}</strong>
+                            <strong>${queue.display_name || queue.queue}</strong>
+                            <small class="text-muted">(${queue.queue})</small>
                             ${queue.calls_waiting > 0 ? `<span class="badge bg-danger ms-2">${queue.calls_waiting} waiting</span>` : ''}
                             <br>
                             <small>${statusBadge}</small>
