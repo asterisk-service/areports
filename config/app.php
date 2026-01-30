@@ -52,8 +52,9 @@ return [
 
     // Security settings
     'security' => [
+        'rate_limiting_enabled' => false, // disable login lockout by default
         'max_login_attempts' => 10,
-        'lockout_duration' => 60, // 1 minute
+        'lockout_duration' => 60, // seconds
         'password_min_length' => 8,
         'csrf_enabled' => true,
     ],

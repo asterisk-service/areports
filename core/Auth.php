@@ -287,6 +287,11 @@ class Auth
     private function isRateLimited(string $username): bool
     {
         $security = $this->getSecurityConfig();
+
+        if (empty($security['rate_limiting_enabled'])) {
+            return false;
+        }
+
         $maxAttempts = $security['max_login_attempts'] ?? 10;
         $lockoutDuration = $security['lockout_duration'] ?? 60;
 
