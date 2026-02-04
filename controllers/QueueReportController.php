@@ -37,24 +37,35 @@ class QueueReportController extends Controller
 
         $dateFrom = $this->get('date_from', date('Y-m-d'));
         $dateTo = $this->get('date_to', date('Y-m-d'));
-        $queueFilter = $this->get('queue');
+        // Support multi-queue filter (array from select multiple)
+        $queueFilter = $_GET['queue'] ?? null;
+        if (is_array($queueFilter)) {
+            $queueFilter = array_filter($queueFilter);
+            if (empty($queueFilter)) {
+                $queueFilter = null;
+            }
+        }
 
         $queues = $this->queueService->getQueueSummary($dateFrom, $dateTo, $queueFilter);
         $queueList = $this->queueService->getQueueList();
-        $hourly = $this->queueService->getQueueHourly(date('Y-m-d'), $queueFilter);
+        $firstQueue = is_array($queueFilter) ? ($queueFilter[0] ?? null) : $queueFilter;
+        $hourly = $this->queueService->getQueueHourly(date('Y-m-d'), $firstQueue);
 
         // Calculate totals
         $totals = [
             'total_calls' => 0,
             'answered' => 0,
             'abandoned' => 0,
-            'avg_wait' => 0
+            'avg_wait' => 0,
+            'agents_count' => 0
         ];
 
+        $allAgents = [];
         foreach ($queues as $queue) {
             $totals['total_calls'] += $queue['total_calls'];
             $totals['answered'] += $queue['answered'];
             $totals['abandoned'] += $queue['abandoned'];
+            $totals['agents_count'] += $queue['agents_count'];
         }
 
         $totals['answer_rate'] = $totals['total_calls'] > 0
@@ -65,7 +76,7 @@ class QueueReportController extends Controller
             : 0;
 
         $this->render('reports/queue/summary', [
-            'title' => 'Queue Summary',
+            'title' => 'Сводка по очередям',
             'currentPage' => 'reports.queue.summary',
             'queues' => $queues,
             'queueList' => $queueList,

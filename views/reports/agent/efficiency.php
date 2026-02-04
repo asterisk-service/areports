@@ -3,8 +3,8 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Agent Efficiency</h1>
-        <p class="text-muted mb-0">Performance breakdown by queue</p>
+        <h1 class="h3 mb-0">Эффективность операторов</h1>
+        <p class="text-muted mb-0">Разбивка по очередям</p>
     </div>
 </div>
 
@@ -13,17 +13,17 @@
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label">Date From</label>
+                <label class="form-label">Дата с</label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-3">
-                <label class="form-label">Date To</label>
+                <label class="form-label">Дата по</label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Agent</label>
+                <label class="form-label">Оператор</label>
                 <select class="form-select" name="agent">
-                    <option value="">All Agents</option>
+                    <option value="">Все операторы</option>
                     <?php foreach ($agentList as $agent): ?>
                     <option value="<?= $this->e($agent['agent']) ?>" <?= $agentFilter === $agent['agent'] ? 'selected' : '' ?>>
                         <?= $this->e($agent['display_name']) ?>
@@ -33,7 +33,7 @@
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Filter
+                    <i class="fas fa-search me-1"></i> Показать
                 </button>
             </div>
         </form>
@@ -48,8 +48,8 @@
             <strong><?= $this->e($data['agent']) ?></strong>
         </div>
         <div>
-            <span class="badge bg-primary me-2"><?= number_format($data['total_calls']) ?> calls</span>
-            <span class="badge bg-info"><?= $this->formatDuration($data['total_talk_time']) ?> talk time</span>
+            <span class="badge bg-primary me-2"><?= number_format($data['total_calls']) ?> звонков</span>
+            <span class="badge bg-info"><?= $this->formatDuration($data['total_talk_time']) ?> разговор</span>
         </div>
     </div>
     <div class="card-body">
@@ -57,11 +57,11 @@
             <table class="table table-sm mb-0">
                 <thead>
                     <tr>
-                        <th>Queue</th>
-                        <th class="text-center">Calls Handled</th>
-                        <th class="text-center">Talk Time</th>
-                        <th class="text-center">Avg Ring Time</th>
-                        <th>% of Total</th>
+                        <th>Очередь</th>
+                        <th class="text-center">Обработано</th>
+                        <th class="text-center">Время разговора</th>
+                        <th class="text-center">Ср. звонок</th>
+                        <th>% от общего</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,7 +70,7 @@
                         <td><?= $this->e($queue['display_name'] ?? $queue['queuename']) ?></td>
                         <td class="text-center"><?= number_format($queue['calls_handled']) ?></td>
                         <td class="text-center"><?= $this->formatDuration($queue['talk_time']) ?></td>
-                        <td class="text-center"><?= round($queue['avg_ring_time'] ?? 0) ?>s</td>
+                        <td class="text-center"><?= round($queue['avg_ring_time'] ?? 0) ?>с</td>
                         <td>
                             <?php $percent = $data['total_calls'] > 0 ? round(($queue['calls_handled'] / $data['total_calls']) * 100, 1) : 0; ?>
                             <div class="progress" style="height: 20px;">
@@ -91,7 +91,7 @@
 <?php if (empty($groupedData)): ?>
 <div class="card">
     <div class="card-body text-center text-muted py-4">
-        No data found for the selected period
+        Нет данных за выбранный период
     </div>
 </div>
 <?php endif; ?>

@@ -2,16 +2,16 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Alerts</h1>
-        <p class="text-muted mb-0">Configure and manage alerts</p>
+        <h1 class="h3 mb-0">Оповещения</h1>
+        <p class="text-muted mb-0">Настройка и управление оповещениями</p>
     </div>
     <div>
         <a href="/areports/alerts/history" class="btn btn-outline-secondary me-2">
-            <i class="fas fa-history me-1"></i> History
+            <i class="fas fa-history me-1"></i> История
         </a>
         <?php if ($this->can('alerts.manage')): ?>
         <a href="/areports/alerts/create" class="btn btn-primary">
-            <i class="fas fa-plus me-1"></i> Create Alert
+            <i class="fas fa-plus me-1"></i> Создать
         </a>
         <?php endif; ?>
     </div>
@@ -23,14 +23,14 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Metric</th>
-                        <th>Condition</th>
-                        <th>Channels</th>
-                        <th>Status</th>
-                        <th>Last Triggered</th>
-                        <th>Actions</th>
+                        <th>Название</th>
+                        <th>Тип</th>
+                        <th>Метрика</th>
+                        <th>Условие</th>
+                        <th>Каналы</th>
+                        <th>Статус</th>
+                        <th>Последнее срабатывание</th>
+                        <th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,17 +71,17 @@
                         </td>
                         <td>
                             <?php if ($alert['is_active']): ?>
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">Активно</span>
                             <?php else: ?>
-                            <span class="badge bg-secondary">Inactive</span>
+                            <span class="badge bg-secondary">Неактивно</span>
                             <?php endif; ?>
                         </td>
                         <td>
                             <?php if ($alert['last_triggered']): ?>
                             <?= date('d/m/Y H:i', strtotime($alert['last_triggered'])) ?>
-                            <br><small class="text-muted"><?= $alert['trigger_count'] ?> times</small>
+                            <br><small class="text-muted"><?= $alert['trigger_count'] ?> раз</small>
                             <?php else: ?>
-                            <span class="text-muted">Never</span>
+                            <span class="text-muted">Никогда</span>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -90,7 +90,7 @@
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form method="POST" action="/areports/alerts/<?= $alert['id'] ?>/delete" style="display:inline"
-                                  onsubmit="return confirm('Delete this alert?')">
+                                  onsubmit="return confirm('Удалить это оповещение?')">
                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -101,7 +101,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($alerts)): ?>
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-4">No alerts configured</td>
+                        <td colspan="8" class="text-center text-muted py-4">Оповещения не настроены</td>
                     </tr>
                     <?php endif; ?>
                 </tbody>

@@ -3,10 +3,10 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Abandonment Report</h1>
-        <p class="text-muted mb-0">Abandoned queue calls</p>
+        <h1 class="h3 mb-0">Потерянные звонки</h1>
+        <p class="text-muted mb-0">Звонки, сброшенные абонентами</p>
     </div>
-    <span class="badge bg-danger fs-6"><?= number_format($total) ?> abandoned calls</span>
+    <span class="badge bg-danger fs-6"><?= number_format($total) ?> потерянных</span>
 </div>
 
 <!-- Filters -->
@@ -14,17 +14,17 @@
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label">Date From</label>
+                <label class="form-label">Дата с</label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-3">
-                <label class="form-label">Date To</label>
+                <label class="form-label">Дата по</label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Queue</label>
+                <label class="form-label">Очередь</label>
                 <select class="form-select" name="queue">
-                    <option value="">All Queues</option>
+                    <option value="">Все очереди</option>
                     <?php foreach ($queueList as $queue): ?>
                     <option value="<?= $this->e($queue['name']) ?>" <?= $queueFilter === $queue['name'] ? 'selected' : '' ?>>
                         <?= $this->e($queue['display_name']) ?>
@@ -34,7 +34,7 @@
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Filter
+                    <i class="fas fa-search me-1"></i> Показать
                 </button>
             </div>
         </form>
@@ -48,12 +48,12 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Time</th>
-                        <th>Caller ID</th>
-                        <th>Queue</th>
-                        <th class="text-center">Wait Time</th>
-                        <th class="text-center">Position</th>
-                        <th>Call ID</th>
+                        <th>Время</th>
+                        <th>Номер звонящего</th>
+                        <th>Очередь</th>
+                        <th class="text-center">Ожидание</th>
+                        <th class="text-center">Позиция</th>
+                        <th>ID звонка</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,7 +61,7 @@
                     <tr>
                         <td><?= $this->formatDateTime($record['time']) ?></td>
                         <td>
-                            <strong><?= $this->e($record['caller_id'] ?: 'Unknown') ?></strong>
+                            <strong><?= $this->e($record['caller_id'] ?: 'Неизвестно') ?></strong>
                             <?php if (!empty($record['caller_name'])): ?>
                             <br><small class="text-muted"><?= $this->e($record['caller_name']) ?></small>
                             <?php endif; ?>
@@ -78,7 +78,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($records)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No abandoned calls found</td>
+                        <td colspan="6" class="text-center text-muted py-4">Потерянных звонков не найдено</td>
                     </tr>
                     <?php endif; ?>
                 </tbody>

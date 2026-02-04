@@ -23,14 +23,23 @@ class QueueService
     /**
      * Get queue summary statistics
      */
-    public function getQueueSummary(string $dateFrom, string $dateTo, ?string $queueFilter = null): array
+    /**
+     * @param string|array|null $queueFilter Single queue name, array of queue names, or null for all
+     */
+    public function getQueueSummary(string $dateFrom, string $dateTo, $queueFilter = null): array
     {
         $where = "DATE(time) BETWEEN ? AND ?";
         $params = [$dateFrom, $dateTo];
 
-        if ($queueFilter) {
-            $where .= " AND queuename = ?";
-            $params[] = $queueFilter;
+        if (!empty($queueFilter)) {
+            if (is_array($queueFilter)) {
+                $placeholders = implode(',', array_fill(0, count($queueFilter), '?'));
+                $where .= " AND queuename IN ({$placeholders})";
+                $params = array_merge($params, $queueFilter);
+            } else {
+                $where .= " AND queuename = ?";
+                $params[] = $queueFilter;
+            }
         }
 
         $sql = "SELECT
@@ -42,7 +51,8 @@ class QueueService
                     AVG(CASE WHEN event = 'CONNECT' THEN CAST(data1 AS UNSIGNED) END) as avg_wait_time,
                     AVG(CASE WHEN event IN ('COMPLETECALLER', 'COMPLETEAGENT') THEN CAST(data2 AS UNSIGNED) END) as avg_talk_time,
                     MAX(CASE WHEN event = 'CONNECT' THEN CAST(data1 AS UNSIGNED) END) as max_wait_time,
-                    MIN(CASE WHEN event = 'CONNECT' THEN CAST(data1 AS UNSIGNED) END) as min_wait_time
+                    MIN(CASE WHEN event = 'CONNECT' THEN CAST(data1 AS UNSIGNED) END) as min_wait_time,
+                    COUNT(DISTINCT CASE WHEN event IN ('CONNECT', 'COMPLETECALLER', 'COMPLETEAGENT') THEN agent END) as agents_count
                 FROM queuelog
                 WHERE {$where}
                 GROUP BY queuename
@@ -65,6 +75,7 @@ class QueueService
             $row['avg_talk_time'] = round($row['avg_talk_time'] ?? 0);
             $row['max_wait_time'] = (int) ($row['max_wait_time'] ?? 0);
             $row['min_wait_time'] = (int) ($row['min_wait_time'] ?? 0);
+            $row['agents_count'] = (int) ($row['agents_count'] ?? 0);
             $row['answer_rate'] = $row['total_calls'] > 0
                 ? round(($row['answered'] / $row['total_calls']) * 100, 1)
                 : 0;

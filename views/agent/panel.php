@@ -3,21 +3,21 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Agent Panel</h1>
-        <p class="text-muted mb-0">Extension: <strong><?= $this->e($extension) ?></strong></p>
+        <h1 class="h3 mb-0">Панель оператора</h1>
+        <p class="text-muted mb-0">Внутренний номер: <strong><?= $this->e($extension) ?></strong></p>
     </div>
     <div class="btn-group">
         <button type="button" class="btn btn-success" id="btn-login-all" title="Login to all queues">
-            <i class="fas fa-sign-in-alt me-1"></i> Login All
+            <i class="fas fa-sign-in-alt me-1"></i> Войти во все
         </button>
-        <button type="button" class="btn btn-danger" id="btn-logout-all" title="Logout from all queues">
-            <i class="fas fa-sign-out-alt me-1"></i> Logout All
+        <button type="button" class="btn btn-danger" id="btn-logout-all" title="Выйти из всех очередей">
+            <i class="fas fa-sign-out-alt me-1"></i> Выйти из всех
         </button>
-        <button type="button" class="btn btn-warning" id="btn-pause-all" data-bs-toggle="modal" data-bs-target="#pauseModal" data-queue="" title="Pause in all queues">
-            <i class="fas fa-pause me-1"></i> Pause All
+        <button type="button" class="btn btn-warning" id="btn-pause-all" data-bs-toggle="modal" data-bs-target="#pauseModal" data-queue="" title="Пауза во всех очередях">
+            <i class="fas fa-pause me-1"></i> Пауза все
         </button>
-        <button type="button" class="btn btn-info" id="btn-unpause-all" title="Unpause in all queues">
-            <i class="fas fa-play me-1"></i> Unpause All
+        <button type="button" class="btn btn-info" id="btn-unpause-all" title="Снять паузу во всех очередях">
+            <i class="fas fa-play me-1"></i> Снять паузу
         </button>
     </div>
 </div>
@@ -30,7 +30,7 @@
                 <div class="card bg-primary text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= number_format($todayStats['total_calls'] ?? 0) ?></h3>
-                        <small>Total Calls Today</small>
+                        <small>Звонков сегодня</small>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                 <div class="card bg-success text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= number_format($todayStats['answered'] ?? 0) ?></h3>
-                        <small>Answered</small>
+                        <small>Отвечено</small>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                 <div class="card bg-danger text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= number_format($todayStats['missed'] ?? 0) ?></h3>
-                        <small>Missed</small>
+                        <small>Пропущено</small>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                 <div class="card bg-info text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= $this->formatDuration($todayStats['talk_time'] ?? 0) ?></h3>
-                        <small>Talk Time</small>
+                        <small>Время разговора</small>
                     </div>
                 </div>
             </div>
@@ -63,9 +63,9 @@
         <!-- Recent Calls -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-phone-alt me-2"></i>Recent Calls</span>
+                <span><i class="fas fa-phone-alt me-2"></i>Последние звонки</span>
                 <a href="/areports/reports/cdr?extension=<?= urlencode($extension) ?>" class="btn btn-sm btn-outline-primary">
-                    View All
+                    Все звонки
                 </a>
             </div>
             <div class="card-body p-0">
@@ -73,18 +73,18 @@
                     <table class="table table-hover table-sm mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Time</th>
-                                <th>Direction</th>
-                                <th>Number</th>
-                                <th>Duration</th>
-                                <th>Status</th>
+                                <th>Время</th>
+                                <th>Направление</th>
+                                <th>Номер</th>
+                                <th>Длительность</th>
+                                <th>Статус</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($recentCalls)): ?>
                             <tr>
                                 <td colspan="5" class="text-center text-muted py-4">
-                                    No calls today
+                                    Нет звонков сегодня
                                 </td>
                             </tr>
                             <?php else: ?>
@@ -98,9 +98,9 @@
                                 <td><?= date('H:i:s', strtotime($call['calldate'])) ?></td>
                                 <td>
                                     <?php if ($direction === 'inbound'): ?>
-                                    <span class="badge bg-success"><i class="fas fa-arrow-down"></i> In</span>
+                                    <span class="badge bg-success"><i class="fas fa-arrow-down"></i> Вх</span>
                                     <?php else: ?>
-                                    <span class="badge bg-primary"><i class="fas fa-arrow-up"></i> Out</span>
+                                    <span class="badge bg-primary"><i class="fas fa-arrow-up"></i> Исх</span>
                                     <?php endif; ?>
                                 </td>
                                 <td><?= $this->e($otherParty) ?></td>
@@ -130,7 +130,7 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-headset me-2"></i>Queue Status</span>
+                <span><i class="fas fa-headset me-2"></i>Статус очередей</span>
                 <button class="btn btn-sm btn-outline-secondary" id="btn-refresh-status" title="Refresh">
                     <i class="fas fa-sync-alt"></i>
                 </button>
@@ -141,7 +141,7 @@
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
-                        <p class="mt-2 mb-0 text-muted">Loading queue status...</p>
+                        <p class="mt-2 mb-0 text-muted">Загрузка статуса очередей...</p>
                     </div>
                 </div>
             </div>
@@ -150,15 +150,15 @@
         <!-- Quick Actions -->
         <div class="card mt-3">
             <div class="card-header">
-                <i class="fas fa-bolt me-2"></i>Quick Actions
+                <i class="fas fa-bolt me-2"></i>Быстрые действия
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a href="/areports/reports/agent/my" class="btn btn-outline-primary">
-                        <i class="fas fa-chart-bar me-2"></i>My Performance Report
+                        <i class="fas fa-chart-bar me-2"></i>Мой отчёт
                     </a>
                     <a href="/areports/quality/recordings?extension=<?= urlencode($extension) ?>" class="btn btn-outline-secondary">
-                        <i class="fas fa-microphone me-2"></i>My Recordings
+                        <i class="fas fa-microphone me-2"></i>Мои записи
                     </a>
                 </div>
             </div>
@@ -171,7 +171,7 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Select Pause Reason</h5>
+                <h5 class="modal-title">Выберите причину паузы</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -213,14 +213,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 renderQueueStatus(data.queues);
             })
             .catch(error => {
-                statusContainer.innerHTML = `<div class="alert alert-danger m-3">Failed to load status</div>`;
+                statusContainer.innerHTML = `<div class="alert alert-danger m-3">Ошибка загрузки статуса</div>`;
             });
     }
 
     // Render queue status
     function renderQueueStatus(queues) {
         if (!queues || queues.length === 0) {
-            statusContainer.innerHTML = '<div class="text-center py-4 text-muted">No queues configured</div>';
+            statusContainer.innerHTML = '<div class="text-center py-4 text-muted">Очереди не настроены</div>';
             return;
         }
 
@@ -231,22 +231,22 @@ document.addEventListener('DOMContentLoaded', function() {
             let btnClass = '';
 
             if (!queue.in_queue) {
-                statusBadge = '<span class="badge bg-secondary">Logged Out</span>';
+                statusBadge = '<span class="badge bg-secondary">Не в очереди</span>';
                 statusIcon = 'fa-sign-out-alt text-secondary';
             } else if (queue.paused) {
-                statusBadge = `<span class="badge bg-warning">Paused</span>`;
+                statusBadge = `<span class="badge bg-warning">На паузе</span>`;
                 if (queue.paused_reason) {
                     statusBadge += ` <small class="text-muted">(${queue.paused_reason})</small>`;
                 }
                 statusIcon = 'fa-pause text-warning';
             } else if (queue.status === 'available') {
-                statusBadge = '<span class="badge bg-success">Available</span>';
+                statusBadge = '<span class="badge bg-success">Свободен</span>';
                 statusIcon = 'fa-check-circle text-success';
             } else if (queue.status === 'busy' || queue.status === 'ringing' || queue.status === 'ringinuse') {
-                statusBadge = '<span class="badge bg-danger">Busy</span>';
+                statusBadge = '<span class="badge bg-danger">Занят</span>';
                 statusIcon = 'fa-phone text-danger';
             } else {
-                statusBadge = '<span class="badge bg-info">Ready</span>';
+                statusBadge = '<span class="badge bg-info">Готов</span>';
                 statusIcon = 'fa-headset text-info';
             }
 
@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="fas ${statusIcon} me-2"></i>
                             <strong>${queue.display_name || queue.queue}</strong>
                             <small class="text-muted">(${queue.queue})</small>
-                            ${queue.calls_waiting > 0 ? `<span class="badge bg-danger ms-2">${queue.calls_waiting} waiting</span>` : ''}
+                            ${queue.calls_waiting > 0 ? `<span class="badge bg-danger ms-2">${queue.calls_waiting} в ожидании</span>` : ''}
                             <br>
                             <small>${statusBadge}</small>
                         </div>
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Logout all
     document.getElementById('btn-logout-all').addEventListener('click', function() {
-        if (!confirm('Are you sure you want to logout from all queues?')) return;
+        if (!confirm('Вы уверены, что хотите выйти из всех очередей?')) return;
         this.disabled = true;
         fetch('/areports/agent/logout-all', { method: 'POST' })
             .then(response => response.json())
