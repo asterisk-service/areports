@@ -164,9 +164,9 @@
 <!-- Page Header with Tabs -->
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="d-flex align-items-center">
-        <a href="/areports/dashboard" class="tab-link">Home</a>
-        <a href="/areports/realtime" class="tab-link active">Realtime</a>
-        <a href="/areports/wallboard" class="tab-link">Broadcast</a>
+        <a href="/areports/dashboard" class="tab-link">Главная</a>
+        <a href="/areports/realtime" class="tab-link active">Реальное время</a>
+        <a href="/areports/wallboard" class="tab-link">Табло</a>
     </div>
 </div>
 
@@ -174,56 +174,56 @@
 <div class="realtime-control-panel">
     <div class="control-group">
         <button type="button" class="btn btn-secondary btn-sm" id="btnReload">
-            <i class="fas fa-sync-alt me-1"></i> Reload
+            <i class="fas fa-sync-alt me-1"></i> Обновить
         </button>
 
         <div class="control-item">
-            <label>Update</label>
+            <label>Обновлено</label>
             <span class="update-time" id="updateTime">--:--:--</span>
-            <span id="connectionStatus" class="ms-1" title="Connection status">
+            <span id="connectionStatus" class="ms-1" title="Статус соединения">
                 <i class="fas fa-circle text-secondary" style="font-size: 8px;"></i>
             </span>
         </div>
 
         <div class="control-item">
-            <label>Reload</label>
+            <label>Интервал</label>
             <select id="refreshInterval" class="form-select form-select-sm">
-                <option value="5">5s</option>
-                <option value="10">10s</option>
-                <option value="30">30s</option>
-                <option value="60">60s</option>
-                <option value="0">Manual</option>
+                <option value="5">5с</option>
+                <option value="10">10с</option>
+                <option value="30">30с</option>
+                <option value="60">60с</option>
+                <option value="0">Вручную</option>
             </select>
         </div>
 
         <div class="control-item">
-            <label>Recap</label>
+            <label>Сводка</label>
             <select id="showRecap" class="form-select form-select-sm">
-                <option value="1">Show</option>
-                <option value="0">Hide</option>
+                <option value="1">Показать</option>
+                <option value="0">Скрыть</option>
             </select>
         </div>
 
         <div class="control-item">
-            <label>Calls</label>
+            <label>Звонки</label>
             <select id="showCalls" class="form-select form-select-sm">
-                <option value="1">Show</option>
-                <option value="0">Hide</option>
+                <option value="1">Показать</option>
+                <option value="0">Скрыть</option>
             </select>
         </div>
 
         <div class="control-item">
-            <label>Agents</label>
+            <label>Операторы</label>
             <select id="showAgents" class="form-select form-select-sm">
-                <option value="1">Show</option>
-                <option value="0">Hide</option>
+                <option value="1">Показать</option>
+                <option value="0">Скрыть</option>
             </select>
         </div>
 
         <div class="control-item">
-            <label>Queues</label>
+            <label>Очереди</label>
             <select id="filterQueues" class="form-select form-select-sm" style="min-width: 100px;">
-                <option value="">All</option>
+                <option value="">Все</option>
                 <?php foreach ($queues as $queue): ?>
                 <option value="<?= $this->e($queue['queue_number']) ?>"><?= $this->e($queue['display_name']) ?></option>
                 <?php endforeach; ?>
@@ -231,19 +231,19 @@
         </div>
 
         <div class="control-item">
-            <label>Agents</label>
+            <label>Операторы</label>
             <select id="filterAgents" class="form-select form-select-sm">
-                <option value="all">All</option>
-                <option value="members" selected>Members</option>
-                <option value="logged">Logged In</option>
-                <option value="paused">Paused</option>
-                <option value="available">Available</option>
+                <option value="all">Все</option>
+                <option value="members" selected>Участники</option>
+                <option value="logged">В системе</option>
+                <option value="paused">На паузе</option>
+                <option value="available">Свободные</option>
             </select>
         </div>
 
         <div class="control-item ms-auto">
-            <button type="button" class="btn btn-outline-primary btn-sm" id="btnAddMember" title="Add Member to Queue">
-                <i class="fas fa-user-plus me-1"></i> Add Member
+            <button type="button" class="btn btn-outline-primary btn-sm" id="btnAddMember" title="Добавить оператора в очередь">
+                <i class="fas fa-user-plus me-1"></i> Добавить
             </button>
         </div>
     </div>
@@ -251,7 +251,7 @@
 
 <!-- Queue List Display -->
 <div class="queue-list-display" id="queueListDisplay">
-    <strong>Queue(s):</strong> <span id="selectedQueues">Loading...</span>
+    <strong>Очереди:</strong> <span id="selectedQueues">Загрузка...</span>
 </div>
 
 <!-- Queue Summary Section -->
@@ -261,27 +261,27 @@
             <thead>
                 <tr>
                     <th style="width: 30px;"></th>
-                    <th>Queue</th>
-                    <th class="text-center">N. agents</th>
-                    <th class="text-center">Ready agents</th>
-                    <th class="text-center">On pause</th>
-                    <th class="text-center">Unk</th>
-                    <th class="text-center">Bsy</th>
-                    <th class="text-center">N. Calls waiting</th>
-                    <th class="text-center">On phone inbound</th>
-                    <th class="text-center">On phone outbound</th>
+                    <th>Очередь</th>
+                    <th class="text-center">Операторов</th>
+                    <th class="text-center">Свободных</th>
+                    <th class="text-center">На паузе</th>
+                    <th class="text-center">Недост.</th>
+                    <th class="text-center">Занят</th>
+                    <th class="text-center">Ожидают</th>
+                    <th class="text-center">Входящие</th>
+                    <th class="text-center">Исходящие</th>
                 </tr>
             </thead>
             <tbody id="queueSummaryBody">
                 <tr class="no-data-row">
-                    <td colspan="10">Loading queue data...</td>
+                    <td colspan="10">Загрузка данных очередей...</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <div class="export-buttons">
-        <span><i class="fas fa-caret-right"></i> Export as...</span>
+        <span><i class="fas fa-caret-right"></i> Экспорт...</span>
         <button type="button" class="btn btn-outline-success btn-sm" onclick="exportTable('queue', 'excel')">
             <i class="fas fa-file-excel"></i>
         </button>
@@ -296,32 +296,32 @@
 
 <!-- Calls Being Processed Section -->
 <div id="sectionCalls">
-    <div class="section-header">Calls being processed:</div>
+    <div class="section-header">Обрабатываемые звонки:</div>
     <div class="table-responsive">
         <table class="table table-bordered table-hover realtime-table mb-0" id="callsTable">
             <thead>
                 <tr>
-                    <th>Queue</th>
-                    <th>Caller</th>
-                    <th>Entered</th>
+                    <th>Очередь</th>
+                    <th>Звонящий</th>
+                    <th>Поступил</th>
                     <th>IVR</th>
-                    <th>Waiting</th>
-                    <th>Duration</th>
-                    <th>Agent</th>
+                    <th>Ожидание</th>
+                    <th>Длительность</th>
+                    <th>Оператор</th>
                     <th>MOH</th>
-                    <th>Srv</th>
+                    <th>Обсл.</th>
                 </tr>
             </thead>
             <tbody id="callsBody">
                 <tr class="no-data-row">
-                    <td colspan="9">No active calls</td>
+                    <td colspan="9">Нет активных звонков</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <div class="export-buttons">
-        <span><i class="fas fa-caret-right"></i> Export as...</span>
+        <span><i class="fas fa-caret-right"></i> Экспорт...</span>
         <button type="button" class="btn btn-outline-success btn-sm" onclick="exportTable('calls', 'excel')">
             <i class="fas fa-file-excel"></i>
         </button>
@@ -336,31 +336,31 @@
 
 <!-- Agents Currently Logged In Section -->
 <div id="sectionAgents">
-    <div class="section-header">Agents currently logged in:</div>
+    <div class="section-header">Операторы в системе:</div>
     <div class="table-responsive">
         <table class="table table-bordered table-hover realtime-table mb-0" id="agentsTable">
             <thead>
                 <tr>
-                    <th>Agent</th>
-                    <th>Last logon</th>
-                    <th>Queue(s):</th>
-                    <th>Extension</th>
-                    <th class="text-center">On pause</th>
-                    <th class="text-center">Srv</th>
-                    <th>Last call</th>
-                    <th>On queue</th>
+                    <th>Оператор</th>
+                    <th>Вход в систему</th>
+                    <th>Очереди</th>
+                    <th>Внутр. номер</th>
+                    <th class="text-center">Пауза</th>
+                    <th class="text-center">Обсл.</th>
+                    <th>Посл. звонок</th>
+                    <th>В очереди</th>
                 </tr>
             </thead>
             <tbody id="agentsBody">
                 <tr class="no-data-row">
-                    <td colspan="8">No agents logged in</td>
+                    <td colspan="8">Нет операторов в системе</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <div class="export-buttons">
-        <span><i class="fas fa-caret-right"></i> Export as...</span>
+        <span><i class="fas fa-caret-right"></i> Экспорт...</span>
         <button type="button" class="btn btn-outline-success btn-sm" onclick="exportTable('agents', 'excel')">
             <i class="fas fa-file-excel"></i>
         </button>
@@ -378,12 +378,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Member to Queue</h5>
+                <h5 class="modal-title">Добавить оператора в очередь</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label">Queue</label>
+                    <label class="form-label">Очередь</label>
                     <select id="addMemberQueue" class="form-select">
                         <?php foreach ($queues as $queue): ?>
                         <option value="<?= $this->e($queue['queue_number']) ?>"><?= $this->e($queue['display_name']) ?></option>
@@ -391,13 +391,13 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Agent Interface</label>
-                    <input type="text" id="addMemberInterface" class="form-control" placeholder="e.g., PJSIP/100">
+                    <label class="form-label">Интерфейс оператора</label>
+                    <input type="text" id="addMemberInterface" class="form-control" placeholder="напр., PJSIP/100">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="btnConfirmAddMember">Add Member</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmAddMember">Добавить</button>
             </div>
         </div>
     </div>
@@ -539,7 +539,7 @@ var RealtimePanel = {
 
         }).fail(function() {
             self.setConnectionStatus(false);
-            aReports.toast('Failed to load realtime data', 'error');
+            aReports.toast('Ошибка загрузки данных', 'error');
         }).always(function() {
             self.isLoading = false;
             $('#btnReload').prop('disabled', false).find('i').removeClass('fa-spin');
@@ -551,8 +551,8 @@ var RealtimePanel = {
         $tbody.empty();
 
         if (!queues || queues.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="10">No queue data available</td></tr>');
-            $('#selectedQueues').text('None');
+            $tbody.html('<tr class="no-data-row"><td colspan="10">Нет данных по очередям</td></tr>');
+            $('#selectedQueues').text('Нет');
             return;
         }
 
@@ -616,7 +616,7 @@ var RealtimePanel = {
             var $summaryRow = $('<tr class="summary-row">');
             $summaryRow.html(
                 '<td></td>' +
-                '<td>all selected</td>' +
+                '<td>Все выбранные</td>' +
                 '<td class="text-center">' + totals.agents + '</td>' +
                 '<td class="text-center ' + readyClass + '">' + totals.ready + '</td>' +
                 '<td class="text-center">' + totals.paused + '</td>' +
@@ -671,11 +671,10 @@ var RealtimePanel = {
         var $tbody = $('#callsBody');
         $tbody.empty();
 
-        // Also include queue callers (waiting calls)
         var activeCalls = calls || [];
 
         if (activeCalls.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="9">No active calls</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="9">Нет активных звонков</td></tr>');
             return;
         }
 
@@ -689,7 +688,7 @@ var RealtimePanel = {
                 '<td>' + this.formatDuration(call.wait || call.waiting || 0) + '</td>' +
                 '<td class="call-duration">' + this.formatDuration(call.duration || 0) + '</td>' +
                 '<td>' + this.escapeHtml(call.connected_to || call.agent || '-') + '</td>' +
-                '<td>' + (call.moh ? 'Yes' : '-') + '</td>' +
+                '<td>' + (call.moh ? 'Да' : '-') + '</td>' +
                 '<td>' + (call.srv || '-') + '</td>'
             );
             $tbody.append($row);
@@ -701,7 +700,7 @@ var RealtimePanel = {
         $tbody.empty();
 
         if (!agents || agents.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="8">No agents logged in</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="8">Нет операторов в системе</td></tr>');
             return;
         }
 
@@ -716,7 +715,7 @@ var RealtimePanel = {
         }
 
         if (filteredAgents.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="8">No agents match filter</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="8">Нет операторов по фильтру</td></tr>');
             return;
         }
 
@@ -725,7 +724,7 @@ var RealtimePanel = {
             var pauseClass = '';
 
             if (agent.paused) {
-                pauseStatus = agent.paused_reason || 'Paused';
+                pauseStatus = agent.paused_reason || 'На паузе';
                 pauseClass = 'highlight-zero';
             }
 
@@ -768,7 +767,7 @@ var RealtimePanel = {
         var iface = $('#addMemberInterface').val();
 
         if (!queue || !iface) {
-            aReports.toast('Please fill in all fields', 'warning');
+            aReports.toast('Заполните все поля', 'warning');
             return;
         }
 
@@ -782,16 +781,16 @@ var RealtimePanel = {
             },
             success: function(res) {
                 if (res.success) {
-                    aReports.toast('Member added successfully', 'success');
+                    aReports.toast('Оператор добавлен', 'success');
                     $('#addMemberModal').modal('hide');
                     $('#addMemberInterface').val('');
                     RealtimePanel.loadData();
                 } else {
-                    aReports.toast(res.message || 'Failed to add member', 'error');
+                    aReports.toast(res.message || 'Ошибка добавления', 'error');
                 }
             },
             error: function() {
-                aReports.toast('Failed to add member', 'error');
+                aReports.toast('Ошибка добавления оператора', 'error');
             }
         });
     },
@@ -826,14 +825,14 @@ var RealtimePanel = {
     },
 
     formatLastCall: function(timestamp) {
-        if (!timestamp || timestamp === 0) return 'Never';
+        if (!timestamp || timestamp === 0) return 'Нет';
         var now = Math.floor(Date.now() / 1000);
         var diff = now - timestamp;
 
-        if (diff < 60) return diff + 's ago';
-        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-        return Math.floor(diff / 86400) + 'd ago';
+        if (diff < 60) return diff + 'с назад';
+        if (diff < 3600) return Math.floor(diff / 60) + 'м назад';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'ч назад';
+        return Math.floor(diff / 86400) + 'д назад';
     }
 };
 
@@ -865,7 +864,7 @@ function exportTable(type, format) {
     if (format === 'clipboard') {
         var text = data.map(function(row) { return row.join('\t'); }).join('\n');
         navigator.clipboard.writeText(text).then(function() {
-            aReports.toast('Copied to clipboard', 'success');
+            aReports.toast('Скопировано в буфер', 'success');
         });
     } else if (format === 'csv') {
         var csv = data.map(function(row) {
@@ -882,7 +881,6 @@ function exportTable(type, format) {
         a.click();
         URL.revokeObjectURL(url);
     } else {
-        // For Excel, redirect to export endpoint
         window.location.href = '/areports/export/' + type + '?format=xlsx';
     }
 }
