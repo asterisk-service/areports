@@ -3,10 +3,10 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Потерянные звонки</h1>
-        <p class="text-muted mb-0">Звонки, сброшенные абонентами</p>
+        <h1 class="h3 mb-0"><?= $this->__('reports.abandoned_calls') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('reports.abandoned_subtitle') ?></p>
     </div>
-    <span class="badge bg-danger fs-6"><?= number_format($total) ?> потерянных</span>
+    <span class="badge bg-danger fs-6"><?= number_format($total) ?> <?= $this->__('reports.abandoned') ?></span>
 </div>
 
 <!-- Filters -->
@@ -14,17 +14,17 @@
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label">Дата с</label>
+                <label class="form-label"><?= $this->__('reports.date_from') ?></label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-3">
-                <label class="form-label">Дата по</label>
+                <label class="form-label"><?= $this->__('reports.date_to') ?></label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Очередь</label>
+                <label class="form-label"><?= $this->__('reports.queue') ?></label>
                 <select class="form-select" name="queue">
-                    <option value="">Все очереди</option>
+                    <option value=""><?= $this->__('reports.all_queues') ?></option>
                     <?php foreach ($queueList as $queue): ?>
                     <option value="<?= $this->e($queue['name']) ?>" <?= $queueFilter === $queue['name'] ? 'selected' : '' ?>>
                         <?= $this->e($queue['display_name']) ?>
@@ -34,7 +34,7 @@
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Показать
+                    <i class="fas fa-search me-1"></i> <?= $this->__('common.show') ?>
                 </button>
             </div>
         </form>
@@ -48,12 +48,12 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Время</th>
-                        <th>Номер звонящего</th>
-                        <th>Очередь</th>
-                        <th class="text-center">Ожидание</th>
-                        <th class="text-center">Позиция</th>
-                        <th>ID звонка</th>
+                        <th><?= $this->__('common.time') ?></th>
+                        <th><?= $this->__('reports.caller_number') ?></th>
+                        <th><?= $this->__('reports.queue') ?></th>
+                        <th class="text-center"><?= $this->__('reports.wait_time') ?></th>
+                        <th class="text-center"><?= $this->__('reports.position') ?></th>
+                        <th><?= $this->__('reports.unique_id') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,7 +61,7 @@
                     <tr>
                         <td><?= $this->formatDateTime($record['time']) ?></td>
                         <td>
-                            <strong><?= $this->e($record['caller_id'] ?: 'Неизвестно') ?></strong>
+                            <strong><?= $this->e($record['caller_id'] ?: $this->__('reports.unknown')) ?></strong>
                             <?php if (!empty($record['caller_name'])): ?>
                             <br><small class="text-muted"><?= $this->e($record['caller_name']) ?></small>
                             <?php endif; ?>
@@ -78,7 +78,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($records)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">Потерянных звонков не найдено</td>
+                        <td colspan="6" class="text-center text-muted py-4"><?= $this->__('reports.no_data_period') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>

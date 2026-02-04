@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Edit Pause Cause</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.edit_pause_cause') ?></h1>
         <p class="text-muted mb-0">Modify pause reason</p>
     </div>
     <a href="/areports/admin/pause-causes" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -50,9 +50,9 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i> Save Changes
+                            <i class="fas fa-save me-1"></i> <?= $this->__('common.save') ?>
                         </button>
-                        <a href="/areports/admin/pause-causes" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="/areports/admin/pause-causes" class="btn btn-outline-secondary"><?= $this->__('common.cancel') ?></a>
                     </div>
                 </form>
             </div>

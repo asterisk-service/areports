@@ -10,11 +10,11 @@ $stats = $stats ?? [];
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-0">Calibration Results</h1>
+            <h1 class="h3 mb-0"><?= $this->__('quality.results') ?></h1>
             <p class="text-muted mb-0"><?= htmlspecialchars($session['name']) ?></p>
         </div>
         <a href="/areports/calibration/<?= $session['id'] ?>" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to Session
+            <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?> to Session
         </a>
     </div>
 
@@ -23,7 +23,7 @@ $stats = $stats ?? [];
             <div class="card bg-primary text-white">
                 <div class="card-body text-center">
                     <h2 class="mb-0"><?= number_format($stats['avg_score'] ?? 0, 1) ?>%</h2>
-                    <small>Average Score</small>
+                    <small><?= $this->__('common.average') ?> <?= $this->__('quality.score') ?></small>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@ $stats = $stats ?? [];
             <div class="card bg-warning text-dark">
                 <div class="card-body text-center">
                     <h2 class="mb-0"><?= number_format($stats['variance'] ?? 0, 1) ?></h2>
-                    <small>Variance</small>
+                    <small><?= $this->__('quality.variance') ?></small>
                 </div>
             </div>
         </div>
@@ -73,8 +73,8 @@ $stats = $stats ?? [];
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Evaluator</th>
-                                    <th class="text-end">Score</th>
+                                    <th><?= $this->__('quality.evaluator') ?></th>
+                                    <th class="text-end"><?= $this->__('quality.score') ?></th>
                                     <th class="text-end">Deviation</th>
                                     <th>Submitted</th>
                                 </tr>
@@ -138,10 +138,10 @@ $stats = $stats ?? [];
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="/areports/calibration/<?= $session['id'] ?>/export?format=pdf" class="btn btn-outline-danger">
-                            <i class="fas fa-file-pdf me-2"></i>Export PDF
+                            <i class="fas fa-file-pdf me-2"></i><?= $this->__('common.export') ?> PDF
                         </a>
                         <a href="/areports/calibration/<?= $session['id'] ?>/export?format=excel" class="btn btn-outline-success">
-                            <i class="fas fa-file-excel me-2"></i>Export Excel
+                            <i class="fas fa-file-excel me-2"></i><?= $this->__('common.export') ?> Excel
                         </a>
                     </div>
                 </div>

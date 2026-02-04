@@ -17,7 +17,7 @@ $totalPages = $totalPages ?? 1;
         </div>
         <div class="btn-group">
             <a href="/areports/campaigns/<?= $campaign['id'] ?>" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back
+                <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
             </a>
             <?php if ($this->can('campaigns.manage')): ?>
             <a href="/areports/campaigns/<?= $campaign['id'] ?>/leads/import" class="btn btn-primary">
@@ -32,9 +32,9 @@ $totalPages = $totalPages ?? 1;
         <div class="card-body">
             <form method="GET" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Status</label>
+                    <label class="form-label"><?= $this->__('common.status') ?></label>
                     <select name="status" class="form-select">
-                        <option value="">All Statuses</option>
+                        <option value=""><?= $this->__('common.all') ?> Statuses</option>
                         <option value="new" <?= ($filters['status'] ?? '') === 'new' ? 'selected' : '' ?>>New</option>
                         <option value="contacted" <?= ($filters['status'] ?? '') === 'contacted' ? 'selected' : '' ?>>Contacted</option>
                         <option value="callback" <?= ($filters['status'] ?? '') === 'callback' ? 'selected' : '' ?>>Callback</option>
@@ -43,13 +43,13 @@ $totalPages = $totalPages ?? 1;
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Search</label>
+                    <label class="form-label"><?= $this->__('common.search') ?></label>
                     <input type="text" name="search" class="form-control" placeholder="Name or phone..."
                            value="<?= htmlspecialchars($filters['search'] ?? '') ?>">
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-outline-primary">
-                        <i class="fas fa-filter me-2"></i>Filter
+                        <i class="fas fa-filter me-2"></i><?= $this->__('common.filter') ?>
                     </button>
                 </div>
             </form>
@@ -69,13 +69,13 @@ $totalPages = $totalPages ?? 1;
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th><?= $this->__('common.name') ?></th>
                             <th>Phone</th>
-                            <th>Status</th>
+                            <th><?= $this->__('common.status') ?></th>
                             <th>Attempts</th>
                             <th>Last Contact</th>
                             <th>Disposition</th>
-                            <th>Actions</th>
+                            <th><?= $this->__('common.actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>

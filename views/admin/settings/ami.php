@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">AMI Settings</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.ami_settings') ?></h1>
         <p class="text-muted mb-0">Asterisk Manager Interface configuration</p>
     </div>
     <a href="/areports/admin/settings" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -20,12 +20,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-8">
-                            <label class="form-label">AMI Host</label>
+                            <label class="form-label"><?= $this->__('admin.ami_host') ?></label>
                             <input type="text" class="form-control" name="ami_host"
                                    value="<?= $this->e($settings['ami_host'] ?? '127.0.0.1') ?>" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">AMI Port</label>
+                            <label class="form-label"><?= $this->__('admin.ami_port') ?></label>
                             <input type="number" class="form-control" name="ami_port"
                                    value="<?= $this->e($settings['ami_port'] ?? '5038') ?>" required>
                         </div>
@@ -33,22 +33,22 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Username</label>
+                            <label class="form-label"><?= $this->__('admin.ami_username') ?></label>
                             <input type="text" class="form-control" name="ami_username"
                                    value="<?= $this->e($settings['ami_username'] ?? '') ?>" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Secret</label>
+                            <label class="form-label"><?= $this->__('admin.ami_password') ?></label>
                             <input type="password" class="form-control" name="ami_secret"
                                    placeholder="<?= !empty($settings['ami_secret']) ? '••••••••' : '' ?>">
-                            <div class="form-text">Leave blank to keep current secret</div>
+                            <div class="form-text"><?= $this->__('admin.password_help') ?></div>
                         </div>
                     </div>
 
                     <hr>
 
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> Save Settings
+                        <i class="fas fa-save me-1"></i> <?= $this->__('admin.save_settings') ?>
                     </button>
                 </form>
             </div>
@@ -57,11 +57,11 @@
 
     <div class="col-lg-4">
         <div class="card">
-            <div class="card-header">Connection Test</div>
+            <div class="card-header"><?= $this->__('admin.test_connection') ?></div>
             <div class="card-body">
                 <p class="text-muted">Test the AMI connection with current settings</p>
                 <button type="button" class="btn btn-success w-100" id="testBtn">
-                    <i class="fas fa-plug me-1"></i> Test Connection
+                    <i class="fas fa-plug me-1"></i> <?= $this->__('admin.test_connection') ?>
                 </button>
                 <div id="testResult" class="mt-3"></div>
             </div>

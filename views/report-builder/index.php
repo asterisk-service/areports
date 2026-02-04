@@ -9,7 +9,7 @@ $reports = $reports ?? [];
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Report Builder</h1>
         <a href="/areports/report-builder/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>New Report
+            <i class="fas fa-plus me-2"></i><?= $this->__('common.create') ?> Report
         </a>
     </div>
 
@@ -28,11 +28,11 @@ $reports = $reports ?? [];
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Report Name</th>
+                            <th>Report <?= $this->__('common.name') ?></th>
                             <th>Data Source</th>
                             <th>Created By</th>
                             <th>Last Run</th>
-                            <th>Actions</th>
+                            <th><?= $this->__('common.actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,10 +58,10 @@ $reports = $reports ?? [];
                                     <a href="/areports/report-builder/<?= $report['id'] ?>" class="btn btn-outline-primary" title="Run">
                                         <i class="fas fa-play"></i>
                                     </a>
-                                    <a href="/areports/report-builder/<?= $report['id'] ?>/edit" class="btn btn-outline-secondary" title="Edit">
+                                    <a href="/areports/report-builder/<?= $report['id'] ?>/edit" class="btn btn-outline-secondary" title="<?= $this->__('common.edit') ?>">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button type="button" class="btn btn-outline-danger" title="Delete"
+                                    <button type="button" class="btn btn-outline-danger" title="<?= $this->__('common.delete') ?>"
                                             onclick="deleteReport(<?= $report['id'] ?>, '<?= htmlspecialchars($report['name'], ENT_QUOTES) ?>')">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -88,9 +88,9 @@ $reports = $reports ?? [];
                 <p>Are you sure you want to delete "<strong id="deleteReportName"></strong>"?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= $this->__('common.cancel') ?></button>
                 <form id="deleteForm" method="POST" style="display: inline;">
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger"><?= $this->__('common.delete') ?></button>
                 </form>
             </div>
         </div>

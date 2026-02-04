@@ -14,11 +14,11 @@ $stats = $stats ?? [];
         </div>
         <div class="btn-group">
             <a href="/areports/campaigns" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back
+                <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
             </a>
             <?php if ($this->can('campaigns.manage')): ?>
             <a href="/areports/campaigns/<?= $campaign['id'] ?>/edit" class="btn btn-outline-primary">
-                <i class="fas fa-edit me-2"></i>Edit
+                <i class="fas fa-edit me-2"></i><?= $this->__('common.edit') ?>
             </a>
             <?php endif; ?>
         </div>
@@ -68,7 +68,7 @@ $stats = $stats ?? [];
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-sm-3">Status</dt>
+                        <dt class="col-sm-3"><?= $this->__('common.status') ?></dt>
                         <dd class="col-sm-9">
                             <?php
                             $statusColors = [
@@ -84,19 +84,19 @@ $stats = $stats ?? [];
                             </span>
                         </dd>
 
-                        <dt class="col-sm-3">Type</dt>
+                        <dt class="col-sm-3"><?= $this->__('common.type') ?></dt>
                         <dd class="col-sm-9"><?= ucfirst($campaign['type']) ?></dd>
 
-                        <dt class="col-sm-3">Queue</dt>
+                        <dt class="col-sm-3"><?= $this->__('realtime.queue') ?></dt>
                         <dd class="col-sm-9"><?= htmlspecialchars($campaign['queue_name'] ?? '-') ?></dd>
 
-                        <dt class="col-sm-3">Start Date</dt>
+                        <dt class="col-sm-3">Start <?= $this->__('common.date') ?></dt>
                         <dd class="col-sm-9"><?= $campaign['start_date'] ? date('d/m/Y', strtotime($campaign['start_date'])) : '-' ?></dd>
 
-                        <dt class="col-sm-3">End Date</dt>
+                        <dt class="col-sm-3">End <?= $this->__('common.date') ?></dt>
                         <dd class="col-sm-9"><?= $campaign['end_date'] ? date('d/m/Y', strtotime($campaign['end_date'])) : '-' ?></dd>
 
-                        <dt class="col-sm-3">Created</dt>
+                        <dt class="col-sm-3"><?= $this->__('admin.created_at') ?></dt>
                         <dd class="col-sm-9"><?= date('d/m/Y H:i', strtotime($campaign['created_at'])) ?></dd>
                     </dl>
                 </div>

@@ -3,12 +3,12 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Производительность операторов</h1>
-        <p class="text-muted mb-0">Метрики по операторам</p>
+        <h1 class="h3 mb-0"><?= $this->__('reports.agent_performance') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('reports.agent_performance_subtitle') ?></p>
     </div>
     <?php if ($this->can('reports.agent.export')): ?>
     <a href="/areports/reports/agent/export?date_from=<?= $this->e($dateFrom) ?>&date_to=<?= $this->e($dateTo) ?>&agent=<?= $this->e($agentFilter ?? '') ?>" class="btn btn-success">
-        <i class="fas fa-download me-1"></i> Экспорт CSV
+        <i class="fas fa-download me-1"></i> <?= $this->__('common.export_csv') ?>
     </a>
     <?php endif; ?>
 </div>
@@ -18,17 +18,17 @@
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label">Дата с</label>
+                <label class="form-label"><?= $this->__('reports.date_from') ?></label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-3">
-                <label class="form-label">Дата по</label>
+                <label class="form-label"><?= $this->__('reports.date_to') ?></label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Оператор</label>
+                <label class="form-label"><?= $this->__('reports.agent') ?></label>
                 <select class="form-select" name="agent">
-                    <option value="">Все операторы</option>
+                    <option value=""><?= $this->__('reports.all_agents') ?></option>
                     <?php foreach ($agentList as $agent): ?>
                     <option value="<?= $this->e($agent['agent']) ?>" <?= $agentFilter === $agent['agent'] ? 'selected' : '' ?>>
                         <?= $this->e($agent['display_name']) ?>
@@ -38,7 +38,7 @@
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Показать
+                    <i class="fas fa-search me-1"></i> <?= $this->__('common.show') ?>
                 </button>
             </div>
         </form>
@@ -50,7 +50,7 @@
     <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
-                <h6 class="card-title">Обработано звонков</h6>
+                <h6 class="card-title"><?= $this->__('reports.calls_handled') ?></h6>
                 <h2 class="mb-0"><?= number_format($totals['calls_handled']) ?></h2>
             </div>
         </div>
@@ -58,7 +58,7 @@
     <div class="col-md-3">
         <div class="card bg-warning text-dark">
             <div class="card-body">
-                <h6 class="card-title">Пропущено</h6>
+                <h6 class="card-title"><?= $this->__('reports.calls_missed') ?></h6>
                 <h2 class="mb-0"><?= number_format($totals['calls_missed']) ?></h2>
             </div>
         </div>
@@ -66,7 +66,7 @@
     <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
-                <h6 class="card-title">% ответа</h6>
+                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?></h6>
                 <h2 class="mb-0"><?= $totals['answer_rate'] ?>%</h2>
             </div>
         </div>
@@ -74,7 +74,7 @@
     <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body">
-                <h6 class="card-title">Общее время разговора</h6>
+                <h6 class="card-title"><?= $this->__('reports.total_talk_time') ?></h6>
                 <h2 class="mb-0"><?= $this->formatDuration($totals['total_talk_time']) ?></h2>
             </div>
         </div>
@@ -88,15 +88,15 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Оператор</th>
-                        <th class="text-center">Обработано</th>
-                        <th class="text-center">Пропущено</th>
-                        <th class="text-center">% ответа</th>
-                        <th class="text-center">Общ. разговор</th>
-                        <th class="text-center">Ср. разговор</th>
-                        <th class="text-center">Общ. ожидание</th>
-                        <th class="text-center">Ср. ожидание</th>
-                        <th>Действия</th>
+                        <th><?= $this->__('reports.agent') ?></th>
+                        <th class="text-center"><?= $this->__('reports.calls_handled') ?></th>
+                        <th class="text-center"><?= $this->__('reports.calls_missed') ?></th>
+                        <th class="text-center"><?= $this->__('reports.answer_rate') ?></th>
+                        <th class="text-center"><?= $this->__('reports.total_talk_time') ?></th>
+                        <th class="text-center"><?= $this->__('reports.avg_talk') ?></th>
+                        <th class="text-center"><?= $this->__('reports.total_hold_time') ?></th>
+                        <th class="text-center"><?= $this->__('reports.avg_hold') ?></th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,7 +126,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($agents)): ?>
                     <tr>
-                        <td colspan="9" class="text-center text-muted py-4">Нет данных за выбранный период</td>
+                        <td colspan="9" class="text-center text-muted py-4"><?= $this->__('reports.no_data_period') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>

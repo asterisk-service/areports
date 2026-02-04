@@ -6,9 +6,9 @@
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Create API Key</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.create_api_key') ?></h1>
         <a href="/areports/admin/api-keys" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back
+            <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
         </a>
     </div>
 
@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="d-flex justify-content-end gap-2">
-                            <a href="/areports/admin/api-keys" class="btn btn-secondary">Cancel</a>
+                            <a href="/areports/admin/api-keys" class="btn btn-secondary"><?= $this->__('common.cancel') ?></a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-key me-2"></i>Generate Key
                             </button>

@@ -11,7 +11,7 @@ $filters = $filters ?? [];
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Disposition Analysis</h1>
+        <h1 class="h3 mb-0"><?= $this->__('reports.disposition_analysis') ?></h1>
         <div class="btn-group">
             <a href="/areports/reports/disposition/export?<?= http_build_query($filters) ?>&format=csv" class="btn btn-outline-secondary">
                 <i class="fas fa-file-csv me-2"></i>CSV
@@ -30,17 +30,17 @@ $filters = $filters ?? [];
         <div class="card-body">
             <form method="GET" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Date From</label>
+                    <label class="form-label"><?= $this->__('reports.date_from') ?></label>
                     <input type="date" name="date_from" class="form-control" value="<?= $filters['date_from'] ?? date('Y-m-d') ?>">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Date To</label>
+                    <label class="form-label"><?= $this->__('reports.date_to') ?></label>
                     <input type="date" name="date_to" class="form-control" value="<?= $filters['date_to'] ?? date('Y-m-d') ?>">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Queue</label>
+                    <label class="form-label"><?= $this->__('reports.queue') ?></label>
                     <select name="queue" class="form-select">
-                        <option value="">All Queues</option>
+                        <option value=""><?= $this->__('reports.all_queues') ?></option>
                         <?php foreach ($queues as $queue): ?>
                         <option value="<?= $queue['queue_number'] ?>" <?= ($filters['queue'] ?? '') === $queue['queue_number'] ? 'selected' : '' ?>>
                             <?= htmlspecialchars($queue['display_name']) ?>
@@ -50,7 +50,7 @@ $filters = $filters ?? [];
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search me-2"></i>Apply
+                        <i class="fas fa-search me-2"></i><?= $this->__('common.apply') ?>
                     </button>
                 </div>
             </form>
@@ -62,7 +62,7 @@ $filters = $filters ?? [];
         <div class="col-lg-6 mb-4">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="mb-0">Disposition Summary</h5>
+                    <h5 class="mb-0"><?= $this->__('reports.disposition_summary') ?></h5>
                 </div>
                 <div class="card-body">
                     <canvas id="dispositionPieChart" height="300"></canvas>
@@ -74,17 +74,17 @@ $filters = $filters ?? [];
         <div class="col-lg-6 mb-4">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="mb-0">Disposition Breakdown</h5>
+                    <h5 class="mb-0"><?= $this->__('reports.disposition_breakdown') ?></h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-sm">
                             <thead>
                                 <tr>
-                                    <th>Disposition</th>
-                                    <th class="text-end">Calls</th>
+                                    <th><?= $this->__('reports.disposition') ?></th>
+                                    <th class="text-end"><?= $this->__('reports.calls') ?></th>
                                     <th class="text-end">%</th>
-                                    <th class="text-end">Avg Duration</th>
+                                    <th class="text-end"><?= $this->__('reports.avg_duration') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -118,7 +118,7 @@ $filters = $filters ?? [];
     <!-- Hourly Distribution -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">Hourly Disposition Distribution</h5>
+            <h5 class="mb-0"><?= $this->__('reports.hourly_disposition') ?></h5>
         </div>
         <div class="card-body">
             <canvas id="hourlyChart" height="100"></canvas>
@@ -128,20 +128,20 @@ $filters = $filters ?? [];
     <!-- Agent Breakdown -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Agent Disposition Breakdown</h5>
+            <h5 class="mb-0"><?= $this->__('reports.agent_disposition') ?></h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Agent</th>
-                            <th class="text-end">Total</th>
-                            <th class="text-end">ANSWERED</th>
-                            <th class="text-end">NO ANSWER</th>
-                            <th class="text-end">BUSY</th>
-                            <th class="text-end">FAILED</th>
-                            <th class="text-end">Answer Rate</th>
+                            <th><?= $this->__('reports.agent') ?></th>
+                            <th class="text-end"><?= $this->__('common.total') ?></th>
+                            <th class="text-end"><?= $this->__('reports.status_answered') ?></th>
+                            <th class="text-end"><?= $this->__('reports.status_no_answer') ?></th>
+                            <th class="text-end"><?= $this->__('reports.status_busy') ?></th>
+                            <th class="text-end"><?= $this->__('reports.status_failed') ?></th>
+                            <th class="text-end"><?= $this->__('reports.answer_rate') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -174,6 +174,13 @@ $filters = $filters ?? [];
 
 <script src="/areports/vendor/chartjs/chart.min.js"></script>
 <script>
+const __t = {
+    answered: '<?= $this->__('reports.status_answered') ?>',
+    no_answer: '<?= $this->__('reports.status_no_answer') ?>',
+    busy: '<?= $this->__('reports.status_busy') ?>',
+    failed: '<?= $this->__('reports.status_failed') ?>'
+};
+
 // Disposition Pie Chart
 const pieCtx = document.getElementById('dispositionPieChart').getContext('2d');
 new Chart(pieCtx, {
@@ -202,22 +209,22 @@ new Chart(hourlyCtx, {
         labels: hourlyData.map(d => d.hour + ':00'),
         datasets: [
             {
-                label: 'ANSWERED',
+                label: __t.answered,
                 data: hourlyData.map(d => d.ANSWERED),
                 backgroundColor: '#28a745',
             },
             {
-                label: 'NO ANSWER',
+                label: __t.no_answer,
                 data: hourlyData.map(d => d['NO ANSWER']),
                 backgroundColor: '#ffc107',
             },
             {
-                label: 'BUSY',
+                label: __t.busy,
                 data: hourlyData.map(d => d.BUSY),
                 backgroundColor: '#17a2b8',
             },
             {
-                label: 'FAILED',
+                label: __t.failed,
                 data: hourlyData.map(d => d.FAILED),
                 backgroundColor: '#dc3545',
             }

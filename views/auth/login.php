@@ -1,12 +1,12 @@
 <?php $this->section('content'); ?>
 
-<h4 class="mb-4 text-center">Sign In</h4>
+<h4 class="mb-4 text-center"><?= $this->__('auth.sign_in') ?></h4>
 
 <form method="POST" action="/areports/login">
     <?= $this->csrf() ?>
 
     <div class="mb-3">
-        <label for="username" class="form-label">Username or Email</label>
+        <label for="username" class="form-label"><?= $this->__('auth.username') ?></label>
         <div class="input-group">
             <span class="input-group-text"><i class="fas fa-user"></i></span>
             <input type="text"
@@ -21,7 +21,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
+        <label for="password" class="form-label"><?= $this->__('auth.password') ?></label>
         <div class="input-group">
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
             <input type="password"
@@ -38,17 +38,17 @@
 
     <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="remember" name="remember">
-        <label class="form-check-label" for="remember">Remember me</label>
+        <label class="form-check-label" for="remember"><?= $this->__('auth.remember_me') ?></label>
     </div>
 
     <div class="d-grid">
         <button type="submit" class="btn btn-primary">
-            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            <i class="fas fa-sign-in-alt me-2"></i><?= $this->__('auth.sign_in') ?>
         </button>
     </div>
 
     <div class="text-center mt-3">
-        <a href="/areports/forgot-password" class="text-muted small">Forgot password?</a>
+        <a href="/areports/forgot-password" class="text-muted small"><?= $this->__('auth.forgot_password') ?></a>
     </div>
 </form>
 

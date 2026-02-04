@@ -3,8 +3,8 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Call Recordings</h1>
-        <p class="text-muted mb-0">Listen to and evaluate recorded calls</p>
+        <h1 class="h3 mb-0"><?= $this->__('quality.recordings') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('quality.recordings_subtitle') ?></p>
     </div>
 </div>
 
@@ -13,21 +13,21 @@
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label">Date From</label>
+                <label class="form-label"><?= $this->__('common.date_from') ?></label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-3">
-                <label class="form-label">Date To</label>
+                <label class="form-label"><?= $this->__('common.date_to') ?></label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Search</label>
+                <label class="form-label"><?= $this->__('common.search') ?></label>
                 <input type="text" class="form-control" name="search" value="<?= $this->e($search ?? '') ?>"
                        placeholder="Phone number, extension...">
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Search
+                    <i class="fas fa-search me-1"></i> <?= $this->__('common.search') ?>
                 </button>
             </div>
         </form>
@@ -41,12 +41,12 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Date/Time</th>
+                        <th><?= $this->__('common.date') ?>/<?= $this->__('common.time') ?></th>
                         <th>Source</th>
                         <th>Destination</th>
                         <th class="text-center">Duration</th>
-                        <th class="text-center">Status</th>
-                        <th>Actions</th>
+                        <th class="text-center"><?= $this->__('common.status') ?></th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,7 +63,7 @@
                         <td class="text-center"><?= $this->formatDuration($recording['billsec']) ?></td>
                         <td class="text-center">
                             <?php if ($recording['has_evaluation']): ?>
-                            <span class="badge bg-success">Evaluated</span>
+                            <span class="badge bg-success"><?= $this->__('quality.evaluator') ?>d</span>
                             <?php else: ?>
                             <span class="badge bg-secondary">Not Evaluated</span>
                             <?php endif; ?>
@@ -73,20 +73,20 @@
                                 <!-- Audio Player -->
                                 <button type="button" class="btn btn-outline-primary play-btn"
                                         data-uniqueid="<?= $this->e($recording['uniqueid']) ?>"
-                                        title="Play">
+                                        title="<?= $this->__('quality.play') ?>">
                                     <i class="fas fa-play"></i>
                                 </button>
 
                                 <?php if ($this->can('quality.recordings.download')): ?>
                                 <a href="/areports/quality/recordings/<?= $this->e($recording['uniqueid']) ?>/download"
-                                   class="btn btn-outline-secondary" title="Download">
+                                   class="btn btn-outline-secondary" title="<?= $this->__('quality.download') ?>">
                                     <i class="fas fa-download"></i>
                                 </a>
                                 <?php endif; ?>
 
                                 <?php if ($this->can('quality.evaluations.create') && !$recording['has_evaluation']): ?>
                                 <a href="/areports/quality/evaluate/<?= $this->e($recording['uniqueid']) ?>"
-                                   class="btn btn-outline-success" title="Evaluate">
+                                   class="btn btn-outline-success" title="<?= $this->__('quality.evaluate') ?>">
                                     <i class="fas fa-star"></i>
                                 </a>
                                 <?php endif; ?>
@@ -96,7 +96,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($recordings)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No recordings found</td>
+                        <td colspan="6" class="text-center text-muted py-4"><?= $this->__('quality.no_recordings') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>
@@ -119,7 +119,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Play Recording</h5>
+                <h5 class="modal-title"><?= $this->__('quality.play') ?> Recording</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">

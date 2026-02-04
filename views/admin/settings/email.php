@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Email Settings</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.email_settings') ?></h1>
         <p class="text-muted mb-0">SMTP configuration for notifications</p>
     </div>
     <a href="/areports/admin/settings" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -22,12 +22,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-8">
-                            <label class="form-label">SMTP Host</label>
+                            <label class="form-label"><?= $this->__('admin.smtp_host') ?></label>
                             <input type="text" class="form-control" name="smtp_host"
                                    value="<?= $this->e($settings['smtp_host'] ?? 'localhost') ?>" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">SMTP Port</label>
+                            <label class="form-label"><?= $this->__('admin.smtp_port') ?></label>
                             <input type="number" class="form-control" name="smtp_port"
                                    value="<?= $this->e($settings['smtp_port'] ?? '25') ?>" required>
                         </div>
@@ -35,20 +35,20 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">SMTP Username</label>
+                            <label class="form-label"><?= $this->__('admin.smtp_user') ?></label>
                             <input type="text" class="form-control" name="smtp_username"
                                    value="<?= $this->e($settings['smtp_username'] ?? '') ?>">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">SMTP Password</label>
+                            <label class="form-label"><?= $this->__('admin.smtp_password') ?></label>
                             <input type="password" class="form-control" name="smtp_password"
                                    placeholder="<?= !empty($settings['smtp_password']) ? '••••••••' : '' ?>">
-                            <div class="form-text">Leave blank to keep current password</div>
+                            <div class="form-text"><?= $this->__('admin.password_help') ?></div>
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label">Encryption</label>
+                        <label class="form-label"><?= $this->__('admin.smtp_encryption') ?></label>
                         <select class="form-select" name="smtp_encryption">
                             <option value="none" <?= ($settings['smtp_encryption'] ?? '') === 'none' ? 'selected' : '' ?>>None</option>
                             <option value="tls" <?= ($settings['smtp_encryption'] ?? '') === 'tls' ? 'selected' : '' ?>>TLS</option>
@@ -61,12 +61,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">From Address</label>
+                            <label class="form-label"><?= $this->__('admin.mail_from') ?></label>
                             <input type="email" class="form-control" name="mail_from_address"
                                    value="<?= $this->e($settings['mail_from_address'] ?? 'noreply@example.com') ?>" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">From Name</label>
+                            <label class="form-label"><?= $this->__('admin.mail_from_name') ?></label>
                             <input type="text" class="form-control" name="mail_from_name"
                                    value="<?= $this->e($settings['mail_from_name'] ?? 'aReports') ?>" required>
                         </div>
@@ -75,7 +75,7 @@
                     <hr>
 
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> Save Settings
+                        <i class="fas fa-save me-1"></i> <?= $this->__('admin.save_settings') ?>
                     </button>
                 </form>
             </div>
@@ -84,15 +84,15 @@
 
     <div class="col-lg-4">
         <div class="card">
-            <div class="card-header">Test Email</div>
+            <div class="card-header"><?= $this->__('admin.test_email') ?></div>
             <div class="card-body">
                 <p class="text-muted">Send a test email to verify configuration</p>
                 <div class="mb-3">
-                    <label class="form-label">Test Address</label>
+                    <label class="form-label"><?= $this->__('admin.test_email_address') ?></label>
                     <input type="email" class="form-control" id="testEmail" placeholder="test@example.com">
                 </div>
                 <button type="button" class="btn btn-info w-100" id="testBtn">
-                    <i class="fas fa-paper-plane me-1"></i> Send Test
+                    <i class="fas fa-paper-plane me-1"></i> <?= $this->__('admin.send_test') ?>
                 </button>
                 <div id="testResult" class="mt-3"></div>
             </div>

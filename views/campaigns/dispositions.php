@@ -15,10 +15,10 @@ $filters = $filters ?? [];
         </div>
         <div class="btn-group">
             <a href="/areports/campaigns/<?= $campaign['id'] ?>" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back
+                <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
             </a>
             <a href="/areports/campaigns/<?= $campaign['id'] ?>/dispositions/export?format=csv" class="btn btn-outline-success">
-                <i class="fas fa-file-csv me-2"></i>Export
+                <i class="fas fa-file-csv me-2"></i><?= $this->__('common.export') ?>
             </a>
         </div>
     </div>
@@ -28,16 +28,16 @@ $filters = $filters ?? [];
         <div class="card-body">
             <form method="GET" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Date From</label>
+                    <label class="form-label"><?= $this->__('common.date_from') ?></label>
                     <input type="date" name="date_from" class="form-control" value="<?= $filters['date_from'] ?? '' ?>">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Date To</label>
+                    <label class="form-label"><?= $this->__('common.date_to') ?></label>
                     <input type="date" name="date_to" class="form-control" value="<?= $filters['date_to'] ?? '' ?>">
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search me-2"></i>Apply
+                        <i class="fas fa-search me-2"></i><?= $this->__('common.apply') ?>
                     </button>
                 </div>
             </form>

@@ -9,6 +9,7 @@ $app = App::getInstance();
 $router = $app->getRouter();
 
 // Public routes (no authentication required)
+$router->get('/language/{lang}', 'LanguageController@switch', 'language.switch');
 $router->get('/', 'AuthController@showLogin', 'home');
 $router->get('/login', 'AuthController@showLogin', 'login');
 $router->post('/login', 'AuthController@login', 'login.post');

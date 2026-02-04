@@ -2,14 +2,14 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Queue Settings</h1>
-        <p class="text-muted mb-0">Configure queue display and SLA thresholds</p>
+        <h1 class="h3 mb-0"><?= $this->__('admin.queues') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('admin.queues_subtitle') ?></p>
     </div>
     <?php if ($this->can('admin.queues.manage')): ?>
     <form action="/areports/admin/queues/sync" method="POST" class="d-inline">
         <?= $this->csrf() ?>
         <button type="submit" class="btn btn-success">
-            <i class="fas fa-sync me-1"></i> Sync Queues
+            <i class="fas fa-sync me-1"></i> <?= $this->__('common.sync_freepbx') ?>
         </button>
     </form>
     <?php endif; ?>
@@ -21,12 +21,12 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Queue</th>
-                        <th>Display Name</th>
-                        <th class="text-center">SLA Threshold</th>
+                        <th><?= $this->__('admin.queue_name') ?></th>
+                        <th><?= $this->__('admin.display_name') ?></th>
+                        <th class="text-center"><?= $this->__('admin.sla_threshold') ?></th>
                         <th class="text-center">SLA Warning</th>
                         <th class="text-center">Monitored</th>
-                        <th>Actions</th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -6,12 +6,12 @@
         <div class="wallboard-card">
             <div class="wallboard-card-header">
                 <span class="wallboard-card-title">Today's Statistics</span>
-                <span class="text-muted" id="last-update">Loading...</span>
+                <span class="text-muted" id="last-update"><?= $this->__('common.loading') ?></span>
             </div>
             <div class="stats-row">
                 <div class="stat-item">
                     <div class="stat-value" id="stat-total">--</div>
-                    <div class="stat-label">Total Calls</div>
+                    <div class="stat-label"><?= $this->__('common.total') ?> <?= $this->__('realtime.calls') ?></div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value good" id="stat-answered">--</div>
@@ -31,7 +31,7 @@
                 </div>
                 <div class="stat-item">
                     <div class="stat-value" id="stat-sla">--%</div>
-                    <div class="stat-label">SLA</div>
+                    <div class="stat-label"><?= $this->__('realtime.sla') ?></div>
                 </div>
             </div>
         </div>
@@ -43,13 +43,13 @@
     <div class="col-12">
         <div class="wallboard-card">
             <div class="wallboard-card-header">
-                <span class="wallboard-card-title">Queue Status</span>
+                <span class="wallboard-card-title"><?= $this->__('realtime.queue') ?> <?= $this->__('common.status') ?></span>
             </div>
             <div class="queue-grid" id="queue-grid">
                 <!-- Queues will be populated by JavaScript -->
                 <div class="text-center py-5">
                     <div class="loader-spinner mx-auto mb-3"></div>
-                    <p class="text-muted">Loading queue data...</p>
+                    <p class="text-muted"><?= $this->__('common.loading') ?></p>
                 </div>
             </div>
         </div>
@@ -61,11 +61,11 @@
     <div class="col-md-4">
         <div class="wallboard-card">
             <div class="wallboard-card-header">
-                <span class="wallboard-card-title">Agent Summary</span>
+                <span class="wallboard-card-title"><?= $this->__('realtime.agent') ?> <?= $this->__('realtime.summary') ?></span>
             </div>
             <div class="stats-row flex-column">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span>Available</span>
+                    <span><?= $this->__('realtime.available') ?></span>
                     <span class="badge bg-success fs-5" id="agents-available">0</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -73,7 +73,7 @@
                     <span class="badge bg-primary fs-5" id="agents-oncall">0</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span>Paused</span>
+                    <span><?= $this->__('realtime.paused') ?></span>
                     <span class="badge bg-warning fs-5" id="agents-paused">0</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
@@ -86,7 +86,7 @@
     <div class="col-md-8">
         <div class="wallboard-card">
             <div class="wallboard-card-header">
-                <span class="wallboard-card-title">Agents</span>
+                <span class="wallboard-card-title"><?= $this->__('realtime.agents') ?></span>
             </div>
             <div class="agent-grid" id="agent-grid">
                 <!-- Agents will be populated by JavaScript -->

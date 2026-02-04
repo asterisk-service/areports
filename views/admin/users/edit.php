@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Edit User</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.edit_user') ?></h1>
         <p class="text-muted mb-0">Modify user account</p>
     </div>
     <a href="/areports/admin/users" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -20,12 +20,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">First Name <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('admin.first_name') ?> <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="first_name" required
                                    value="<?= $this->e($user['first_name']) ?>">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('admin.last_name') ?> <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="last_name" required
                                    value="<?= $this->e($user['last_name']) ?>">
                         </div>
@@ -33,12 +33,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Username</label>
+                            <label class="form-label"><?= $this->__('admin.username') ?></label>
                             <input type="text" class="form-control" value="<?= $this->e($user['username']) ?>" disabled>
                             <div class="form-text">Username cannot be changed</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
+                            <label class="form-label"><?= $this->__('admin.email') ?></label>
                             <input type="email" class="form-control" name="email"
                                    value="<?= $this->e($user['email']) ?>">
                         </div>
@@ -46,12 +46,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">New Password</label>
+                            <label class="form-label"><?= $this->__('admin.password') ?></label>
                             <input type="password" class="form-control" name="password" minlength="8">
-                            <div class="form-text">Leave blank to keep current password</div>
+                            <div class="form-text"><?= $this->__('admin.password_help') ?></div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Confirm Password</label>
+                            <label class="form-label"><?= $this->__('admin.password_confirm') ?></label>
                             <input type="password" class="form-control" name="password_confirmation">
                         </div>
                     </div>
@@ -107,9 +107,9 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i> Save Changes
+                            <i class="fas fa-save me-1"></i> <?= $this->__('common.save') ?>
                         </button>
-                        <a href="/areports/admin/users" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="/areports/admin/users" class="btn btn-outline-secondary"><?= $this->__('common.cancel') ?></a>
                     </div>
                 </form>
             </div>
@@ -123,11 +123,11 @@
                 <p><strong>Created:</strong><br><?= $this->formatDateTime($user['created_at']) ?></p>
                 <p><strong>Last Updated:</strong><br><?= $this->formatDateTime($user['updated_at']) ?></p>
                 <p><strong>Last Login:</strong><br><?= $user['last_login'] ? $this->formatDateTime($user['last_login']) : 'Never' ?></p>
-                <p><strong>Status:</strong><br>
+                <p><strong><?= $this->__('common.status') ?>:</strong><br>
                     <?php if ($user['is_active']): ?>
-                    <span class="badge bg-success">Active</span>
+                    <span class="badge bg-success"><?= $this->__('common.active') ?></span>
                     <?php else: ?>
-                    <span class="badge bg-secondary">Inactive</span>
+                    <span class="badge bg-secondary"><?= $this->__('common.inactive') ?></span>
                     <?php endif; ?>
                 </p>
             </div>

@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Create User</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.create_user') ?></h1>
         <p class="text-muted mb-0">Add a new system user</p>
     </div>
     <a href="/areports/admin/users" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -20,12 +20,12 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">First Name <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('admin.first_name') ?> <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="first_name" required
                                    value="<?= $this->e($this->old('first_name')) ?>">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('admin.last_name') ?> <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="last_name" required
                                    value="<?= $this->e($this->old('last_name')) ?>">
                         </div>
@@ -33,13 +33,13 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Username <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('admin.username') ?> <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="username" required
                                    minlength="3" maxlength="50"
                                    value="<?= $this->e($this->old('username')) ?>">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
+                            <label class="form-label"><?= $this->__('admin.email') ?></label>
                             <input type="email" class="form-control" name="email"
                                    value="<?= $this->e($this->old('email')) ?>">
                         </div>
@@ -47,19 +47,19 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Password <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('admin.password') ?> <span class="text-danger">*</span></label>
                             <input type="password" class="form-control" name="password" required minlength="8">
                             <div class="form-text">Minimum 8 characters</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('admin.password_confirm') ?> <span class="text-danger">*</span></label>
                             <input type="password" class="form-control" name="password_confirmation" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Role <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('admin.role') ?> <span class="text-danger">*</span></label>
                             <select class="form-select" name="role_id" required id="role_id">
                                 <option value="">Select Role</option>
                                 <?php foreach ($roles as $role): ?>
@@ -68,7 +68,7 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Extension (FreePBX)</label>
+                            <label class="form-label"><?= $this->__('admin.extension') ?> (FreePBX)</label>
                             <select class="form-select" name="extension">
                                 <option value="">-- No Extension --</option>
                                 <?php foreach ($extensions as $ext): ?>
@@ -107,9 +107,9 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i> Create User
+                            <i class="fas fa-save me-1"></i> <?= $this->__('admin.create_user') ?>
                         </button>
-                        <a href="/areports/admin/users" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="/areports/admin/users" class="btn btn-outline-secondary"><?= $this->__('common.cancel') ?></a>
                     </div>
                 </form>
             </div>

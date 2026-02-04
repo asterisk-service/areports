@@ -1,0 +1,33 @@
+<?php
+return [
+    'recordings' => 'Call Recordings',
+    'recordings_subtitle' => 'Listen and manage call recordings',
+    'evaluations' => 'Evaluations',
+    'evaluations_subtitle' => 'Quality evaluation results',
+    'evaluate' => 'Evaluate',
+    'evaluate_call' => 'Evaluate Call',
+    'score' => 'Score',
+    'evaluator' => 'Evaluator',
+    'evaluated_at' => 'Evaluated At',
+    'comments' => 'Comments',
+    'play' => 'Play',
+    'download' => 'Download',
+    'no_recordings' => 'No recordings found',
+    'no_evaluations' => 'No evaluations found',
+    'call_info' => 'Call Information',
+    'criteria' => 'Criteria',
+    'submit_evaluation' => 'Submit Evaluation',
+    'evaluation_saved' => 'Evaluation saved',
+
+    // Calibration
+    'calibration' => 'Calibration Sessions',
+    'calibration_subtitle' => 'Quality evaluation calibration',
+    'create_session' => 'Create Session',
+    'session_name' => 'Session Name',
+    'participants' => 'Participants',
+    'start_session' => 'Start Session',
+    'complete_session' => 'Complete Session',
+    'results' => 'Results',
+    'variance' => 'Variance',
+    'agreement' => 'Agreement',
+];

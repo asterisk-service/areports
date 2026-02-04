@@ -19,12 +19,12 @@
         <header class="wallboard-header">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="mb-0">
-                    <i class="fas fa-chart-line me-2"></i>Call Center Wallboard
+                    <i class="fas fa-chart-line me-2"></i>Call Center <?= $this->__('menu.wallboard') ?>
                 </h1>
                 <div class="d-flex align-items-center">
                     <span class="wallboard-time me-4" id="current-time"></span>
                     <a href="/areports/dashboard" class="btn btn-outline-light btn-sm">
-                        <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                        <i class="fas fa-arrow-left me-1"></i><?= $this->__('common.back') ?> to <?= $this->__('menu.dashboard') ?>
                     </a>
                 </div>
             </div>

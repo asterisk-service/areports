@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Pause Causes</h1>
-        <p class="text-muted mb-0">Manage agent pause reasons</p>
+        <h1 class="h3 mb-0"><?= $this->__('admin.pause_causes') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('admin.pause_causes_subtitle') ?></p>
     </div>
     <a href="/areports/admin/pause-causes/create" class="btn btn-primary">
-        <i class="fas fa-plus me-1"></i> Add Cause
+        <i class="fas fa-plus me-1"></i> <?= $this->__('admin.create_pause_cause') ?>
     </a>
 </div>
 
@@ -25,11 +25,11 @@
                 <thead class="table-light">
                     <tr>
                         <th style="width: 40px;"></th>
-                        <th>Code</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-end">Actions</th>
+                        <th><?= $this->__('admin.pause_code') ?></th>
+                        <th><?= $this->__('admin.pause_name') ?></th>
+                        <th><?= $this->__('common.description') ?></th>
+                        <th class="text-center"><?= $this->__('common.status') ?></th>
+                        <th class="text-end"><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody id="sortable-causes">

@@ -8,9 +8,9 @@ $filters = $filters ?? [];
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Call Flow Analysis</h1>
+        <h1 class="h3 mb-0"><?= $this->__('reports.call_flow_analysis') ?></h1>
         <a href="/areports/reports/cdr" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to CDR
+            <i class="fas fa-arrow-left me-2"></i><?= $this->__('reports.back_to_cdr') ?>
         </a>
     </div>
 
@@ -19,16 +19,16 @@ $filters = $filters ?? [];
         <div class="card-body">
             <form method="GET" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Date From</label>
+                    <label class="form-label"><?= $this->__('reports.date_from') ?></label>
                     <input type="date" name="date_from" class="form-control" value="<?= $filters['date_from'] ?? date('Y-m-d') ?>">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Date To</label>
+                    <label class="form-label"><?= $this->__('reports.date_to') ?></label>
                     <input type="date" name="date_to" class="form-control" value="<?= $filters['date_to'] ?? date('Y-m-d') ?>">
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search me-2"></i>Analyze
+                        <i class="fas fa-search me-2"></i><?= $this->__('reports.analyze') ?>
                     </button>
                 </div>
             </form>
@@ -40,7 +40,7 @@ $filters = $filters ?? [];
         <div class="col-lg-8 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0">Hourly Call Distribution</h6>
+                    <h6 class="mb-0"><?= $this->__('reports.hourly_call_distribution') ?></h6>
                 </div>
                 <div class="card-body">
                     <canvas id="hourlyChart" height="150"></canvas>
@@ -52,7 +52,7 @@ $filters = $filters ?? [];
         <div class="col-lg-4 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0">Call Types</h6>
+                    <h6 class="mb-0"><?= $this->__('reports.call_types') ?></h6>
                 </div>
                 <div class="card-body">
                     <canvas id="typeChart" height="200"></canvas>
@@ -64,14 +64,14 @@ $filters = $filters ?? [];
     <!-- Flow Summary -->
     <div class="card mb-4">
         <div class="card-header">
-            <h6 class="mb-0">Call Flow Summary</h6>
+            <h6 class="mb-0"><?= $this->__('reports.call_flow_summary') ?></h6>
         </div>
         <div class="card-body">
             <div class="row text-center">
                 <div class="col">
                     <div class="p-3 bg-light rounded">
                         <h3 class="text-primary"><?= number_format($flowData['total_incoming'] ?? 0) ?></h3>
-                        <small class="text-muted">Incoming</small>
+                        <small class="text-muted"><?= $this->__('reports.incoming') ?></small>
                     </div>
                 </div>
                 <div class="col d-flex align-items-center justify-content-center">
@@ -80,7 +80,7 @@ $filters = $filters ?? [];
                 <div class="col">
                     <div class="p-3 bg-light rounded">
                         <h3 class="text-success"><?= number_format($flowData['answered'] ?? 0) ?></h3>
-                        <small class="text-muted">Answered</small>
+                        <small class="text-muted"><?= $this->__('reports.answered') ?></small>
                     </div>
                 </div>
                 <div class="col d-flex align-items-center justify-content-center">
@@ -89,7 +89,7 @@ $filters = $filters ?? [];
                 <div class="col">
                     <div class="p-3 bg-light rounded">
                         <h3 class="text-info"><?= number_format($flowData['transferred'] ?? 0) ?></h3>
-                        <small class="text-muted">Transferred</small>
+                        <small class="text-muted"><?= $this->__('reports.transferred') ?></small>
                     </div>
                 </div>
             </div>
@@ -99,24 +99,24 @@ $filters = $filters ?? [];
     <!-- Context Flow -->
     <div class="card">
         <div class="card-header">
-            <h6 class="mb-0">Context Flow</h6>
+            <h6 class="mb-0"><?= $this->__('reports.context_flow') ?></h6>
         </div>
         <div class="card-body">
             <?php if (empty($flowData['contexts'])): ?>
             <div class="text-center py-5">
                 <i class="fas fa-sitemap fa-3x text-muted mb-3"></i>
-                <p class="text-muted">No call flow data available</p>
+                <p class="text-muted"><?= $this->__('reports.no_flow_data') ?></p>
             </div>
             <?php else: ?>
             <div class="table-responsive">
                 <table class="table table-sm">
                     <thead>
                         <tr>
-                            <th>Context</th>
-                            <th class="text-end">Calls</th>
-                            <th class="text-end">Answered</th>
-                            <th class="text-end">Avg Duration</th>
-                            <th>Distribution</th>
+                            <th><?= $this->__('reports.context') ?></th>
+                            <th class="text-end"><?= $this->__('reports.calls') ?></th>
+                            <th class="text-end"><?= $this->__('reports.answered') ?></th>
+                            <th class="text-end"><?= $this->__('reports.avg_duration') ?></th>
+                            <th><?= $this->__('reports.distribution') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -145,6 +145,13 @@ $filters = $filters ?? [];
 
 <script src="/areports/vendor/chartjs/chart.min.js"></script>
 <script>
+const __t = {
+    calls: '<?= $this->__('reports.calls') ?>',
+    incoming: '<?= $this->__('reports.incoming') ?>',
+    outbound: '<?= $this->__('reports.outbound') ?>',
+    inbound: '<?= $this->__('reports.inbound') ?>'
+};
+
 // Hourly chart
 const hourlyData = <?= json_encode($flowData['hourly'] ?? []) ?>;
 if (hourlyData.length > 0) {
@@ -154,7 +161,7 @@ if (hourlyData.length > 0) {
         data: {
             labels: hourlyData.map(d => d.hour + ':00'),
             datasets: [{
-                label: 'Calls',
+                label: __t.calls,
                 data: hourlyData.map(d => d.count),
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',

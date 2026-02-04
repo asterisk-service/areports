@@ -2,8 +2,8 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">SLA Compliance</h1>
-        <p class="text-muted mb-0">Service Level Agreement performance</p>
+        <h1 class="h3 mb-0"><?= $this->__('reports.sla_compliance_title') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('reports.sla_compliance_subtitle') ?></p>
     </div>
 </div>
 
@@ -12,16 +12,16 @@
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-4">
-                <label class="form-label">Date From</label>
+                <label class="form-label"><?= $this->__('reports.date_from') ?></label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Date To</label>
+                <label class="form-label"><?= $this->__('reports.date_to') ?></label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Apply Filter
+                    <i class="fas fa-search me-1"></i> <?= $this->__('reports.apply_filter') ?>
                 </button>
             </div>
         </form>
@@ -34,7 +34,7 @@
         <div class="card bg-<?= $overallSla >= 80 ? 'success' : ($overallSla >= 60 ? 'warning' : 'danger') ?> text-white">
             <div class="card-body text-center">
                 <h2 class="display-4"><?= $overallSla ?>%</h2>
-                <p class="mb-0">Overall SLA</p>
+                <p class="mb-0"><?= $this->__('reports.overall_sla') ?></p>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
         <div class="card">
             <div class="card-body text-center">
                 <h2 class="display-4 text-success"><?= number_format($totalWithinSla) ?></h2>
-                <p class="mb-0">Within SLA</p>
+                <p class="mb-0"><?= $this->__('reports.within_sla') ?></p>
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@
         <div class="card">
             <div class="card-body text-center">
                 <h2 class="display-4"><?= number_format($totalAnswered) ?></h2>
-                <p class="mb-0">Total Answered</p>
+                <p class="mb-0"><?= $this->__('reports.total_answered') ?></p>
             </div>
         </div>
     </div>
@@ -59,27 +59,27 @@
 <!-- Queue SLA Table -->
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0">SLA by Queue</h5>
+        <h5 class="mb-0"><?= $this->__('reports.sla_by_queue') ?></h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Queue</th>
-                        <th class="text-center">Threshold</th>
-                        <th class="text-center">Answered</th>
-                        <th class="text-center">Within SLA</th>
-                        <th class="text-center">Outside SLA</th>
-                        <th class="text-center">SLA %</th>
-                        <th>Performance</th>
+                        <th><?= $this->__('reports.queue') ?></th>
+                        <th class="text-center"><?= $this->__('reports.threshold') ?></th>
+                        <th class="text-center"><?= $this->__('reports.answered') ?></th>
+                        <th class="text-center"><?= $this->__('reports.within_sla') ?></th>
+                        <th class="text-center"><?= $this->__('reports.outside_sla') ?></th>
+                        <th class="text-center"><?= $this->__('reports.sla_percentage') ?></th>
+                        <th><?= $this->__('reports.performance') ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($slaData as $queue): ?>
                     <tr>
                         <td><strong><?= $this->e($queue['display_name']) ?></strong></td>
-                        <td class="text-center"><?= $queue['sla_threshold'] ?>s</td>
+                        <td class="text-center"><?= $queue['sla_threshold'] ?><?= $this->__('reports.seconds') ?></td>
                         <td class="text-center"><?= number_format($queue['total_answered']) ?></td>
                         <td class="text-center text-success"><?= number_format($queue['within_sla']) ?></td>
                         <td class="text-center text-danger"><?= number_format($queue['outside_sla']) ?></td>
@@ -100,7 +100,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($slaData)): ?>
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">No SLA data found for the selected period</td>
+                        <td colspan="7" class="text-center text-muted py-4"><?= $this->__('reports.no_sla_data') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>
@@ -112,7 +112,7 @@
 <!-- Daily Trend Chart -->
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Daily SLA Trend</h5>
+        <h5 class="mb-0"><?= $this->__('reports.daily_sla_trend') ?></h5>
     </div>
     <div class="card-body">
         <canvas id="slaChart" height="300"></canvas>
@@ -122,6 +122,11 @@
 <?php $this->section('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+const __t = {
+    total_calls: '<?= $this->__('reports.total_calls') ?>',
+    answered: '<?= $this->__('reports.answered') ?>'
+};
+
 const dailyData = <?= json_encode($dailyTrend) ?>;
 
 const labels = dailyData.map(d => d.date);
@@ -133,13 +138,13 @@ new Chart(document.getElementById('slaChart'), {
     data: {
         labels: labels,
         datasets: [{
-            label: 'Total Calls',
+            label: __t.total_calls,
             data: totalData,
             borderColor: '#0d6efd',
             backgroundColor: 'rgba(13, 110, 253, 0.1)',
             fill: true
         }, {
-            label: 'Answered',
+            label: __t.answered,
             data: answeredData,
             borderColor: '#198754',
             backgroundColor: 'rgba(25, 135, 84, 0.1)',

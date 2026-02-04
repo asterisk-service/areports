@@ -3,21 +3,21 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Панель оператора</h1>
-        <p class="text-muted mb-0">Внутренний номер: <strong><?= $this->e($extension) ?></strong></p>
+        <h1 class="h3 mb-0"><?= $this->__('agent.title') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('agent.extension') ?>: <strong><?= $this->e($extension) ?></strong></p>
     </div>
     <div class="btn-group">
-        <button type="button" class="btn btn-success" id="btn-login-all" title="Login to all queues">
-            <i class="fas fa-sign-in-alt me-1"></i> Войти во все
+        <button type="button" class="btn btn-success" id="btn-login-all" title="<?= $this->__('agent.login_all') ?>">
+            <i class="fas fa-sign-in-alt me-1"></i> <?= $this->__('agent.login_all') ?>
         </button>
-        <button type="button" class="btn btn-danger" id="btn-logout-all" title="Выйти из всех очередей">
-            <i class="fas fa-sign-out-alt me-1"></i> Выйти из всех
+        <button type="button" class="btn btn-danger" id="btn-logout-all" title="<?= $this->__('agent.logout_all') ?>">
+            <i class="fas fa-sign-out-alt me-1"></i> <?= $this->__('agent.logout_all') ?>
         </button>
-        <button type="button" class="btn btn-warning" id="btn-pause-all" data-bs-toggle="modal" data-bs-target="#pauseModal" data-queue="" title="Пауза во всех очередях">
-            <i class="fas fa-pause me-1"></i> Пауза все
+        <button type="button" class="btn btn-warning" id="btn-pause-all" data-bs-toggle="modal" data-bs-target="#pauseModal" data-queue="" title="<?= $this->__('agent.pause_all') ?>">
+            <i class="fas fa-pause me-1"></i> <?= $this->__('agent.pause_all') ?>
         </button>
-        <button type="button" class="btn btn-info" id="btn-unpause-all" title="Снять паузу во всех очередях">
-            <i class="fas fa-play me-1"></i> Снять паузу
+        <button type="button" class="btn btn-info" id="btn-unpause-all" title="<?= $this->__('agent.unpause_all') ?>">
+            <i class="fas fa-play me-1"></i> <?= $this->__('agent.unpause_all') ?>
         </button>
     </div>
 </div>
@@ -30,7 +30,7 @@
                 <div class="card bg-primary text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= number_format($todayStats['total_calls'] ?? 0) ?></h3>
-                        <small>Звонков сегодня</small>
+                        <small><?= $this->__('agent.calls_today') ?></small>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                 <div class="card bg-success text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= number_format($todayStats['answered'] ?? 0) ?></h3>
-                        <small>Отвечено</small>
+                        <small><?= $this->__('agent.answered') ?></small>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                 <div class="card bg-danger text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= number_format($todayStats['missed'] ?? 0) ?></h3>
-                        <small>Пропущено</small>
+                        <small><?= $this->__('agent.missed') ?></small>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                 <div class="card bg-info text-white">
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= $this->formatDuration($todayStats['talk_time'] ?? 0) ?></h3>
-                        <small>Время разговора</small>
+                        <small><?= $this->__('agent.talk_time') ?></small>
                     </div>
                 </div>
             </div>
@@ -63,9 +63,9 @@
         <!-- Recent Calls -->
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-phone-alt me-2"></i>Последние звонки</span>
+                <span><i class="fas fa-phone-alt me-2"></i><?= $this->__('agent.recent_calls') ?></span>
                 <a href="/areports/reports/cdr?extension=<?= urlencode($extension) ?>" class="btn btn-sm btn-outline-primary">
-                    Все звонки
+                    <?= $this->__('agent.all_calls') ?>
                 </a>
             </div>
             <div class="card-body p-0">
@@ -73,18 +73,18 @@
                     <table class="table table-hover table-sm mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Время</th>
-                                <th>Направление</th>
-                                <th>Номер</th>
-                                <th>Длительность</th>
-                                <th>Статус</th>
+                                <th><?= $this->__('agent.time') ?></th>
+                                <th><?= $this->__('agent.direction') ?></th>
+                                <th><?= $this->__('agent.number') ?></th>
+                                <th><?= $this->__('agent.duration') ?></th>
+                                <th><?= $this->__('agent.status') ?></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($recentCalls)): ?>
                             <tr>
                                 <td colspan="5" class="text-center text-muted py-4">
-                                    Нет звонков сегодня
+                                    <?= $this->__('agent.no_calls_today') ?>
                                 </td>
                             </tr>
                             <?php else: ?>
@@ -98,9 +98,9 @@
                                 <td><?= date('H:i:s', strtotime($call['calldate'])) ?></td>
                                 <td>
                                     <?php if ($direction === 'inbound'): ?>
-                                    <span class="badge bg-success"><i class="fas fa-arrow-down"></i> Вх</span>
+                                    <span class="badge bg-success"><i class="fas fa-arrow-down"></i> <?= $this->__('agent.inbound') ?></span>
                                     <?php else: ?>
-                                    <span class="badge bg-primary"><i class="fas fa-arrow-up"></i> Исх</span>
+                                    <span class="badge bg-primary"><i class="fas fa-arrow-up"></i> <?= $this->__('agent.outbound') ?></span>
                                     <?php endif; ?>
                                 </td>
                                 <td><?= $this->e($otherParty) ?></td>
@@ -130,7 +130,7 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-headset me-2"></i>Статус очередей</span>
+                <span><i class="fas fa-headset me-2"></i><?= $this->__('agent.queue_status') ?></span>
                 <button class="btn btn-sm btn-outline-secondary" id="btn-refresh-status" title="Refresh">
                     <i class="fas fa-sync-alt"></i>
                 </button>
@@ -141,7 +141,7 @@
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
-                        <p class="mt-2 mb-0 text-muted">Загрузка статуса очередей...</p>
+                        <p class="mt-2 mb-0 text-muted"><?= $this->__('agent.loading_status') ?></p>
                     </div>
                 </div>
             </div>
@@ -150,15 +150,15 @@
         <!-- Quick Actions -->
         <div class="card mt-3">
             <div class="card-header">
-                <i class="fas fa-bolt me-2"></i>Быстрые действия
+                <i class="fas fa-bolt me-2"></i><?= $this->__('agent.quick_actions') ?>
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
                     <a href="/areports/reports/agent/my" class="btn btn-outline-primary">
-                        <i class="fas fa-chart-bar me-2"></i>Мой отчёт
+                        <i class="fas fa-chart-bar me-2"></i><?= $this->__('agent.my_report') ?>
                     </a>
                     <a href="/areports/quality/recordings?extension=<?= urlencode($extension) ?>" class="btn btn-outline-secondary">
-                        <i class="fas fa-microphone me-2"></i>Мои записи
+                        <i class="fas fa-microphone me-2"></i><?= $this->__('agent.my_recordings') ?>
                     </a>
                 </div>
             </div>
@@ -171,7 +171,7 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Выберите причину паузы</h5>
+                <h5 class="modal-title"><?= $this->__('agent.select_pause_reason') ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -197,6 +197,21 @@
 <?php $this->section('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Translation strings
+    const __t = {
+        not_in_queue: '<?= $this->__('agent.not_in_queue') ?>',
+        paused: '<?= $this->__('agent.paused') ?>',
+        available: '<?= $this->__('agent.available') ?>',
+        busy: '<?= $this->__('agent.busy') ?>',
+        ready: '<?= $this->__('agent.ready') ?>',
+        waiting: '<?= $this->__('agent.waiting') ?>',
+        queues_not_configured: '<?= $this->__('agent.queues_not_configured') ?>',
+        loading_status: '<?= $this->__('agent.loading_status') ?>',
+        error_loading: '<?= $this->__('agent.error_loading') ?>',
+        confirm_logout_all: '<?= $this->__('agent.confirm_logout_all') ?>',
+        action_failed: '<?= $this->__('agent.action_failed') ?>'
+    };
+
     const statusContainer = document.getElementById('queue-status-container');
     const pauseModal = new bootstrap.Modal(document.getElementById('pauseModal'));
     let refreshInterval;
@@ -213,14 +228,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 renderQueueStatus(data.queues);
             })
             .catch(error => {
-                statusContainer.innerHTML = `<div class="alert alert-danger m-3">Ошибка загрузки статуса</div>`;
+                statusContainer.innerHTML = `<div class="alert alert-danger m-3">${__t.error_loading}</div>`;
             });
     }
 
     // Render queue status
     function renderQueueStatus(queues) {
         if (!queues || queues.length === 0) {
-            statusContainer.innerHTML = '<div class="text-center py-4 text-muted">Очереди не настроены</div>';
+            statusContainer.innerHTML = `<div class="text-center py-4 text-muted">${__t.queues_not_configured}</div>`;
             return;
         }
 
@@ -231,22 +246,22 @@ document.addEventListener('DOMContentLoaded', function() {
             let btnClass = '';
 
             if (!queue.in_queue) {
-                statusBadge = '<span class="badge bg-secondary">Не в очереди</span>';
+                statusBadge = `<span class="badge bg-secondary">${__t.not_in_queue}</span>`;
                 statusIcon = 'fa-sign-out-alt text-secondary';
             } else if (queue.paused) {
-                statusBadge = `<span class="badge bg-warning">На паузе</span>`;
+                statusBadge = `<span class="badge bg-warning">${__t.paused}</span>`;
                 if (queue.paused_reason) {
                     statusBadge += ` <small class="text-muted">(${queue.paused_reason})</small>`;
                 }
                 statusIcon = 'fa-pause text-warning';
             } else if (queue.status === 'available') {
-                statusBadge = '<span class="badge bg-success">Свободен</span>';
+                statusBadge = `<span class="badge bg-success">${__t.available}</span>`;
                 statusIcon = 'fa-check-circle text-success';
             } else if (queue.status === 'busy' || queue.status === 'ringing' || queue.status === 'ringinuse') {
-                statusBadge = '<span class="badge bg-danger">Занят</span>';
+                statusBadge = `<span class="badge bg-danger">${__t.busy}</span>`;
                 statusIcon = 'fa-phone text-danger';
             } else {
-                statusBadge = '<span class="badge bg-info">Готов</span>';
+                statusBadge = `<span class="badge bg-info">${__t.ready}</span>`;
                 statusIcon = 'fa-headset text-info';
             }
 
@@ -257,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="fas ${statusIcon} me-2"></i>
                             <strong>${queue.display_name || queue.queue}</strong>
                             <small class="text-muted">(${queue.queue})</small>
-                            ${queue.calls_waiting > 0 ? `<span class="badge bg-danger ms-2">${queue.calls_waiting} в ожидании</span>` : ''}
+                            ${queue.calls_waiting > 0 ? `<span class="badge bg-danger ms-2">${queue.calls_waiting} ${__t.waiting}</span>` : ''}
                             <br>
                             <small>${statusBadge}</small>
                         </div>
@@ -330,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadQueueStatus();
             }
         })
-        .catch(() => toastr.error('Action failed'));
+        .catch(() => toastr.error(__t.action_failed));
     }
 
     // Pause reason selection
@@ -361,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Logout all
     document.getElementById('btn-logout-all').addEventListener('click', function() {
-        if (!confirm('Вы уверены, что хотите выйти из всех очередей?')) return;
+        if (!confirm(__t.confirm_logout_all)) return;
         this.disabled = true;
         fetch('/areports/agent/logout-all', { method: 'POST' })
             .then(response => response.json())

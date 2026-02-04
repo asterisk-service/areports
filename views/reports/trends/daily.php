@@ -2,11 +2,11 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Daily Trends</h1>
-        <p class="text-muted mb-0">Call volume and metrics over time</p>
+        <h1 class="h3 mb-0"><?= $this->__('reports.daily_trends') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('reports.daily_trends_desc') ?></p>
     </div>
     <a href="/areports/reports/trends" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back to Trends
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('reports.back_to_trends') ?>
     </a>
 </div>
 
@@ -15,16 +15,16 @@
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-4">
-                <label class="form-label">Date From</label>
+                <label class="form-label"><?= $this->__('reports.date_from') ?></label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Date To</label>
+                <label class="form-label"><?= $this->__('reports.date_to') ?></label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Apply Filter
+                    <i class="fas fa-search me-1"></i> <?= $this->__('reports.apply_filter') ?>
                 </button>
             </div>
         </form>
@@ -36,7 +36,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Daily Call Volume</h5>
+                <h5 class="mb-0"><?= $this->__('reports.daily_call_volume') ?></h5>
             </div>
             <div class="card-body">
                 <canvas id="dailyChart" height="300"></canvas>
@@ -49,7 +49,7 @@
     <div class="col-md-6">
         <div class="card h-100">
             <div class="card-header">
-                <h5 class="mb-0">CDR Trends</h5>
+                <h5 class="mb-0"><?= $this->__('reports.cdr_trends') ?></h5>
             </div>
             <div class="card-body">
                 <canvas id="cdrChart" height="250"></canvas>
@@ -59,7 +59,7 @@
     <div class="col-md-6">
         <div class="card h-100">
             <div class="card-header">
-                <h5 class="mb-0">Queue Trends</h5>
+                <h5 class="mb-0"><?= $this->__('reports.queue_trends') ?></h5>
             </div>
             <div class="card-body">
                 <canvas id="queueChart" height="250"></canvas>
@@ -71,19 +71,19 @@
 <!-- Data Table -->
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Daily Data</h5>
+        <h5 class="mb-0"><?= $this->__('reports.daily_data') ?></h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-sm table-hover">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th class="text-center">Total Calls</th>
-                        <th class="text-center">Answered</th>
-                        <th class="text-center">Missed</th>
-                        <th class="text-center">Answer Rate</th>
-                        <th class="text-center">Avg Duration</th>
+                        <th><?= $this->__('common.date') ?></th>
+                        <th class="text-center"><?= $this->__('reports.total_calls') ?></th>
+                        <th class="text-center"><?= $this->__('reports.answered') ?></th>
+                        <th class="text-center"><?= $this->__('reports.missed') ?></th>
+                        <th class="text-center"><?= $this->__('reports.answer_rate') ?></th>
+                        <th class="text-center"><?= $this->__('reports.avg_duration') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,7 +106,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($dailyData)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No data for selected period</td>
+                        <td colspan="6" class="text-center text-muted py-4"><?= $this->__('reports.no_data_period') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>
@@ -118,6 +118,13 @@
 <?php $this->section('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+const __t = {
+    total_calls: '<?= $this->__('reports.total_calls') ?>',
+    answered: '<?= $this->__('reports.answered') ?>',
+    not_answered: '<?= $this->__('reports.not_answered') ?>',
+    abandoned: '<?= $this->__('reports.abandoned') ?>'
+};
+
 const dailyData = <?= json_encode($dailyData) ?>;
 const queueDaily = <?= json_encode($queueDaily) ?>;
 
@@ -130,14 +137,14 @@ new Chart(document.getElementById('dailyChart'), {
     data: {
         labels: labels,
         datasets: [{
-            label: 'Total Calls',
+            label: __t.total_calls,
             data: dailyData.map(d => parseInt(d.total || 0)),
             borderColor: '#0d6efd',
             backgroundColor: 'rgba(13, 110, 253, 0.1)',
             fill: true,
             tension: 0.3
         }, {
-            label: 'Answered',
+            label: __t.answered,
             data: dailyData.map(d => parseInt(d.answered || 0)),
             borderColor: '#198754',
             backgroundColor: 'rgba(25, 135, 84, 0.1)',
@@ -163,11 +170,11 @@ new Chart(document.getElementById('cdrChart'), {
     data: {
         labels: labels,
         datasets: [{
-            label: 'Answered',
+            label: __t.answered,
             data: dailyData.map(d => parseInt(d.answered || 0)),
             backgroundColor: '#198754'
         }, {
-            label: 'Not Answered',
+            label: __t.not_answered,
             data: dailyData.map(d => parseInt(d.no_answer || 0)),
             backgroundColor: '#dc3545'
         }]
@@ -192,11 +199,11 @@ new Chart(document.getElementById('queueChart'), {
     data: {
         labels: queueLabels,
         datasets: [{
-            label: 'Answered',
+            label: __t.answered,
             data: queueDaily.map(d => parseInt(d.answered || 0)),
             backgroundColor: '#198754'
         }, {
-            label: 'Abandoned',
+            label: __t.abandoned,
             data: queueDaily.map(d => parseInt(d.abandoned || 0)),
             backgroundColor: '#ffc107'
         }]

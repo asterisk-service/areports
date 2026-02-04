@@ -26,8 +26,17 @@ class View
             'auth' => $app->getAuth(),
             'session' => $app->getSession(),
             'user' => $app->getAuth()->user(),
-            'csrfToken' => $app->getSession()->getCsrfToken()
+            'csrfToken' => $app->getSession()->getCsrfToken(),
+            'currentLocale' => $app->getLang()->getLocale(),
         ];
+    }
+
+    /**
+     * Translation helper
+     */
+    public function __($key, array $replace = []): string
+    {
+        return Lang::getInstance()->get($key, $replace);
     }
 
     /**

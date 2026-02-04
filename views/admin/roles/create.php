@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Create Role</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.create_role') ?></h1>
         <p class="text-muted mb-0">Add a new user role</p>
     </div>
     <a href="/areports/admin/roles" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -20,7 +20,7 @@
                 <div class="card-header">Role Details</div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <label class="form-label"><?= $this->__('admin.role_name') ?> <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="name" required
                                maxlength="50" pattern="[a-z_]+"
                                value="<?= $this->e($this->old('name')) ?>"
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Display Name <span class="text-danger">*</span></label>
+                        <label class="form-label"><?= $this->__('admin.display_name') ?> <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="display_name" required
                                maxlength="100"
                                value="<?= $this->e($this->old('display_name')) ?>"
@@ -37,7 +37,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Description</label>
+                        <label class="form-label"><?= $this->__('common.description') ?></label>
                         <textarea class="form-control" name="description" rows="3"
                                   placeholder="Role description"><?= $this->e($this->old('description')) ?></textarea>
                     </div>
@@ -49,9 +49,9 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <span>Permissions</span>
+                        <span><?= $this->__('admin.permissions') ?></span>
                         <div>
-                            <button type="button" class="btn btn-sm btn-outline-primary" id="select-all">Select All</button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="select-all"><?= $this->__('common.select_all') ?></button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect-all">Deselect All</button>
                         </div>
                     </div>
@@ -88,9 +88,9 @@
 
     <div class="mt-3">
         <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save me-1"></i> Create Role
+            <i class="fas fa-save me-1"></i> <?= $this->__('admin.create_role') ?>
         </button>
-        <a href="/areports/admin/roles" class="btn btn-outline-secondary">Cancel</a>
+        <a href="/areports/admin/roles" class="btn btn-outline-secondary"><?= $this->__('common.cancel') ?></a>
     </div>
 </form>
 

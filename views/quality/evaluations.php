@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Call Evaluations</h1>
-        <p class="text-muted mb-0">Quality assurance scores</p>
+        <h1 class="h3 mb-0"><?= $this->__('quality.evaluations') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('quality.evaluations_subtitle') ?></p>
     </div>
     <div class="text-end">
-        <span class="h4 mb-0">Avg Score: <span class="text-<?= $avgScore >= 80 ? 'success' : ($avgScore >= 60 ? 'warning' : 'danger') ?>"><?= $avgScore ?>%</span></span>
+        <span class="h4 mb-0"><?= $this->__('common.average') ?> <?= $this->__('quality.score') ?>: <span class="text-<?= $avgScore >= 80 ? 'success' : ($avgScore >= 60 ? 'warning' : 'danger') ?>"><?= $avgScore ?>%</span></span>
     </div>
 </div>
 
@@ -16,16 +16,16 @@
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-4">
-                <label class="form-label">Date From</label>
+                <label class="form-label"><?= $this->__('common.date_from') ?></label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Date To</label>
+                <label class="form-label"><?= $this->__('common.date_to') ?></label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search me-1"></i> Filter
+                    <i class="fas fa-search me-1"></i> <?= $this->__('common.filter') ?>
                 </button>
             </div>
         </form>
@@ -39,12 +39,12 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Date</th>
+                        <th><?= $this->__('common.date') ?></th>
                         <th>Call ID</th>
-                        <th>Evaluator</th>
+                        <th><?= $this->__('quality.evaluator') ?></th>
                         <th>Form</th>
-                        <th class="text-center">Score</th>
-                        <th>Comments</th>
+                        <th class="text-center"><?= $this->__('quality.score') ?></th>
+                        <th><?= $this->__('quality.comments') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,7 +73,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($evaluations)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No evaluations found</td>
+                        <td colspan="6" class="text-center text-muted py-4"><?= $this->__('quality.no_evaluations') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>

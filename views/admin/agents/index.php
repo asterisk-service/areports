@@ -2,14 +2,14 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Agent Settings</h1>
-        <p class="text-muted mb-0">Configure agent display names and settings</p>
+        <h1 class="h3 mb-0"><?= $this->__('admin.agents_title') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('admin.agents_subtitle') ?></p>
     </div>
     <?php if ($this->can('admin.agents.manage')): ?>
     <form action="/areports/admin/agents/sync" method="POST" class="d-inline">
         <?= $this->csrf() ?>
         <button type="submit" class="btn btn-success">
-            <i class="fas fa-sync me-1"></i> Sync Agents
+            <i class="fas fa-sync me-1"></i> <?= $this->__('common.sync_freepbx') ?>
         </button>
     </form>
     <?php endif; ?>
@@ -22,10 +22,10 @@
                 <thead>
                     <tr>
                         <th>Agent ID</th>
-                        <th>Display Name</th>
+                        <th><?= $this->__('admin.display_name') ?></th>
                         <th>Team</th>
                         <th class="text-center">Wrap-up Time</th>
-                        <th>Actions</th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Create Pause Cause</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.create_pause_cause') ?></h1>
         <p class="text-muted mb-0">Add a new agent pause reason</p>
     </div>
     <a href="/areports/admin/pause-causes" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -19,7 +19,7 @@
                     <?= $this->csrf() ?>
 
                     <div class="mb-3">
-                        <label class="form-label">Code <span class="text-danger">*</span></label>
+                        <label class="form-label"><?= $this->__('admin.pause_code') ?> <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="code" required
                                maxlength="20" pattern="[a-zA-Z0-9_]+"
                                value="<?= $this->e($this->old('code')) ?>"
@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Name <span class="text-danger">*</span></label>
+                        <label class="form-label"><?= $this->__('admin.pause_name') ?> <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="name" required
                                maxlength="100"
                                value="<?= $this->e($this->old('name')) ?>"
@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Description</label>
+                        <label class="form-label"><?= $this->__('common.description') ?></label>
                         <textarea class="form-control" name="description" rows="2"
                                   placeholder="Optional description"><?= $this->e($this->old('description')) ?></textarea>
                     </div>
@@ -52,9 +52,9 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i> Create
+                            <i class="fas fa-save me-1"></i> <?= $this->__('common.create') ?>
                         </button>
-                        <a href="/areports/admin/pause-causes" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="/areports/admin/pause-causes" class="btn btn-outline-secondary"><?= $this->__('common.cancel') ?></a>
                     </div>
                 </form>
             </div>

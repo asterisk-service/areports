@@ -18,7 +18,7 @@ $filters = $filters ?? [];
         </div>
         <div class="btn-group">
             <a href="/areports/report-builder" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back
+                <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
             </a>
             <a href="/areports/report-builder/<?= $report['id'] ?>/export?format=csv&<?= http_build_query($filters) ?>" class="btn btn-outline-success">
                 <i class="fas fa-file-csv me-2"></i>CSV
@@ -34,11 +34,11 @@ $filters = $filters ?? [];
         <div class="card-body">
             <form method="GET" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Date From</label>
+                    <label class="form-label"><?= $this->__('common.date_from') ?></label>
                     <input type="date" name="date_from" class="form-control" value="<?= $filters['date_from'] ?? date('Y-m-d') ?>">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Date To</label>
+                    <label class="form-label"><?= $this->__('common.date_to') ?></label>
                     <input type="date" name="date_to" class="form-control" value="<?= $filters['date_to'] ?? date('Y-m-d') ?>">
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
@@ -53,7 +53,7 @@ $filters = $filters ?? [];
     <!-- Results -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h6 class="mb-0">Results</h6>
+            <h6 class="mb-0"><?= $this->__('common.results') ?></h6>
             <span class="badge bg-info"><?= number_format(count($data)) ?> records</span>
         </div>
         <div class="card-body">

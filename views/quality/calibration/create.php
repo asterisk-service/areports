@@ -8,9 +8,9 @@ $users = $users ?? [];
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Create Calibration Session</h1>
+        <h1 class="h3 mb-0"><?= $this->__('quality.create_session') ?></h1>
         <a href="/areports/calibration" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back
+            <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
         </a>
     </div>
 
@@ -20,13 +20,13 @@ $users = $users ?? [];
                 <div class="card-body">
                     <form method="POST" action="/areports/calibration">
                         <div class="mb-3">
-                            <label class="form-label">Session Name <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('quality.session_name') ?> <span class="text-danger">*</span></label>
                             <input type="text" name="name" class="form-control" required maxlength="200"
                                    placeholder="e.g., Weekly Calibration - Week 3">
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
+                            <label class="form-label"><?= $this->__('common.description') ?></label>
                             <textarea name="description" class="form-control" rows="2"
                                       placeholder="Optional description"></textarea>
                         </div>
@@ -50,7 +50,7 @@ $users = $users ?? [];
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Participants <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('quality.participants') ?> <span class="text-danger">*</span></label>
                             <select name="participants[]" class="form-select" multiple size="5" required>
                                 <?php foreach ($users as $user): ?>
                                 <option value="<?= $user['id'] ?>">
@@ -73,9 +73,9 @@ $users = $users ?? [];
                         </div>
 
                         <div class="d-flex justify-content-end gap-2">
-                            <a href="/areports/calibration" class="btn btn-secondary">Cancel</a>
+                            <a href="/areports/calibration" class="btn btn-secondary"><?= $this->__('common.cancel') ?></a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Create Session
+                                <i class="fas fa-save me-2"></i><?= $this->__('quality.create_session') ?>
                             </button>
                         </div>
                     </form>

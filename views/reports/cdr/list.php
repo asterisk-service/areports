@@ -3,13 +3,13 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Call Detail Records</h1>
-        <p class="text-muted mb-0">Search and analyze call records</p>
+        <h1 class="h3 mb-0"><?= $this->__('reports.cdr_title') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('reports.cdr_subtitle') ?></p>
     </div>
     <?php if ($this->can('reports.cdr.export')): ?>
     <div>
         <button type="button" class="btn btn-outline-success" id="exportCsv">
-            <i class="fas fa-file-csv me-1"></i> Export CSV
+            <i class="fas fa-file-csv me-1"></i> <?= $this->__('common.export_csv') ?>
         </button>
     </div>
     <?php endif; ?>
@@ -21,36 +21,36 @@
         <form id="cdrFilters">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Date Range</label>
+                    <label class="form-label"><?= $this->__('reports.date_range') ?></label>
                     <input type="text" class="form-control daterangepicker-input" id="dateRange"
                            value="<?= $this->e($filters['date_from']) ?> - <?= $this->e($filters['date_to']) ?>">
                     <input type="hidden" name="date_from" id="dateFrom" value="<?= $this->e($filters['date_from']) ?>">
                     <input type="hidden" name="date_to" id="dateTo" value="<?= $this->e($filters['date_to']) ?>">
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Source</label>
-                    <input type="text" class="form-control" name="src" placeholder="Caller number"
+                    <label class="form-label"><?= $this->__('reports.source') ?></label>
+                    <input type="text" class="form-control" name="src" placeholder="<?= $this->__('reports.caller_number') ?>"
                            value="<?= $this->e($filters['src']) ?>">
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Destination/DID</label>
-                    <input type="text" class="form-control" name="dst" placeholder="Called number"
+                    <label class="form-label"><?= $this->__('reports.destination') ?></label>
+                    <input type="text" class="form-control" name="dst" placeholder="<?= $this->__('reports.destination') ?>"
                            value="<?= $this->e($filters['dst']) ?>">
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Status</label>
+                    <label class="form-label"><?= $this->__('common.status') ?></label>
                     <select class="form-select" name="disposition">
-                        <option value="">All</option>
-                        <option value="ANSWERED" <?= $filters['disposition'] === 'ANSWERED' ? 'selected' : '' ?>>Answered</option>
-                        <option value="NO ANSWER" <?= $filters['disposition'] === 'NO ANSWER' ? 'selected' : '' ?>>No Answer</option>
-                        <option value="BUSY" <?= $filters['disposition'] === 'BUSY' ? 'selected' : '' ?>>Busy</option>
-                        <option value="FAILED" <?= $filters['disposition'] === 'FAILED' ? 'selected' : '' ?>>Failed</option>
+                        <option value=""><?= $this->__('common.all') ?></option>
+                        <option value="ANSWERED" <?= $filters['disposition'] === 'ANSWERED' ? 'selected' : '' ?>><?= $this->__('reports.answered') ?></option>
+                        <option value="NO ANSWER" <?= $filters['disposition'] === 'NO ANSWER' ? 'selected' : '' ?>><?= $this->__('reports.status_no_answer') ?></option>
+                        <option value="BUSY" <?= $filters['disposition'] === 'BUSY' ? 'selected' : '' ?>><?= $this->__('reports.status_busy') ?></option>
+                        <option value="FAILED" <?= $filters['disposition'] === 'FAILED' ? 'selected' : '' ?>><?= $this->__('reports.status_failed') ?></option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Queue/Context</label>
+                    <label class="form-label"><?= $this->__('reports.queue') ?></label>
                     <select class="form-select" name="context">
-                        <option value="">All</option>
+                        <option value=""><?= $this->__('common.all') ?></option>
                         <?php foreach ($queues as $queue): ?>
                         <option value="<?= $this->e($queue['queue_number']) ?>">
                             <?= $this->e($queue['display_name']) ?>
@@ -75,14 +75,14 @@
             <table id="cdrTable" class="table table-hover" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Date/Time</th>
-                        <th>Source</th>
-                        <th>Destination</th>
+                        <th><?= $this->__('reports.call_date') ?></th>
+                        <th><?= $this->__('reports.source') ?></th>
+                        <th><?= $this->__('reports.destination') ?></th>
                         <th>DID</th>
-                        <th>Duration</th>
-                        <th>Talk Time</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th><?= $this->__('reports.duration') ?></th>
+                        <th><?= $this->__('reports.billsec') ?></th>
+                        <th><?= $this->__('common.status') ?></th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,12 +97,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Call Recording</h5>
+                <h5 class="modal-title"><?= $this->__('reports.recording') ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
                 <audio id="audioPlayer" controls class="w-100">
-                    Your browser does not support the audio element.
+                    <?= $this->__('reports.no_audio_support') ?>
                 </audio>
                 <div id="recordingInfo" class="mt-3 text-muted"></div>
             </div>

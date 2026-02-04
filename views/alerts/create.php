@@ -1,9 +1,9 @@
 <?php $this->section('content'); ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">Create Alert</h1>
+    <h1 class="h3 mb-0"><?= $this->__('alerts.create_title') ?></h1>
     <a href="/areports/alerts" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-2"></i>Back
+        <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -13,14 +13,14 @@
             <div class="card-body">
                 <form method="POST" action="/areports/alerts">
                     <div class="mb-3">
-                        <label class="form-label">Alert Name <span class="text-danger">*</span></label>
+                        <label class="form-label"><?= $this->__('alerts.alert_name') ?> <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control" required maxlength="100"
                                placeholder="e.g., High Wait Time Alert">
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Alert Type <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('alerts.alert_type') ?> <span class="text-danger">*</span></label>
                             <select name="alert_type" class="form-select" required>
                                 <option value="queue">Queue</option>
                                 <option value="agent">Agent</option>
@@ -28,9 +28,9 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Queue Filter</label>
+                            <label class="form-label"><?= $this->__('alerts.queue_filter') ?></label>
                             <select name="queue_id" class="form-select">
-                                <option value="">All Queues</option>
+                                <option value=""><?= $this->__('alerts.all_queues') ?></option>
                                 <?php foreach ($queues as $queue): ?>
                                 <option value="<?= $this->e($queue['name']) ?>">
                                     <?= $this->e($queue['display_name']) ?>
@@ -42,7 +42,7 @@
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Metric <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('alerts.metric') ?> <span class="text-danger">*</span></label>
                             <select name="metric" class="form-select" required>
                                 <option value="">Select metric...</option>
                                 <optgroup label="Queue Metrics">
@@ -60,7 +60,7 @@
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Condition <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('alerts.condition') ?> <span class="text-danger">*</span></label>
                             <select name="operator" class="form-select" required>
                                 <option value="gt">Greater than (&gt;)</option>
                                 <option value="gte">Greater than or equal (&gt;=)</option>
@@ -70,38 +70,39 @@
                             </select>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Threshold <span class="text-danger">*</span></label>
+                            <label class="form-label"><?= $this->__('alerts.threshold') ?> <span class="text-danger">*</span></label>
                             <input type="number" name="threshold_value" class="form-control" required step="0.01"
                                    placeholder="e.g., 60">
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Cooldown (minutes)</label>
+                        <label class="form-label"><?= $this->__('alerts.cooldown') ?></label>
                         <input type="number" name="cooldown_minutes" class="form-control" value="15" min="1" max="1440">
-                        <small class="text-muted">Minimum time between repeated alerts</small>
+                        <small class="text-muted"><?= $this->__('alerts.cooldown_help') ?></small>
                     </div>
 
                     <hr>
-                    <h6 class="mb-3">Notification Channels</h6>
+                    <h6 class="mb-3"><?= $this->__('alerts.notification_channels') ?></h6>
 
                     <div class="mb-3">
-                        <label class="form-label"><i class="fas fa-envelope me-1"></i> Email</label>
+                        <label class="form-label"><i class="fas fa-envelope me-1"></i> <?= $this->__('alerts.email_recipients') ?></label>
                         <input type="text" name="notify_email" class="form-control"
                                placeholder="email@example.com (comma-separated for multiple)">
+                        <small class="text-muted"><?= $this->__('alerts.email_help') ?></small>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label"><i class="fab fa-telegram me-1"></i> Telegram Chat ID</label>
+                        <label class="form-label"><i class="fab fa-telegram me-1"></i> <?= $this->__('alerts.telegram_chat') ?></label>
                         <input type="text" name="telegram_chat_id" class="form-control"
                                placeholder="123456789 (comma-separated for multiple)">
-                        <small class="text-muted">Send /start to your bot, then use @userinfobot to get your Chat ID. Configure bot token in Admin &gt; Settings &gt; Telegram.</small>
+                        <small class="text-muted"><?= $this->__('alerts.telegram_help') ?></small>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="/areports/alerts" class="btn btn-secondary">Cancel</a>
+                        <a href="/areports/alerts" class="btn btn-secondary"><?= $this->__('common.cancel') ?></a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Create Alert
+                            <i class="fas fa-save me-2"></i><?= $this->__('alerts.create_title') ?>
                         </button>
                     </div>
                 </form>

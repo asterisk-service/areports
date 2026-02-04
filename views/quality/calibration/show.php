@@ -15,11 +15,11 @@ $call = $call ?? null;
         </div>
         <div class="btn-group">
             <a href="/areports/calibration" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back
+                <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
             </a>
             <?php if ($session['status'] === 'completed'): ?>
             <a href="/areports/calibration/<?= $session['id'] ?>/results" class="btn btn-success">
-                <i class="fas fa-chart-bar me-2"></i>View Results
+                <i class="fas fa-chart-bar me-2"></i><?= $this->__('common.view') ?> <?= $this->__('quality.results') ?>
             </a>
             <?php endif; ?>
         </div>
@@ -29,11 +29,11 @@ $call = $call ?? null;
         <div class="col-lg-8">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h6 class="mb-0">Session Details</h6>
+                    <h6 class="mb-0">Session <?= $this->__('common.details') ?></h6>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-sm-3">Status</dt>
+                        <dt class="col-sm-3"><?= $this->__('common.status') ?></dt>
                         <dd class="col-sm-9">
                             <?php
                             $statusColors = [
@@ -55,11 +55,11 @@ $call = $call ?? null;
                         <dd class="col-sm-9"><code><?= htmlspecialchars($session['uniqueid'] ?? '-') ?></code></dd>
 
                         <?php if ($session['description']): ?>
-                        <dt class="col-sm-3">Description</dt>
+                        <dt class="col-sm-3"><?= $this->__('common.description') ?></dt>
                         <dd class="col-sm-9"><?= htmlspecialchars($session['description']) ?></dd>
                         <?php endif; ?>
 
-                        <dt class="col-sm-3">Created</dt>
+                        <dt class="col-sm-3"><?= $this->__('admin.created_at') ?></dt>
                         <dd class="col-sm-9"><?= date('d/m/Y H:i', strtotime($session['created_at'])) ?></dd>
                     </dl>
                 </div>
@@ -67,7 +67,7 @@ $call = $call ?? null;
 
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0">Participants</h6>
+                    <h6 class="mb-0"><?= $this->__('quality.participants') ?></h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -75,10 +75,10 @@ $call = $call ?? null;
                             <thead>
                                 <tr>
                                     <th>Participant</th>
-                                    <th>Status</th>
-                                    <th>Score</th>
+                                    <th><?= $this->__('common.status') ?></th>
+                                    <th><?= $this->__('quality.score') ?></th>
                                     <th>Submitted</th>
-                                    <th>Actions</th>
+                                    <th><?= $this->__('common.actions') ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -105,7 +105,7 @@ $call = $call ?? null;
                                     <td>
                                         <?php if (!$p['submitted_at'] && $p['user_id'] == ($this->user['id'] ?? 0)): ?>
                                         <a href="/areports/calibration/<?= $session['id'] ?>/evaluate" class="btn btn-sm btn-primary">
-                                            Evaluate
+                                            <?= $this->__('quality.evaluate') ?>
                                         </a>
                                         <?php endif; ?>
                                     </td>

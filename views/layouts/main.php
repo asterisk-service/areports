@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<?= $currentLocale ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?= $this->e($csrfToken) ?>">
-    <title><?= $this->e($title ?? 'Панель управления') ?> - aReports</title>
+    <title><?= $this->e($title ?? $this->__('menu.dashboard')) ?> - aReports</title>
 
     <!-- Bootstrap CSS -->
     <link href="/areports/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -43,7 +43,7 @@
                 <li class="sidebar-item">
                     <a href="/areports/dashboard" class="sidebar-link <?= ($currentPage ?? '') === 'dashboard' ? 'active' : '' ?>">
                         <i class="fas fa-tachometer-alt"></i>
-                        <span>Панель управления</span>
+                        <span><?= $this->__('menu.dashboard') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -53,7 +53,7 @@
                 <li class="sidebar-item">
                     <a href="/areports/agent" class="sidebar-link <?= ($currentPage ?? '') === 'agent.panel' ? 'active' : '' ?>">
                         <i class="fas fa-headset"></i>
-                        <span>Панель оператора</span>
+                        <span><?= $this->__('menu.agent_panel') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -64,19 +64,19 @@
                 <li class="sidebar-item">
                     <a href="#realtime-submenu" class="sidebar-link" data-bs-toggle="collapse">
                         <i class="fas fa-broadcast-tower"></i>
-                        <span>Реальное время</span>
+                        <span><?= $this->__('menu.realtime') ?></span>
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
                     <ul id="realtime-submenu" class="sidebar-submenu collapse">
-                        <li><a href="/areports/realtime">Мониторинг</a></li>
+                        <li><a href="/areports/realtime"><?= $this->__('menu.monitoring') ?></a></li>
                         <?php if ($this->can('realtime.queue_status')): ?>
-                        <li><a href="/areports/wallboard">Табло</a></li>
+                        <li><a href="/areports/wallboard"><?= $this->__('menu.wallboard') ?></a></li>
                         <?php endif; ?>
                         <?php if ($this->can('realtime.queue_status')): ?>
-                        <li><a href="/areports/reports/queue">Статус очередей</a></li>
+                        <li><a href="/areports/reports/queue"><?= $this->__('menu.queue_status') ?></a></li>
                         <?php endif; ?>
                         <?php if ($this->can('realtime.agent_status')): ?>
-                        <li><a href="/areports/reports/agent">Статус операторов</a></li>
+                        <li><a href="/areports/reports/agent"><?= $this->__('menu.agent_status') ?></a></li>
                         <?php endif; ?>
                     </ul>
                 </li>
@@ -87,22 +87,22 @@
                 <li class="sidebar-item">
                     <a href="#reports-submenu" class="sidebar-link" data-bs-toggle="collapse">
                         <i class="fas fa-chart-bar"></i>
-                        <span>Отчёты</span>
+                        <span><?= $this->__('menu.reports') ?></span>
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
                     <ul id="reports-submenu" class="sidebar-submenu collapse">
                         <?php if ($this->can('reports.cdr.view')): ?>
-                        <li><a href="/areports/reports/cdr">Детализация звонков</a></li>
+                        <li><a href="/areports/reports/cdr"><?= $this->__('menu.cdr') ?></a></li>
                         <?php endif; ?>
                         <?php if ($this->can('reports.agent.view')): ?>
-                        <li><a href="/areports/reports/agent/performance">Операторы</a></li>
+                        <li><a href="/areports/reports/agent/performance"><?= $this->__('menu.agents') ?></a></li>
                         <?php endif; ?>
                         <?php if ($this->can('reports.queue.view')): ?>
-                        <li><a href="/areports/reports/queue/summary">Сводка по очередям</a></li>
-                        <li><a href="/areports/reports/queue/sla">Отчёт SLA</a></li>
-                        <li><a href="/areports/reports/queue/abandonment">Потерянные звонки</a></li>
+                        <li><a href="/areports/reports/queue/summary"><?= $this->__('menu.queue_summary') ?></a></li>
+                        <li><a href="/areports/reports/queue/sla"><?= $this->__('menu.sla_report') ?></a></li>
+                        <li><a href="/areports/reports/queue/abandonment"><?= $this->__('menu.abandoned_calls') ?></a></li>
                         <?php endif; ?>
-                        <li><a href="/areports/reports/trends">Тренды и анализ</a></li>
+                        <li><a href="/areports/reports/trends"><?= $this->__('menu.trends') ?></a></li>
                     </ul>
                 </li>
                 <?php endif; ?>
@@ -112,15 +112,15 @@
                 <li class="sidebar-item">
                     <a href="#quality-submenu" class="sidebar-link" data-bs-toggle="collapse">
                         <i class="fas fa-headphones"></i>
-                        <span>Качество</span>
+                        <span><?= $this->__('menu.quality') ?></span>
                         <i class="fas fa-chevron-down ms-auto"></i>
                     </a>
                     <ul id="quality-submenu" class="sidebar-submenu collapse">
                         <?php if ($this->can('reports.cdr.listen')): ?>
-                        <li><a href="/areports/quality/recordings">Записи разговоров</a></li>
+                        <li><a href="/areports/quality/recordings"><?= $this->__('menu.recordings') ?></a></li>
                         <?php endif; ?>
                         <?php if ($this->can('quality.view')): ?>
-                        <li><a href="/areports/quality/evaluations">Оценки</a></li>
+                        <li><a href="/areports/quality/evaluations"><?= $this->__('menu.evaluations') ?></a></li>
                         <?php endif; ?>
                     </ul>
                 </li>
@@ -131,7 +131,7 @@
                 <li class="sidebar-item">
                     <a href="/areports/alerts" class="sidebar-link <?= ($currentPage ?? '') === 'alerts' ? 'active' : '' ?>">
                         <i class="fas fa-bell"></i>
-                        <span>Оповещения</span>
+                        <span><?= $this->__('menu.alerts') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -141,20 +141,20 @@
                 <li class="sidebar-item">
                     <a href="/areports/scheduled-reports" class="sidebar-link <?= ($currentPage ?? '') === 'scheduled-reports' ? 'active' : '' ?>">
                         <i class="fas fa-clock"></i>
-                        <span>Расписание отчётов</span>
+                        <span><?= $this->__('menu.scheduled_reports') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
 
                 <!-- Admin Section -->
                 <?php if ($this->can('admin.users.view') || $this->can('admin.settings')): ?>
-                <li class="sidebar-header">Администрирование</li>
+                <li class="sidebar-header"><?= $this->__('menu.administration') ?></li>
 
                 <?php if ($this->can('admin.users.view')): ?>
                 <li class="sidebar-item">
                     <a href="/areports/admin/users" class="sidebar-link <?= ($currentPage ?? '') === 'admin.users' ? 'active' : '' ?>">
                         <i class="fas fa-users"></i>
-                        <span>Пользователи</span>
+                        <span><?= $this->__('menu.users') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -163,7 +163,7 @@
                 <li class="sidebar-item">
                     <a href="/areports/admin/roles" class="sidebar-link <?= ($currentPage ?? '') === 'admin.roles' ? 'active' : '' ?>">
                         <i class="fas fa-user-tag"></i>
-                        <span>Роли</span>
+                        <span><?= $this->__('menu.roles') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -172,7 +172,7 @@
                 <li class="sidebar-item">
                     <a href="/areports/admin/queues" class="sidebar-link <?= ($currentPage ?? '') === 'admin.queues' ? 'active' : '' ?>">
                         <i class="fas fa-layer-group"></i>
-                        <span>Настройки очередей</span>
+                        <span><?= $this->__('menu.queue_settings') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -181,7 +181,7 @@
                 <li class="sidebar-item">
                     <a href="/areports/admin/pause-causes" class="sidebar-link <?= ($currentPage ?? '') === 'admin.pause_causes' ? 'active' : '' ?>">
                         <i class="fas fa-pause-circle"></i>
-                        <span>Причины паузы</span>
+                        <span><?= $this->__('menu.pause_causes') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -190,7 +190,7 @@
                 <li class="sidebar-item">
                     <a href="/areports/admin/settings" class="sidebar-link <?= ($currentPage ?? '') === 'admin.settings' ? 'active' : '' ?>">
                         <i class="fas fa-cog"></i>
-                        <span>Настройки</span>
+                        <span><?= $this->__('menu.settings') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -199,7 +199,7 @@
                 <li class="sidebar-item">
                     <a href="/areports/admin/audit-log" class="sidebar-link <?= ($currentPage ?? '') === 'admin.audit' ? 'active' : '' ?>">
                         <i class="fas fa-history"></i>
-                        <span>Журнал действий</span>
+                        <span><?= $this->__('menu.audit_log') ?></span>
                     </a>
                 </li>
                 <?php endif; ?>
@@ -218,6 +218,22 @@
 
                 <div class="navbar-collapse">
                     <ul class="navbar-nav ms-auto">
+                        <!-- Language Switcher -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="fas fa-globe me-1"></i>
+                                <?= strtoupper($currentLocale) ?>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a href="/areports/language/en" class="dropdown-item <?= $currentLocale === 'en' ? 'active' : '' ?>">
+                                    English
+                                </a>
+                                <a href="/areports/language/ru" class="dropdown-item <?= $currentLocale === 'ru' ? 'active' : '' ?>">
+                                    Русский
+                                </a>
+                            </div>
+                        </li>
+
                         <!-- Alerts Dropdown -->
                         <?php if ($this->can('alerts.view')): ?>
                         <li class="nav-item dropdown">
@@ -226,12 +242,12 @@
                                 <span class="badge bg-danger alert-badge d-none">0</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end alert-dropdown">
-                                <h6 class="dropdown-header">Уведомления</h6>
+                                <h6 class="dropdown-header"><?= $this->__('menu.notifications') ?></h6>
                                 <div class="alert-list">
-                                    <p class="text-muted text-center py-3 mb-0">Нет новых уведомлений</p>
+                                    <p class="text-muted text-center py-3 mb-0"><?= $this->__('menu.no_notifications') ?></p>
                                 </div>
                                 <div class="dropdown-divider"></div>
-                                <a href="/areports/alerts" class="dropdown-item text-center">Все оповещения</a>
+                                <a href="/areports/alerts" class="dropdown-item text-center"><?= $this->__('menu.all_alerts') ?></a>
                             </div>
                         </li>
                         <?php endif; ?>
@@ -240,18 +256,18 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle me-1"></i>
-                                <?= $this->e($user['first_name'] ?? 'Пользователь') ?>
+                                <?= $this->e($user['first_name'] ?? $this->__('menu.user')) ?>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <h6 class="dropdown-header"><?= $this->e(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '')) ?></h6>
                                 <span class="dropdown-item-text text-muted small"><?= $this->e($user['role_display_name'] ?? '') ?></span>
                                 <div class="dropdown-divider"></div>
                                 <a href="/areports/profile" class="dropdown-item">
-                                    <i class="fas fa-user me-2"></i>Профиль
+                                    <i class="fas fa-user me-2"></i><?= $this->__('menu.profile') ?>
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a href="/areports/logout" class="dropdown-item text-danger">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                    <i class="fas fa-sign-out-alt me-2"></i><?= $this->__('menu.logout') ?>
                                 </a>
                             </div>
                         </li>

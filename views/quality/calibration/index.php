@@ -7,10 +7,10 @@ $sessions = $sessions ?? [];
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Calibration Sessions</h1>
+        <h1 class="h3 mb-0"><?= $this->__('quality.calibration') ?></h1>
         <?php if ($this->can('calibration.manage')): ?>
         <a href="/areports/calibration/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>New Session
+            <i class="fas fa-plus me-2"></i><?= $this->__('quality.create_session') ?>
         </a>
         <?php endif; ?>
     </div>
@@ -23,7 +23,7 @@ $sessions = $sessions ?? [];
                 <p class="text-muted">No calibration sessions found</p>
                 <?php if ($this->can('calibration.manage')): ?>
                 <a href="/areports/calibration/create" class="btn btn-primary">
-                    Create First Calibration Session
+                    <?= $this->__('quality.create_session') ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -35,10 +35,10 @@ $sessions = $sessions ?? [];
                             <th>Session</th>
                             <th>Form</th>
                             <th>Call</th>
-                            <th>Participants</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th>Actions</th>
+                            <th><?= $this->__('quality.participants') ?></th>
+                            <th><?= $this->__('common.status') ?></th>
+                            <th><?= $this->__('admin.created_at') ?></th>
+                            <th><?= $this->__('common.actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -76,11 +76,11 @@ $sessions = $sessions ?? [];
                             <td><?= date('d/m/Y H:i', strtotime($session['created_at'])) ?></td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="/areports/calibration/<?= $session['id'] ?>" class="btn btn-outline-primary" title="View">
+                                    <a href="/areports/calibration/<?= $session['id'] ?>" class="btn btn-outline-primary" title="<?= $this->__('common.view') ?>">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <?php if ($session['status'] === 'completed'): ?>
-                                    <a href="/areports/calibration/<?= $session['id'] ?>/results" class="btn btn-outline-success" title="Results">
+                                    <a href="/areports/calibration/<?= $session['id'] ?>/results" class="btn btn-outline-success" title="<?= $this->__('quality.results') ?>">
                                         <i class="fas fa-chart-bar"></i>
                                     </a>
                                     <?php endif; ?>

@@ -2,16 +2,16 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Оповещения</h1>
-        <p class="text-muted mb-0">Настройка и управление оповещениями</p>
+        <h1 class="h3 mb-0"><?= $this->__('alerts.title') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('alerts.subtitle') ?></p>
     </div>
     <div>
         <a href="/areports/alerts/history" class="btn btn-outline-secondary me-2">
-            <i class="fas fa-history me-1"></i> История
+            <i class="fas fa-history me-1"></i> <?= $this->__('alerts.history') ?>
         </a>
         <?php if ($this->can('alerts.manage')): ?>
         <a href="/areports/alerts/create" class="btn btn-primary">
-            <i class="fas fa-plus me-1"></i> Создать
+            <i class="fas fa-plus me-1"></i> <?= $this->__('alerts.create') ?>
         </a>
         <?php endif; ?>
     </div>
@@ -23,14 +23,14 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Название</th>
-                        <th>Тип</th>
-                        <th>Метрика</th>
-                        <th>Условие</th>
-                        <th>Каналы</th>
-                        <th>Статус</th>
-                        <th>Последнее срабатывание</th>
-                        <th>Действия</th>
+                        <th><?= $this->__('alerts.name') ?></th>
+                        <th><?= $this->__('alerts.type') ?></th>
+                        <th><?= $this->__('alerts.metric') ?></th>
+                        <th><?= $this->__('alerts.condition') ?></th>
+                        <th><?= $this->__('alerts.channels') ?></th>
+                        <th><?= $this->__('alerts.status') ?></th>
+                        <th><?= $this->__('alerts.last_triggered') ?></th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,17 +71,17 @@
                         </td>
                         <td>
                             <?php if ($alert['is_active']): ?>
-                            <span class="badge bg-success">Активно</span>
+                            <span class="badge bg-success"><?= $this->__('alerts.active') ?></span>
                             <?php else: ?>
-                            <span class="badge bg-secondary">Неактивно</span>
+                            <span class="badge bg-secondary"><?= $this->__('alerts.inactive') ?></span>
                             <?php endif; ?>
                         </td>
                         <td>
                             <?php if ($alert['last_triggered']): ?>
                             <?= date('d/m/Y H:i', strtotime($alert['last_triggered'])) ?>
-                            <br><small class="text-muted"><?= $alert['trigger_count'] ?> раз</small>
+                            <br><small class="text-muted"><?= $alert['trigger_count'] ?> <?= $this->__('common.times') ?></small>
                             <?php else: ?>
-                            <span class="text-muted">Никогда</span>
+                            <span class="text-muted"><?= $this->__('common.never') ?></span>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -90,7 +90,7 @@
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form method="POST" action="/areports/alerts/<?= $alert['id'] ?>/delete" style="display:inline"
-                                  onsubmit="return confirm('Удалить это оповещение?')">
+                                  onsubmit="return confirm('<?= $this->__('alerts.delete_confirm') ?>')">
                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -101,7 +101,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($alerts)): ?>
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-4">Оповещения не настроены</td>
+                        <td colspan="8" class="text-center text-muted py-4"><?= $this->__('alerts.no_alerts') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>

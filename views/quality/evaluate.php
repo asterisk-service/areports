@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Evaluate Call</h1>
+        <h1 class="h3 mb-0"><?= $this->__('quality.evaluate_call') ?></h1>
         <p class="text-muted mb-0">Quality assessment for call <?= $this->e($cdr['uniqueid']) ?></p>
     </div>
     <a href="/areports/quality/recordings" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -15,11 +15,11 @@
     <!-- Call Details -->
     <div class="col-md-4">
         <div class="card mb-4">
-            <div class="card-header">Call Details</div>
+            <div class="card-header"><?= $this->__('quality.call_info') ?></div>
             <div class="card-body">
                 <table class="table table-sm">
                     <tr>
-                        <td class="text-muted">Date/Time</td>
+                        <td class="text-muted"><?= $this->__('common.date') ?>/<?= $this->__('common.time') ?></td>
                         <td><strong><?= $this->formatDateTime($cdr['calldate']) ?></strong></td>
                     </tr>
                     <tr>
@@ -90,7 +90,7 @@
 
                     <!-- Criteria Section (dynamic) -->
                     <div id="criteriaSection" class="mb-4" style="display: none;">
-                        <h5 class="mb-3">Scoring Criteria</h5>
+                        <h5 class="mb-3"><?= $this->__('quality.criteria') ?></h5>
                         <div id="criteriaList">
                             <!-- Criteria will be populated dynamically -->
                         </div>
@@ -98,16 +98,16 @@
 
                     <!-- Comments -->
                     <div class="mb-4">
-                        <label class="form-label">Comments</label>
+                        <label class="form-label"><?= $this->__('quality.comments') ?></label>
                         <textarea class="form-control" name="comments" rows="4"
                                   placeholder="Optional comments about the call quality..."></textarea>
                     </div>
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
-                            <i class="fas fa-save me-1"></i> Save Evaluation
+                            <i class="fas fa-save me-1"></i> <?= $this->__('quality.submit_evaluation') ?>
                         </button>
-                        <a href="/areports/quality/recordings" class="btn btn-outline-secondary">Cancel</a>
+                        <a href="/areports/quality/recordings" class="btn btn-outline-secondary"><?= $this->__('common.cancel') ?></a>
                     </div>
                 </form>
                 <?php endif; ?>

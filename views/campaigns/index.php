@@ -11,7 +11,7 @@ $filters = $filters ?? [];
         <h1 class="h3 mb-0">Campaigns</h1>
         <?php if ($this->can('campaigns.manage')): ?>
         <a href="/areports/campaigns/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>New Campaign
+            <i class="fas fa-plus me-2"></i><?= $this->__('common.create') ?> Campaign
         </a>
         <?php endif; ?>
     </div>
@@ -21,20 +21,20 @@ $filters = $filters ?? [];
         <div class="card-body">
             <form method="GET" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Status</label>
+                    <label class="form-label"><?= $this->__('common.status') ?></label>
                     <select name="status" class="form-select">
-                        <option value="">All Statuses</option>
+                        <option value=""><?= $this->__('common.all') ?> Statuses</option>
                         <option value="draft" <?= ($filters['status'] ?? '') === 'draft' ? 'selected' : '' ?>>Draft</option>
-                        <option value="active" <?= ($filters['status'] ?? '') === 'active' ? 'selected' : '' ?>>Active</option>
+                        <option value="active" <?= ($filters['status'] ?? '') === 'active' ? 'selected' : '' ?>><?= $this->__('common.active') ?></option>
                         <option value="paused" <?= ($filters['status'] ?? '') === 'paused' ? 'selected' : '' ?>>Paused</option>
                         <option value="completed" <?= ($filters['status'] ?? '') === 'completed' ? 'selected' : '' ?>>Completed</option>
                         <option value="archived" <?= ($filters['status'] ?? '') === 'archived' ? 'selected' : '' ?>>Archived</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Type</label>
+                    <label class="form-label"><?= $this->__('common.type') ?></label>
                     <select name="type" class="form-select">
-                        <option value="">All Types</option>
+                        <option value=""><?= $this->__('common.all') ?> Types</option>
                         <option value="inbound" <?= ($filters['type'] ?? '') === 'inbound' ? 'selected' : '' ?>>Inbound</option>
                         <option value="outbound" <?= ($filters['type'] ?? '') === 'outbound' ? 'selected' : '' ?>>Outbound</option>
                         <option value="blended" <?= ($filters['type'] ?? '') === 'blended' ? 'selected' : '' ?>>Blended</option>
@@ -42,7 +42,7 @@ $filters = $filters ?? [];
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
                     <button type="submit" class="btn btn-outline-primary">
-                        <i class="fas fa-filter me-2"></i>Filter
+                        <i class="fas fa-filter me-2"></i><?= $this->__('common.filter') ?>
                     </button>
                 </div>
             </form>
@@ -63,13 +63,13 @@ $filters = $filters ?? [];
                     <thead>
                         <tr>
                             <th>Campaign</th>
-                            <th>Type</th>
-                            <th>Queue</th>
-                            <th>Status</th>
+                            <th><?= $this->__('common.type') ?></th>
+                            <th><?= $this->__('realtime.queue') ?></th>
+                            <th><?= $this->__('common.status') ?></th>
                             <th>Leads</th>
-                            <th>Calls</th>
+                            <th><?= $this->__('realtime.calls') ?></th>
                             <th>Dates</th>
-                            <th>Actions</th>
+                            <th><?= $this->__('common.actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,11 +117,11 @@ $filters = $filters ?? [];
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="/areports/campaigns/<?= $campaign['id'] ?>" class="btn btn-outline-primary" title="View">
+                                    <a href="/areports/campaigns/<?= $campaign['id'] ?>" class="btn btn-outline-primary" title="<?= $this->__('common.view') ?>">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <?php if ($this->can('campaigns.manage')): ?>
-                                    <a href="/areports/campaigns/<?= $campaign['id'] ?>/edit" class="btn btn-outline-secondary" title="Edit">
+                                    <a href="/areports/campaigns/<?= $campaign['id'] ?>/edit" class="btn btn-outline-secondary" title="<?= $this->__('common.edit') ?>">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <?php endif; ?>

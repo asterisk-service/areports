@@ -1,13 +1,13 @@
 <?php $this->section('content'); ?>
 
-<h4 class="mb-4 text-center">Reset Password</h4>
+<h4 class="mb-4 text-center"><?= $this->__('auth.reset_password') ?></h4>
 
 <form method="POST" action="/areports/reset-password">
     <?= $this->csrf() ?>
     <input type="hidden" name="token" value="<?= $this->e($token) ?>">
 
     <div class="mb-3">
-        <label for="email" class="form-label">Email Address</label>
+        <label for="email" class="form-label"><?= $this->__('auth.email') ?></label>
         <div class="input-group">
             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
             <input type="email"
@@ -21,7 +21,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="password" class="form-label">New Password</label>
+        <label for="password" class="form-label"><?= $this->__('auth.new_password') ?></label>
         <div class="input-group">
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
             <input type="password"
@@ -36,7 +36,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="password_confirmation" class="form-label">Confirm Password</label>
+        <label for="password_confirmation" class="form-label"><?= $this->__('auth.confirm_password') ?></label>
         <div class="input-group">
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
             <input type="password"
@@ -50,13 +50,13 @@
 
     <div class="d-grid">
         <button type="submit" class="btn btn-primary">
-            <i class="fas fa-key me-2"></i>Reset Password
+            <i class="fas fa-key me-2"></i><?= $this->__('auth.reset_password') ?>
         </button>
     </div>
 
     <div class="text-center mt-3">
         <a href="/areports/login" class="text-muted small">
-            <i class="fas fa-arrow-left me-1"></i>Back to Login
+            <i class="fas fa-arrow-left me-1"></i><?= $this->__('auth.back_to_login') ?>
         </a>
     </div>
 </form>

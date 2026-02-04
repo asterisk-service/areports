@@ -3,12 +3,12 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Dashboard</h1>
-        <p class="text-muted mb-0">Call center overview for today</p>
+        <h1 class="h3 mb-0"><?= $this->__('dashboard.title') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('dashboard.subtitle') ?></p>
     </div>
     <div>
         <button type="button" class="btn btn-outline-primary" id="refreshDashboard">
-            <i class="fas fa-sync-alt me-1"></i> Refresh
+            <i class="fas fa-sync-alt me-1"></i> <?= $this->__('dashboard.title') ?>
         </button>
         <?php if ($this->can('wallboard.view')): ?>
         <a href="/areports/wallboard" class="btn btn-primary ms-2" target="_blank">
@@ -24,7 +24,7 @@
         <div class="stat-card primary">
             <i class="fas fa-phone stat-icon"></i>
             <div class="stat-value" id="stat-total"><?= number_format($stats['total_calls']) ?></div>
-            <div class="stat-label">Total Calls</div>
+            <div class="stat-label"><?= $this->__('dashboard.total_calls') ?></div>
             <div class="stat-change">
                 <?php if ($stats['calls_change'] >= 0): ?>
                 <i class="fas fa-arrow-up"></i> <?= $stats['calls_change'] ?>%
@@ -39,9 +39,9 @@
         <div class="stat-card success">
             <i class="fas fa-phone-alt stat-icon"></i>
             <div class="stat-value" id="stat-answered"><?= number_format($stats['answered_calls']) ?></div>
-            <div class="stat-label">Answered</div>
+            <div class="stat-label"><?= $this->__('dashboard.answered') ?></div>
             <div class="stat-change">
-                <?= $stats['answer_rate'] ?>% answer rate
+                <?= $stats['answer_rate'] ?>% <?= $this->__('dashboard.answer_rate') ?>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
         <div class="stat-card warning">
             <i class="fas fa-phone-slash stat-icon"></i>
             <div class="stat-value" id="stat-abandoned"><?= number_format($stats['abandoned_calls']) ?></div>
-            <div class="stat-label">Unanswered</div>
+            <div class="stat-label"><?= $this->__('dashboard.abandoned') ?></div>
             <div class="stat-change">
                 <?= 100 - $stats['answer_rate'] ?>% of total
             </div>
@@ -59,7 +59,7 @@
         <div class="stat-card info">
             <i class="fas fa-clock stat-icon"></i>
             <div class="stat-value" id="stat-avgtime"><?= $this->formatDuration($stats['avg_talk_time']) ?></div>
-            <div class="stat-label">Avg Talk Time</div>
+            <div class="stat-label"><?= $this->__('dashboard.avg_talk') ?></div>
             <div class="stat-change">
                 <?= $this->formatDuration($stats['avg_duration']) ?> total duration
             </div>
@@ -73,8 +73,8 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-chart-area me-2"></i>Call Volume Today</span>
-                <small class="text-muted">Hourly distribution</small>
+                <span><i class="fas fa-chart-area me-2"></i><?= $this->__('dashboard.calls_by_hour') ?></span>
+                <small class="text-muted"><?= $this->__('dashboard.today') ?></small>
             </div>
             <div class="card-body">
                 <div class="chart-container">
@@ -88,16 +88,16 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <i class="fas fa-layer-group me-2"></i>Queue Status
+                <i class="fas fa-layer-group me-2"></i><?= $this->__('dashboard.queue_performance') ?>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
-                                <th>Queue</th>
-                                <th class="text-center">Calls</th>
-                                <th class="text-center">SLA</th>
+                                <th><?= $this->__('dashboard.top_queues') ?></th>
+                                <th class="text-center"><?= $this->__('dashboard.calls_handled') ?></th>
+                                <th class="text-center"><?= $this->__('dashboard.sla') ?></th>
                             </tr>
                         </thead>
                         <tbody id="queue-status-body">
@@ -142,7 +142,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="fas fa-history me-2"></i>Recent Calls</span>
+                <span><i class="fas fa-history me-2"></i><?= $this->__('dashboard.recent_calls') ?></span>
                 <a href="/areports/reports/cdr" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
             <div class="card-body p-0">
@@ -199,6 +199,15 @@
 
 <?php $this->section('scripts'); ?>
 <script>
+// Translation strings
+const __t = {
+    total_calls: '<?= $this->__('dashboard.total_calls') ?>',
+    answered: '<?= $this->__('dashboard.answered') ?>',
+    abandoned: '<?= $this->__('dashboard.abandoned') ?>',
+    avg_talk: '<?= $this->__('dashboard.avg_talk') ?>',
+    calls_by_hour: '<?= $this->__('dashboard.calls_by_hour') ?>'
+};
+
 // Hourly volume data
 var hourlyData = <?= json_encode($hourlyVolume) ?>;
 
@@ -209,14 +218,14 @@ var callVolumeChart = new Chart(ctx, {
     data: {
         labels: hourlyData.map(function(h) { return h.hour + ':00'; }),
         datasets: [{
-            label: 'Total Calls',
+            label: __t.total_calls,
             data: hourlyData.map(function(h) { return h.total; }),
             borderColor: '#3498db',
             backgroundColor: 'rgba(52, 152, 219, 0.1)',
             fill: true,
             tension: 0.4
         }, {
-            label: 'Answered',
+            label: __t.answered,
             data: hourlyData.map(function(h) { return h.answered; }),
             borderColor: '#27ae60',
             backgroundColor: 'rgba(39, 174, 96, 0.1)',
@@ -259,9 +268,9 @@ $('#refreshDashboard').on('click', function() {
         callVolumeChart.data.datasets[1].data = data.hourlyVolume.map(function(h) { return h.answered; });
         callVolumeChart.update();
 
-        aReports.toast('Dashboard updated', 'success');
+        aReports.toast(__t.total_calls + ' updated', 'success');
     }).fail(function() {
-        aReports.toast('Failed to refresh dashboard', 'error');
+        aReports.toast('Failed to refresh', 'error');
     }).always(function() {
         $btn.prop('disabled', false).find('i').removeClass('fa-spin');
     });

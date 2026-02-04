@@ -6,12 +6,12 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Сводка по очередям</h1>
-        <p class="text-muted mb-0">Обзор производительности очередей</p>
+        <h1 class="h3 mb-0"><?= $this->__('reports.queue_summary') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('reports.queue_summary_subtitle') ?></p>
     </div>
     <?php if ($this->can('reports.queue.export')): ?>
     <a href="/areports/reports/queue/export?date_from=<?= $this->e($dateFrom) ?>&date_to=<?= $this->e($dateTo) ?><?php foreach ($selectedQueues as $q): ?>&queue[]=<?= urlencode($q) ?><?php endforeach; ?>" class="btn btn-success">
-        <i class="fas fa-download me-1"></i> Экспорт CSV
+        <i class="fas fa-download me-1"></i> <?= $this->__('common.export_csv') ?>
     </a>
     <?php endif; ?>
 </div>
@@ -21,15 +21,15 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="card-body">
         <form method="GET" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label">Дата с</label>
+                <label class="form-label"><?= $this->__('reports.date_from') ?></label>
                 <input type="date" class="form-control" name="date_from" value="<?= $this->e($dateFrom) ?>">
             </div>
             <div class="col-md-3">
-                <label class="form-label">Дата по</label>
+                <label class="form-label"><?= $this->__('reports.date_to') ?></label>
                 <input type="date" class="form-control" name="date_to" value="<?= $this->e($dateTo) ?>">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Очереди</label>
+                <label class="form-label"><?= $this->__('reports.queues') ?></label>
                 <select class="form-select" name="queue[]" id="queue-filter" multiple>
                     <?php foreach ($queueList as $queue): ?>
                     <option value="<?= $this->e($queue['name']) ?>"
@@ -41,7 +41,7 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Показать
+                    <i class="fas fa-search me-1"></i> <?= $this->__('common.show') ?>
                 </button>
             </div>
         </form>
@@ -53,7 +53,7 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
-                <h6 class="card-title">Всего звонков</h6>
+                <h6 class="card-title"><?= $this->__('reports.total_calls') ?></h6>
                 <h2 class="mb-0"><?= number_format($totals['total_calls']) ?></h2>
             </div>
         </div>
@@ -61,7 +61,7 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
-                <h6 class="card-title">Отвечено</h6>
+                <h6 class="card-title"><?= $this->__('reports.answered') ?></h6>
                 <h2 class="mb-0"><?= number_format($totals['answered']) ?></h2>
                 <small><?= $totals['answer_rate'] ?>%</small>
             </div>
@@ -70,7 +70,7 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-danger text-white">
             <div class="card-body">
-                <h6 class="card-title">Потеряно</h6>
+                <h6 class="card-title"><?= $this->__('reports.abandoned') ?></h6>
                 <h2 class="mb-0"><?= number_format($totals['abandoned']) ?></h2>
                 <small><?= $totals['abandon_rate'] ?>%</small>
             </div>
@@ -79,7 +79,7 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body">
-                <h6 class="card-title">Уровень ответа</h6>
+                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?></h6>
                 <h2 class="mb-0"><?= $totals['answer_rate'] ?>%</h2>
             </div>
         </div>
@@ -88,7 +88,7 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
 
 <!-- Hourly Chart -->
 <div class="card mb-4">
-    <div class="card-header">Активность по часам за сегодня</div>
+    <div class="card-header"><?= $this->__('reports.trend_hourly') ?></div>
     <div class="card-body">
         <canvas id="hourlyChart" height="80"></canvas>
     </div>
@@ -101,16 +101,16 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Очередь</th>
-                        <th class="text-center">Всего</th>
-                        <th class="text-center">Отвечено</th>
-                        <th class="text-center">Потеряно</th>
-                        <th class="text-center">Таймаут</th>
-                        <th class="text-center">% ответа</th>
-                        <th class="text-center">Ср. ожидание</th>
-                        <th class="text-center">Ср. разговор</th>
-                        <th class="text-center">Макс. ожидание</th>
-                        <th class="text-center">Сотрудников</th>
+                        <th><?= $this->__('reports.queue') ?></th>
+                        <th class="text-center"><?= $this->__('reports.total_calls') ?></th>
+                        <th class="text-center"><?= $this->__('reports.answered') ?></th>
+                        <th class="text-center"><?= $this->__('reports.abandoned') ?></th>
+                        <th class="text-center"><?= $this->__('reports.timeout') ?></th>
+                        <th class="text-center"><?= $this->__('reports.answer_rate') ?></th>
+                        <th class="text-center"><?= $this->__('reports.avg_wait_time') ?></th>
+                        <th class="text-center"><?= $this->__('reports.avg_talk_time') ?></th>
+                        <th class="text-center"><?= $this->__('reports.max_wait_time') ?></th>
+                        <th class="text-center"><?= $this->__('reports.agents_count') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -139,7 +139,7 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
                     <?php endforeach; ?>
                     <?php if (empty($queues)): ?>
                     <tr>
-                        <td colspan="10" class="text-center text-muted py-4">Нет данных за выбранный период</td>
+                        <td colspan="10" class="text-center text-muted py-4"><?= $this->__('reports.no_data_period') ?></td>
                     </tr>
                     <?php endif; ?>
                 </tbody>
@@ -157,7 +157,7 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
 $(document).ready(function() {
     $('#queue-filter').select2({
         theme: 'bootstrap-5',
-        placeholder: 'Все очереди',
+        placeholder: '<?= $this->__('reports.all_queues') ?>',
         allowClear: true,
         width: '100%'
     });
@@ -170,19 +170,19 @@ new Chart(ctx, {
     data: {
         labels: hourlyData.map(h => h.hour + ':00'),
         datasets: [{
-            label: 'Всего',
+            label: '<?= $this->__('reports.total_calls') ?>',
             data: hourlyData.map(h => h.total_calls),
             backgroundColor: 'rgba(54, 162, 235, 0.5)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1
         }, {
-            label: 'Отвечено',
+            label: '<?= $this->__('reports.answered') ?>',
             data: hourlyData.map(h => h.answered),
             backgroundColor: 'rgba(40, 167, 69, 0.5)',
             borderColor: 'rgba(40, 167, 69, 1)',
             borderWidth: 1
         }, {
-            label: 'Потеряно',
+            label: '<?= $this->__('reports.abandoned') ?>',
             data: hourlyData.map(h => h.abandoned),
             backgroundColor: 'rgba(220, 53, 69, 0.5)',
             borderColor: 'rgba(220, 53, 69, 1)',

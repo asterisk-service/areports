@@ -15,10 +15,10 @@ $stats = $stats ?? [];
         </div>
         <div class="btn-group">
             <a href="/areports/admin/users" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back
+                <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
             </a>
             <a href="/areports/admin/users/<?= $user['id'] ?>/edit" class="btn btn-outline-primary">
-                <i class="fas fa-edit me-2"></i>Edit
+                <i class="fas fa-edit me-2"></i><?= $this->__('common.edit') ?>
             </a>
         </div>
     </div>
@@ -33,7 +33,7 @@ $stats = $stats ?? [];
                     <h5><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></h5>
                     <p class="text-muted"><?= htmlspecialchars($user['role_name'] ?? 'No Role') ?></p>
                     <span class="badge bg-<?= $user['is_active'] ? 'success' : 'secondary' ?>">
-                        <?= $user['is_active'] ? 'Active' : 'Inactive' ?>
+                        <?= $user['is_active'] ? $this->__('common.active') : $this->__('common.inactive') ?>
                     </span>
                 </div>
             </div>

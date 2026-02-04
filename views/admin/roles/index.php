@@ -2,12 +2,12 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">Role Management</h1>
-        <p class="text-muted mb-0">Manage user roles and permissions</p>
+        <h1 class="h3 mb-0"><?= $this->__('admin.roles') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('admin.roles_subtitle') ?></p>
     </div>
     <?php if ($this->can('admin.roles.manage')): ?>
     <a href="/areports/admin/roles/create" class="btn btn-primary">
-        <i class="fas fa-plus me-1"></i> Add Role
+        <i class="fas fa-plus me-1"></i> <?= $this->__('admin.create_role') ?>
     </a>
     <?php endif; ?>
 </div>
@@ -18,11 +18,11 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Role</th>
-                        <th>Description</th>
-                        <th class="text-center">Users</th>
+                        <th><?= $this->__('admin.role') ?></th>
+                        <th><?= $this->__('common.description') ?></th>
+                        <th class="text-center"><?= $this->__('admin.users_count') ?></th>
                         <th class="text-center">System</th>
-                        <th>Actions</th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>

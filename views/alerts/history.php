@@ -6,9 +6,12 @@ $totalPages = $totalPages ?? 1;
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 mb-0">Alert History</h1>
+    <div>
+        <h1 class="h3 mb-0"><?= $this->__('alerts.history_title') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('alerts.history_subtitle') ?></p>
+    </div>
     <a href="/areports/alerts" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-2"></i>Back to Alerts
+        <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -17,20 +20,20 @@ $totalPages = $totalPages ?? 1;
         <?php if (empty($history)): ?>
         <div class="text-center py-5">
             <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
-            <p class="text-muted">No alerts have been triggered yet</p>
+            <p class="text-muted"><?= $this->__('alerts.no_history') ?></p>
         </div>
         <?php else: ?>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Alert</th>
-                        <th>Triggered At</th>
-                        <th>Value</th>
-                        <th>Threshold</th>
-                        <th>Message</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th><?= $this->__('alerts.alert') ?></th>
+                        <th><?= $this->__('alerts.triggered_at') ?></th>
+                        <th><?= $this->__('alerts.triggered_value') ?></th>
+                        <th><?= $this->__('alerts.threshold_value') ?></th>
+                        <th><?= $this->__('alerts.message') ?></th>
+                        <th><?= $this->__('alerts.status') ?></th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,7 +56,7 @@ $totalPages = $totalPages ?? 1;
                         </td>
                         <td>
                             <?php if ($item['acknowledged_at']): ?>
-                            <span class="badge bg-success">Acknowledged</span>
+                            <span class="badge bg-success"><?= $this->__('alerts.acknowledged') ?></span>
                             <br><small class="text-muted"><?= date('d/m/Y H:i', strtotime($item['acknowledged_at'])) ?></small>
                             <?php else: ?>
                             <span class="badge bg-warning text-dark">Pending</span>
@@ -62,7 +65,7 @@ $totalPages = $totalPages ?? 1;
                         <td>
                             <?php if (!$item['acknowledged_at']): ?>
                             <form method="POST" action="/areports/alerts/<?= $item['id'] ?>/acknowledge" style="display:inline">
-                                <button type="submit" class="btn btn-sm btn-success" title="Acknowledge">
+                                <button type="submit" class="btn btn-sm btn-success" title="<?= $this->__('alerts.acknowledge') ?>">
                                     <i class="fas fa-check"></i>
                                 </button>
                             </form>
@@ -79,7 +82,7 @@ $totalPages = $totalPages ?? 1;
             <ul class="pagination justify-content-center">
                 <?php if ($page > 1): ?>
                 <li class="page-item">
-                    <a class="page-link" href="?page=<?= $page - 1 ?>">Previous</a>
+                    <a class="page-link" href="?page=<?= $page - 1 ?>"><?= $this->__('common.previous') ?></a>
                 </li>
                 <?php endif; ?>
 
@@ -91,7 +94,7 @@ $totalPages = $totalPages ?? 1;
 
                 <?php if ($page < $totalPages): ?>
                 <li class="page-item">
-                    <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
+                    <a class="page-link" href="?page=<?= $page + 1 ?>"><?= $this->__('common.next') ?></a>
                 </li>
                 <?php endif; ?>
             </ul>

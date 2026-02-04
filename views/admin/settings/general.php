@@ -3,11 +3,11 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">General Settings</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.general_settings') ?></h1>
         <p class="text-muted mb-0">Basic application configuration</p>
     </div>
     <a href="/areports/admin/settings" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-1"></i> Back
+        <i class="fas fa-arrow-left me-1"></i> <?= $this->__('common.back') ?>
     </a>
 </div>
 
@@ -18,12 +18,12 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="form-label">Site Name</label>
+                    <label class="form-label"><?= $this->__('admin.site_name') ?></label>
                     <input type="text" class="form-control" name="site_name"
                            value="<?= $this->e($settings['site_name'] ?? 'aReports') ?>" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Timezone</label>
+                    <label class="form-label"><?= $this->__('admin.timezone') ?></label>
                     <select class="form-select" name="timezone" required>
                         <?php
                         $timezones = DateTimeZone::listIdentifiers();
@@ -38,7 +38,7 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="form-label">Date Format</label>
+                    <label class="form-label"><?= $this->__('admin.date_format') ?></label>
                     <select class="form-select" name="date_format" required>
                         <option value="d/m/Y" <?= ($settings['date_format'] ?? '') === 'd/m/Y' ? 'selected' : '' ?>>DD/MM/YYYY (31/12/2024)</option>
                         <option value="m/d/Y" <?= ($settings['date_format'] ?? '') === 'm/d/Y' ? 'selected' : '' ?>>MM/DD/YYYY (12/31/2024)</option>
@@ -79,7 +79,7 @@
             <hr>
 
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-1"></i> Save Settings
+                <i class="fas fa-save me-1"></i> <?= $this->__('admin.save_settings') ?>
             </button>
         </form>
     </div>

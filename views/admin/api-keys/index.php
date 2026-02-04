@@ -7,9 +7,9 @@ $apiKeys = $apiKeys ?? [];
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">API Keys</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.api_keys') ?></h1>
         <a href="/areports/admin/api-keys/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Create API Key
+            <i class="fas fa-plus me-2"></i><?= $this->__('admin.create_api_key') ?>
         </a>
     </div>
 
@@ -28,12 +28,12 @@ $apiKeys = $apiKeys ?? [];
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Key</th>
+                            <th><?= $this->__('admin.key_name') ?></th>
+                            <th><?= $this->__('admin.api_key') ?></th>
                             <th>Created By</th>
-                            <th>Last Used</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th><?= $this->__('admin.last_used') ?></th>
+                            <th><?= $this->__('common.status') ?></th>
+                            <th><?= $this->__('common.actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,9 +57,9 @@ $apiKeys = $apiKeys ?? [];
                             </td>
                             <td>
                                 <?php if ($key['is_active']): ?>
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success"><?= $this->__('common.active') ?></span>
                                 <?php else: ?>
-                                <span class="badge bg-secondary">Inactive</span>
+                                <span class="badge bg-secondary"><?= $this->__('common.inactive') ?></span>
                                 <?php endif; ?>
                             </td>
                             <td>

@@ -11,7 +11,7 @@ $settings = $settings ?? [];
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="fab fa-telegram me-2"></i>Telegram Settings
+                        <i class="fab fa-telegram me-2"></i><?= $this->__('admin.telegram_settings') ?>
                     </h5>
                 </div>
                 <div class="card-body">
@@ -26,13 +26,13 @@ $settings = $settings ?? [];
                                                name="telegram_enabled" value="1"
                                                <?= ($settings['telegram_enabled'] ?? '') ? 'checked' : '' ?>>
                                         <label class="form-check-label" for="telegram_enabled">
-                                            Enable Telegram Notifications
+                                            <?= $this->__('admin.telegram_enabled') ?>
                                         </label>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="telegram_bot_token" class="form-label">Bot Token</label>
+                                    <label for="telegram_bot_token" class="form-label"><?= $this->__('admin.bot_token') ?></label>
                                     <input type="password" class="form-control" id="telegram_bot_token"
                                            name="telegram_bot_token"
                                            value="<?= htmlspecialchars($settings['telegram_bot_token'] ?? '') ?>"
@@ -43,7 +43,7 @@ $settings = $settings ?? [];
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="telegram_default_chat" class="form-label">Default Chat ID</label>
+                                    <label for="telegram_default_chat" class="form-label"><?= $this->__('admin.chat_id') ?></label>
                                     <input type="text" class="form-control" id="telegram_default_chat"
                                            name="telegram_default_chat"
                                            value="<?= htmlspecialchars($settings['telegram_default_chat'] ?? '') ?>"
@@ -148,9 +148,9 @@ $settings = $settings ?? [];
                         <hr>
 
                         <div class="d-flex justify-content-end gap-2">
-                            <a href="/areports/admin/settings" class="btn btn-secondary">Cancel</a>
+                            <a href="/areports/admin/settings" class="btn btn-secondary"><?= $this->__('common.cancel') ?></a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Save Settings
+                                <i class="fas fa-save me-2"></i><?= $this->__('admin.save_settings') ?>
                             </button>
                         </div>
                     </form>

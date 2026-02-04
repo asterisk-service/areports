@@ -7,9 +7,9 @@ $layouts = $layouts ?? [];
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Wallboard Layouts</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.wallboard_layouts') ?></h1>
         <a href="/areports/admin/wallboard-layouts/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>New Layout
+            <i class="fas fa-plus me-2"></i><?= $this->__('admin.create_layout') ?>
         </a>
     </div>
 
@@ -28,11 +28,11 @@ $layouts = $layouts ?? [];
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Description</th>
+                            <th><?= $this->__('admin.layout_name') ?></th>
+                            <th><?= $this->__('common.description') ?></th>
                             <th>Widgets</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th><?= $this->__('common.status') ?></th>
+                            <th><?= $this->__('common.actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,9 +50,9 @@ $layouts = $layouts ?? [];
                             </td>
                             <td>
                                 <?php if ($layout['is_active'] ?? 0): ?>
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success"><?= $this->__('common.active') ?></span>
                                 <?php else: ?>
-                                <span class="badge bg-secondary">Inactive</span>
+                                <span class="badge bg-secondary"><?= $this->__('common.inactive') ?></span>
                                 <?php endif; ?>
                             </td>
                             <td>

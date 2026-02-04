@@ -1,0 +1,33 @@
+<?php
+return [
+    'recordings' => 'Записи разговоров',
+    'recordings_subtitle' => 'Прослушивание и управление записями',
+    'evaluations' => 'Оценки',
+    'evaluations_subtitle' => 'Результаты оценки качества',
+    'evaluate' => 'Оценить',
+    'evaluate_call' => 'Оценить звонок',
+    'score' => 'Балл',
+    'evaluator' => 'Оценщик',
+    'evaluated_at' => 'Дата оценки',
+    'comments' => 'Комментарии',
+    'play' => 'Воспроизвести',
+    'download' => 'Скачать',
+    'no_recordings' => 'Записи не найдены',
+    'no_evaluations' => 'Оценки не найдены',
+    'call_info' => 'Информация о звонке',
+    'criteria' => 'Критерии',
+    'submit_evaluation' => 'Сохранить оценку',
+    'evaluation_saved' => 'Оценка сохранена',
+
+    // Calibration
+    'calibration' => 'Калибровочные сессии',
+    'calibration_subtitle' => 'Калибровка оценки качества',
+    'create_session' => 'Создать сессию',
+    'session_name' => 'Название сессии',
+    'participants' => 'Участники',
+    'start_session' => 'Начать сессию',
+    'complete_session' => 'Завершить сессию',
+    'results' => 'Результаты',
+    'variance' => 'Отклонение',
+    'agreement' => 'Согласованность',
+];

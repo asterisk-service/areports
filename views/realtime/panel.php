@@ -164,8 +164,8 @@
 <!-- Page Header with Tabs -->
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="d-flex align-items-center">
-        <a href="/areports/dashboard" class="tab-link">Главная</a>
-        <a href="/areports/realtime" class="tab-link active">Реальное время</a>
+        <a href="/areports/dashboard" class="tab-link"><?= $this->__('dashboard.title') ?></a>
+        <a href="/areports/realtime" class="tab-link active"><?= $this->__('realtime.title') ?></a>
         <a href="/areports/wallboard" class="tab-link">Табло</a>
     </div>
 </div>
@@ -174,11 +174,11 @@
 <div class="realtime-control-panel">
     <div class="control-group">
         <button type="button" class="btn btn-secondary btn-sm" id="btnReload">
-            <i class="fas fa-sync-alt me-1"></i> Обновить
+            <i class="fas fa-sync-alt me-1"></i> <?= $this->__('realtime.refresh') ?>
         </button>
 
         <div class="control-item">
-            <label>Обновлено</label>
+            <label><?= $this->__('realtime.updated') ?></label>
             <span class="update-time" id="updateTime">--:--:--</span>
             <span id="connectionStatus" class="ms-1" title="Статус соединения">
                 <i class="fas fa-circle text-secondary" style="font-size: 8px;"></i>
@@ -186,7 +186,7 @@
         </div>
 
         <div class="control-item">
-            <label>Интервал</label>
+            <label><?= $this->__('realtime.interval') ?></label>
             <select id="refreshInterval" class="form-select form-select-sm">
                 <option value="5">5с</option>
                 <option value="10">10с</option>
@@ -197,7 +197,7 @@
         </div>
 
         <div class="control-item">
-            <label>Сводка</label>
+            <label><?= $this->__('realtime.summary') ?></label>
             <select id="showRecap" class="form-select form-select-sm">
                 <option value="1">Показать</option>
                 <option value="0">Скрыть</option>
@@ -205,7 +205,7 @@
         </div>
 
         <div class="control-item">
-            <label>Звонки</label>
+            <label><?= $this->__('realtime.calls') ?></label>
             <select id="showCalls" class="form-select form-select-sm">
                 <option value="1">Показать</option>
                 <option value="0">Скрыть</option>
@@ -213,7 +213,7 @@
         </div>
 
         <div class="control-item">
-            <label>Операторы</label>
+            <label><?= $this->__('realtime.agents') ?></label>
             <select id="showAgents" class="form-select form-select-sm">
                 <option value="1">Показать</option>
                 <option value="0">Скрыть</option>
@@ -221,9 +221,9 @@
         </div>
 
         <div class="control-item">
-            <label>Очереди</label>
+            <label><?= $this->__('realtime.queues') ?></label>
             <select id="filterQueues" class="form-select form-select-sm" style="min-width: 100px;">
-                <option value="">Все</option>
+                <option value=""><?= $this->__('realtime.filter_all') ?></option>
                 <?php foreach ($queues as $queue): ?>
                 <option value="<?= $this->e($queue['queue_number']) ?>"><?= $this->e($queue['display_name']) ?></option>
                 <?php endforeach; ?>
@@ -231,19 +231,19 @@
         </div>
 
         <div class="control-item">
-            <label>Операторы</label>
+            <label><?= $this->__('realtime.agents') ?></label>
             <select id="filterAgents" class="form-select form-select-sm">
-                <option value="all">Все</option>
-                <option value="members" selected>Участники</option>
-                <option value="logged">В системе</option>
-                <option value="paused">На паузе</option>
-                <option value="available">Свободные</option>
+                <option value="all"><?= $this->__('realtime.filter_all') ?></option>
+                <option value="members" selected><?= $this->__('realtime.filter_members') ?></option>
+                <option value="logged"><?= $this->__('realtime.filter_logged_in') ?></option>
+                <option value="paused"><?= $this->__('realtime.filter_paused') ?></option>
+                <option value="available"><?= $this->__('realtime.filter_available') ?></option>
             </select>
         </div>
 
         <div class="control-item ms-auto">
-            <button type="button" class="btn btn-outline-primary btn-sm" id="btnAddMember" title="Добавить оператора в очередь">
-                <i class="fas fa-user-plus me-1"></i> Добавить
+            <button type="button" class="btn btn-outline-primary btn-sm" id="btnAddMember" title="<?= $this->__('realtime.add_agent') ?>">
+                <i class="fas fa-user-plus me-1"></i> <?= $this->__('realtime.add_agent') ?>
             </button>
         </div>
     </div>
@@ -251,7 +251,7 @@
 
 <!-- Queue List Display -->
 <div class="queue-list-display" id="queueListDisplay">
-    <strong>Очереди:</strong> <span id="selectedQueues">Загрузка...</span>
+    <strong><?= $this->__('realtime.queues') ?>:</strong> <span id="selectedQueues"><?= $this->__('realtime.error_loading') ?>...</span>
 </div>
 
 <!-- Queue Summary Section -->
@@ -261,20 +261,20 @@
             <thead>
                 <tr>
                     <th style="width: 30px;"></th>
-                    <th>Очередь</th>
-                    <th class="text-center">Операторов</th>
-                    <th class="text-center">Свободных</th>
-                    <th class="text-center">На паузе</th>
+                    <th><?= $this->__('realtime.queue') ?></th>
+                    <th class="text-center"><?= $this->__('realtime.agents_count') ?></th>
+                    <th class="text-center"><?= $this->__('realtime.available') ?></th>
+                    <th class="text-center"><?= $this->__('realtime.paused') ?></th>
                     <th class="text-center">Недост.</th>
                     <th class="text-center">Занят</th>
-                    <th class="text-center">Ожидают</th>
-                    <th class="text-center">Входящие</th>
-                    <th class="text-center">Исходящие</th>
+                    <th class="text-center"><?= $this->__('realtime.waiting') ?></th>
+                    <th class="text-center"><?= $this->__('realtime.inbound') ?></th>
+                    <th class="text-center"><?= $this->__('realtime.outbound') ?></th>
                 </tr>
             </thead>
             <tbody id="queueSummaryBody">
                 <tr class="no-data-row">
-                    <td colspan="10">Загрузка данных очередей...</td>
+                    <td colspan="10"><?= $this->__('realtime.error_loading') ?>...</td>
                 </tr>
             </tbody>
         </table>
@@ -296,25 +296,25 @@
 
 <!-- Calls Being Processed Section -->
 <div id="sectionCalls">
-    <div class="section-header">Обрабатываемые звонки:</div>
+    <div class="section-header"><?= $this->__('realtime.active_calls_title') ?>:</div>
     <div class="table-responsive">
         <table class="table table-bordered table-hover realtime-table mb-0" id="callsTable">
             <thead>
                 <tr>
-                    <th>Очередь</th>
-                    <th>Звонящий</th>
+                    <th><?= $this->__('realtime.queue') ?></th>
+                    <th><?= $this->__('realtime.caller') ?></th>
                     <th>Поступил</th>
                     <th>IVR</th>
-                    <th>Ожидание</th>
-                    <th>Длительность</th>
-                    <th>Оператор</th>
+                    <th><?= $this->__('realtime.waiting') ?></th>
+                    <th><?= $this->__('realtime.duration') ?></th>
+                    <th><?= $this->__('realtime.agent') ?></th>
                     <th>MOH</th>
                     <th>Обсл.</th>
                 </tr>
             </thead>
             <tbody id="callsBody">
                 <tr class="no-data-row">
-                    <td colspan="9">Нет активных звонков</td>
+                    <td colspan="9"><?= $this->__('realtime.no_active_calls') ?></td>
                 </tr>
             </tbody>
         </table>
@@ -336,24 +336,24 @@
 
 <!-- Agents Currently Logged In Section -->
 <div id="sectionAgents">
-    <div class="section-header">Операторы в системе:</div>
+    <div class="section-header"><?= $this->__('realtime.agents_title') ?>:</div>
     <div class="table-responsive">
         <table class="table table-bordered table-hover realtime-table mb-0" id="agentsTable">
             <thead>
                 <tr>
-                    <th>Оператор</th>
-                    <th>Вход в систему</th>
-                    <th>Очереди</th>
-                    <th>Внутр. номер</th>
-                    <th class="text-center">Пауза</th>
+                    <th><?= $this->__('realtime.agent') ?></th>
+                    <th><?= $this->__('realtime.logged_in') ?></th>
+                    <th><?= $this->__('realtime.queues') ?></th>
+                    <th><?= $this->__('realtime.extension') ?></th>
+                    <th class="text-center"><?= $this->__('realtime.pause_reason') ?></th>
                     <th class="text-center">Обсл.</th>
-                    <th>Посл. звонок</th>
+                    <th><?= $this->__('realtime.last_call') ?></th>
                     <th>В очереди</th>
                 </tr>
             </thead>
             <tbody id="agentsBody">
                 <tr class="no-data-row">
-                    <td colspan="8">Нет операторов в системе</td>
+                    <td colspan="8"><?= $this->__('realtime.no_agents_online') ?></td>
                 </tr>
             </tbody>
         </table>
@@ -378,12 +378,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Добавить оператора в очередь</h5>
+                <h5 class="modal-title"><?= $this->__('realtime.add_agent') ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label">Очередь</label>
+                    <label class="form-label"><?= $this->__('realtime.select_queue') ?></label>
                     <select id="addMemberQueue" class="form-select">
                         <?php foreach ($queues as $queue): ?>
                         <option value="<?= $this->e($queue['queue_number']) ?>"><?= $this->e($queue['display_name']) ?></option>
@@ -391,13 +391,13 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Интерфейс оператора</label>
+                    <label class="form-label"><?= $this->__('realtime.select_agent') ?></label>
                     <input type="text" id="addMemberInterface" class="form-control" placeholder="напр., PJSIP/100">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-primary" id="btnConfirmAddMember">Добавить</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmAddMember"><?= $this->__('realtime.add_agent') ?></button>
             </div>
         </div>
     </div>
@@ -407,6 +407,53 @@
 
 <?php $this->section('scripts'); ?>
 <script>
+// Translation strings
+const __t = {
+    active_calls: '<?= $this->__('realtime.active_calls') ?>',
+    waiting_calls: '<?= $this->__('realtime.waiting_calls') ?>',
+    agents_online: '<?= $this->__('realtime.agents_online') ?>',
+    agents_available: '<?= $this->__('realtime.agents_available') ?>',
+    no_active_calls: '<?= $this->__('realtime.no_active_calls') ?>',
+    no_agents_online: '<?= $this->__('realtime.no_agents_online') ?>',
+    error_loading: '<?= $this->__('realtime.error_loading') ?>',
+    caller: '<?= $this->__('realtime.caller') ?>',
+    called: '<?= $this->__('realtime.called') ?>',
+    duration: '<?= $this->__('realtime.duration') ?>',
+    agent: '<?= $this->__('realtime.agent') ?>',
+    state: '<?= $this->__('realtime.state') ?>',
+    ringing: '<?= $this->__('realtime.ringing') ?>',
+    talking: '<?= $this->__('realtime.talking') ?>',
+    on_hold: '<?= $this->__('realtime.on_hold') ?>',
+    queue: '<?= $this->__('realtime.queue') ?>',
+    agents_count: '<?= $this->__('realtime.agents_count') ?>',
+    available: '<?= $this->__('realtime.available') ?>',
+    paused: '<?= $this->__('realtime.paused') ?>',
+    waiting: '<?= $this->__('realtime.waiting') ?>',
+    extension: '<?= $this->__('realtime.extension') ?>',
+    status: '<?= $this->__('realtime.status') ?>',
+    last_call: '<?= $this->__('realtime.last_call') ?>',
+    logged_in: '<?= $this->__('realtime.logged_in') ?>',
+    filter_all: '<?= $this->__('realtime.filter_all') ?>',
+    filter_members: '<?= $this->__('realtime.filter_members') ?>',
+    filter_logged_in: '<?= $this->__('realtime.filter_logged_in') ?>',
+    filter_paused: '<?= $this->__('realtime.filter_paused') ?>',
+    filter_available: '<?= $this->__('realtime.filter_available') ?>',
+    add_agent: '<?= $this->__('realtime.add_agent') ?>',
+    select_queue: '<?= $this->__('realtime.select_queue') ?>',
+    select_agent: '<?= $this->__('realtime.select_agent') ?>',
+    seconds_ago: '<?= $this->__('realtime.seconds_ago') ?>',
+    minutes_ago: '<?= $this->__('realtime.minutes_ago') ?>',
+    hours_ago: '<?= $this->__('realtime.hours_ago') ?>',
+    days_ago: '<?= $this->__('realtime.days_ago') ?>',
+    just_now: '<?= $this->__('realtime.just_now') ?>',
+    inbound: '<?= $this->__('realtime.inbound') ?>',
+    outbound: '<?= $this->__('realtime.outbound') ?>',
+    sla: '<?= $this->__('realtime.sla') ?>',
+    answered_today: '<?= $this->__('realtime.answered_today') ?>',
+    abandoned_today: '<?= $this->__('realtime.abandoned_today') ?>',
+    pause_reason: '<?= $this->__('realtime.pause_reason') ?>'
+};
+
 var RealtimePanel = {
     refreshTimer: null,
     lastUpdate: null,
@@ -539,7 +586,7 @@ var RealtimePanel = {
 
         }).fail(function() {
             self.setConnectionStatus(false);
-            aReports.toast('Ошибка загрузки данных', 'error');
+            aReports.toast(__t.error_loading, 'error');
         }).always(function() {
             self.isLoading = false;
             $('#btnReload').prop('disabled', false).find('i').removeClass('fa-spin');
@@ -551,8 +598,8 @@ var RealtimePanel = {
         $tbody.empty();
 
         if (!queues || queues.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="10">Нет данных по очередям</td></tr>');
-            $('#selectedQueues').text('Нет');
+            $tbody.html('<tr class="no-data-row"><td colspan="10">' + __t.error_loading + '</td></tr>');
+            $('#selectedQueues').text(__t.filter_all);
             return;
         }
 
@@ -616,7 +663,7 @@ var RealtimePanel = {
             var $summaryRow = $('<tr class="summary-row">');
             $summaryRow.html(
                 '<td></td>' +
-                '<td>Все выбранные</td>' +
+                '<td>' + __t.filter_all + '</td>' +
                 '<td class="text-center">' + totals.agents + '</td>' +
                 '<td class="text-center ' + readyClass + '">' + totals.ready + '</td>' +
                 '<td class="text-center">' + totals.paused + '</td>' +
@@ -674,7 +721,7 @@ var RealtimePanel = {
         var activeCalls = calls || [];
 
         if (activeCalls.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="9">Нет активных звонков</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="9">' + __t.no_active_calls + '</td></tr>');
             return;
         }
 
@@ -700,7 +747,7 @@ var RealtimePanel = {
         $tbody.empty();
 
         if (!agents || agents.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="8">Нет операторов в системе</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="8">' + __t.no_agents_online + '</td></tr>');
             return;
         }
 
@@ -715,7 +762,7 @@ var RealtimePanel = {
         }
 
         if (filteredAgents.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="8">Нет операторов по фильтру</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="8">' + __t.no_agents_online + '</td></tr>');
             return;
         }
 
@@ -724,7 +771,7 @@ var RealtimePanel = {
             var pauseClass = '';
 
             if (agent.paused) {
-                pauseStatus = agent.paused_reason || 'На паузе';
+                pauseStatus = agent.paused_reason || __t.paused;
                 pauseClass = 'highlight-zero';
             }
 
@@ -767,7 +814,7 @@ var RealtimePanel = {
         var iface = $('#addMemberInterface').val();
 
         if (!queue || !iface) {
-            aReports.toast('Заполните все поля', 'warning');
+            aReports.toast(__t.error_loading, 'warning');
             return;
         }
 
@@ -781,16 +828,16 @@ var RealtimePanel = {
             },
             success: function(res) {
                 if (res.success) {
-                    aReports.toast('Оператор добавлен', 'success');
+                    aReports.toast(__t.add_agent, 'success');
                     $('#addMemberModal').modal('hide');
                     $('#addMemberInterface').val('');
                     RealtimePanel.loadData();
                 } else {
-                    aReports.toast(res.message || 'Ошибка добавления', 'error');
+                    aReports.toast(res.message || __t.error_loading, 'error');
                 }
             },
             error: function() {
-                aReports.toast('Ошибка добавления оператора', 'error');
+                aReports.toast(__t.error_loading, 'error');
             }
         });
     },
@@ -825,14 +872,14 @@ var RealtimePanel = {
     },
 
     formatLastCall: function(timestamp) {
-        if (!timestamp || timestamp === 0) return 'Нет';
+        if (!timestamp || timestamp === 0) return '-';
         var now = Math.floor(Date.now() / 1000);
         var diff = now - timestamp;
 
-        if (diff < 60) return diff + 'с назад';
-        if (diff < 3600) return Math.floor(diff / 60) + 'м назад';
-        if (diff < 86400) return Math.floor(diff / 3600) + 'ч назад';
-        return Math.floor(diff / 86400) + 'д назад';
+        if (diff < 60) return __t.seconds_ago.replace(':n', diff);
+        if (diff < 3600) return __t.minutes_ago.replace(':n', Math.floor(diff / 60));
+        if (diff < 86400) return __t.hours_ago.replace(':n', Math.floor(diff / 3600));
+        return __t.days_ago.replace(':n', Math.floor(diff / 86400));
     }
 };
 
@@ -864,7 +911,7 @@ function exportTable(type, format) {
     if (format === 'clipboard') {
         var text = data.map(function(row) { return row.join('\t'); }).join('\n');
         navigator.clipboard.writeText(text).then(function() {
-            aReports.toast('Скопировано в буфер', 'success');
+            aReports.toast('Copied', 'success');
         });
     } else if (format === 'csv') {
         var csv = data.map(function(row) {

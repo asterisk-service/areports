@@ -1,8 +1,8 @@
 <?php $this->section('content'); ?>
 
 <div class="mb-4">
-    <h1 class="h3 mb-0">Audit Log</h1>
-    <p class="text-muted mb-0">System activity history</p>
+    <h1 class="h3 mb-0"><?= $this->__('admin.audit_log') ?></h1>
+    <p class="text-muted mb-0"><?= $this->__('admin.audit_subtitle') ?></p>
 </div>
 
 <!-- Filters -->
@@ -21,7 +21,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label">Action</label>
+                <label class="form-label"><?= $this->__('admin.action') ?></label>
                 <select class="form-select" name="action">
                     <option value="">All Actions</option>
                     <?php foreach ($actions as $act): ?>
@@ -32,7 +32,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label">User</label>
+                <label class="form-label"><?= $this->__('admin.user') ?></label>
                 <select class="form-select" name="user_id">
                     <option value="">All Users</option>
                     <?php foreach ($users as $u): ?>
@@ -44,7 +44,7 @@
             </div>
             <div class="col-md-3 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Filter
+                    <i class="fas fa-search me-1"></i> <?= $this->__('common.filter') ?>
                 </button>
             </div>
         </form>
@@ -57,11 +57,11 @@
             <table class="table table-hover table-sm">
                 <thead>
                     <tr>
-                        <th>Date/Time</th>
-                        <th>User</th>
-                        <th>Action</th>
+                        <th><?= $this->__('admin.timestamp') ?></th>
+                        <th><?= $this->__('admin.user') ?></th>
+                        <th><?= $this->__('admin.action') ?></th>
                         <th>Entity</th>
-                        <th>IP Address</th>
+                        <th><?= $this->__('admin.ip_address') ?></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -228,12 +228,42 @@ class App
     }
 
     /**
+     * Get the language manager
+     */
+    public function getLang(): Lang
+    {
+        return Lang::getInstance();
+    }
+
+    /**
+     * Initialize locale from session/cookie/default
+     */
+    private function initLocale(): void
+    {
+        $lang = Lang::getInstance();
+        $session = $this->getSession();
+
+        $locale = $session->get('locale')
+            ?? $_COOKIE['areports_locale']
+            ?? 'en';
+
+        if (!in_array($locale, ['en', 'ru'])) {
+            $locale = 'en';
+        }
+
+        $lang->setLocale($locale);
+    }
+
+    /**
      * Run the application
      */
     public function run(): void
     {
         // Start session
         $this->getSession();
+
+        // Initialize language
+        $this->initLocale();
 
         // Load routes
         require dirname(__DIR__) . '/config/routes.php';

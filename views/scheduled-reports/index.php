@@ -7,10 +7,10 @@ $reports = $reports ?? [];
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Scheduled Reports</h1>
+        <h1 class="h3 mb-0"><?= $this->__('menu.scheduled_reports') ?></h1>
         <?php if ($this->can('scheduled-reports.manage')): ?>
         <a href="/areports/scheduled-reports/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>New Scheduled Report
+            <i class="fas fa-plus me-2"></i><?= $this->__('common.create') ?> Scheduled Report
         </a>
         <?php endif; ?>
     </div>
@@ -32,14 +32,14 @@ $reports = $reports ?? [];
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Type</th>
+                            <th><?= $this->__('common.name') ?></th>
+                            <th><?= $this->__('common.type') ?></th>
                             <th>Schedule</th>
                             <th>Last Run</th>
                             <th>Next Run</th>
-                            <th>Status</th>
+                            <th><?= $this->__('common.status') ?></th>
                             <th>Created By</th>
-                            <th>Actions</th>
+                            <th><?= $this->__('common.actions') ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,9 +90,9 @@ $reports = $reports ?? [];
                             </td>
                             <td>
                                 <?php if ($report['is_active']): ?>
-                                <span class="badge bg-success">Active</span>
+                                <span class="badge bg-success"><?= $this->__('common.active') ?></span>
                                 <?php else: ?>
-                                <span class="badge bg-secondary">Inactive</span>
+                                <span class="badge bg-secondary"><?= $this->__('common.inactive') ?></span>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -101,10 +101,10 @@ $reports = $reports ?? [];
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <?php if ($this->can('scheduled-reports.manage')): ?>
-                                    <a href="/areports/scheduled-reports/<?= $report['id'] ?>/edit" class="btn btn-outline-secondary" title="Edit">
+                                    <a href="/areports/scheduled-reports/<?= $report['id'] ?>/edit" class="btn btn-outline-secondary" title="<?= $this->__('common.edit') ?>">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button type="button" class="btn btn-outline-danger" title="Delete"
+                                    <button type="button" class="btn btn-outline-danger" title="<?= $this->__('common.delete') ?>"
                                             onclick="deleteReport(<?= $report['id'] ?>, '<?= htmlspecialchars($report['name'], ENT_QUOTES) ?>')">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -134,9 +134,9 @@ $reports = $reports ?? [];
                 <p class="text-muted small">This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= $this->__('common.cancel') ?></button>
                 <form id="deleteForm" method="POST" style="display: inline;">
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger"><?= $this->__('common.delete') ?></button>
                 </form>
             </div>
         </div>

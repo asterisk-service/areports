@@ -3,12 +3,12 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h1 class="h3 mb-0">User Management</h1>
-        <p class="text-muted mb-0">Manage system users and access</p>
+        <h1 class="h3 mb-0"><?= $this->__('admin.users') ?></h1>
+        <p class="text-muted mb-0"><?= $this->__('admin.users_subtitle') ?></p>
     </div>
     <?php if ($this->can('admin.users.manage')): ?>
     <a href="/areports/admin/users/create" class="btn btn-primary">
-        <i class="fas fa-plus me-1"></i> Add User
+        <i class="fas fa-plus me-1"></i> <?= $this->__('admin.create_user') ?>
     </a>
     <?php endif; ?>
 </div>
@@ -20,14 +20,14 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Extension</th>
-                        <th>Status</th>
-                        <th>Last Login</th>
-                        <th>Actions</th>
+                        <th><?= $this->__('common.name') ?></th>
+                        <th><?= $this->__('admin.username') ?></th>
+                        <th><?= $this->__('admin.email') ?></th>
+                        <th><?= $this->__('admin.role') ?></th>
+                        <th><?= $this->__('admin.extension') ?></th>
+                        <th><?= $this->__('common.status') ?></th>
+                        <th><?= $this->__('admin.last_login') ?></th>
+                        <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,13 +46,13 @@
                         <td><?= $this->e($u['extension'] ?: '-') ?></td>
                         <td>
                             <?php if ($u['is_active']): ?>
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success"><?= $this->__('common.active') ?></span>
                             <?php else: ?>
-                            <span class="badge bg-secondary">Inactive</span>
+                            <span class="badge bg-secondary"><?= $this->__('common.inactive') ?></span>
                             <?php endif; ?>
                         </td>
                         <td>
-                            <?= $u['last_login'] ? $this->formatDateTime($u['last_login']) : 'Never' ?>
+                            <?= $u['last_login'] ? $this->formatDateTime($u['last_login']) : $this->__('common.never') ?>
                         </td>
                         <td>
                             <?php if ($this->can('admin.users.manage')): ?>
@@ -69,9 +69,9 @@
                                     </button>
                                 </form>
                                 <form action="/areports/admin/users/<?= $u['id'] ?>/delete" method="POST" class="d-inline"
-                                      onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                      onsubmit="return confirm('<?= $this->__('admin.confirm_delete_user') ?>')">
                                     <?= $this->csrf() ?>
-                                    <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                    <button type="submit" class="btn btn-outline-danger" title="<?= $this->__('common.delete') ?>">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>

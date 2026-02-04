@@ -7,7 +7,7 @@ $notifications = $notifications ?? [];
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Notifications</h1>
+        <h1 class="h3 mb-0"><?= $this->__('menu.notifications') ?></h1>
         <?php if (!empty($notifications)): ?>
         <form method="POST" action="/areports/notifications/mark-all-read">
             <button type="submit" class="btn btn-outline-primary">
@@ -22,7 +22,7 @@ $notifications = $notifications ?? [];
             <?php if (empty($notifications)): ?>
             <div class="text-center py-5">
                 <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
-                <p class="text-muted">No notifications</p>
+                <p class="text-muted"><?= $this->__('menu.no_notifications') ?></p>
             </div>
             <?php else: ?>
             <div class="list-group list-group-flush">

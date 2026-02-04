@@ -6,9 +6,9 @@
 
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Create Wallboard Layout</h1>
+        <h1 class="h3 mb-0"><?= $this->__('admin.create_layout') ?></h1>
         <a href="/areports/admin/wallboard-layouts" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back
+            <i class="fas fa-arrow-left me-2"></i><?= $this->__('common.back') ?>
         </a>
     </div>
 
@@ -86,9 +86,9 @@
 
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Create Layout
+                        <i class="fas fa-save me-2"></i><?= $this->__('admin.create_layout') ?>
                     </button>
-                    <a href="/areports/admin/wallboard-layouts" class="btn btn-secondary">Cancel</a>
+                    <a href="/areports/admin/wallboard-layouts" class="btn btn-secondary"><?= $this->__('common.cancel') ?></a>
                 </div>
             </div>
         </div>
