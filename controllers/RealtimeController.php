@@ -117,26 +117,41 @@ class RealtimeController extends Controller
             $ami = new AMIService();
             $channels = $ami->getActiveChannels();
 
-            // Group channels by bridge (connected calls)
-            $calls = [];
+            // Deduplicate calls - group by linkedid or uniqueid
+            // For ring-all queues, multiple channels exist for the same call
+            $uniqueCalls = [];
             foreach ($channels as $channel) {
-                $calls[] = [
-                    'channel' => $channel['channel'],
-                    'caller_id' => $channel['caller_id_num'],
-                    'caller_name' => $channel['caller_id_name'],
-                    'connected_to' => $channel['connected_line_num'],
-                    'state' => $channel['state_desc'],
-                    'duration' => $channel['duration'],
-                    'application' => $channel['application'],
-                    'context' => $channel['context'],
-                    'extension' => $channel['extension']
-                ];
+                // Use linkedid if available, otherwise use caller_id as key
+                $callKey = !empty($channel['linkedid'])
+                    ? $channel['linkedid']
+                    : ($channel['caller_id_num'] . '_' . floor($channel['duration'] / 10));
+
+                // Keep the first (or most relevant) channel per call
+                // Prefer channels that are connected (have connected_line_num)
+                if (!isset($uniqueCalls[$callKey])) {
+                    $uniqueCalls[$callKey] = [
+                        'channel' => $channel['channel'],
+                        'caller_id' => $channel['caller_id_num'],
+                        'caller_name' => $channel['caller_id_name'],
+                        'connected_to' => $channel['connected_line_num'],
+                        'state' => $channel['state_desc'],
+                        'duration' => $channel['duration'],
+                        'application' => $channel['application'],
+                        'context' => $channel['context'],
+                        'extension' => $channel['extension'],
+                        'linkedid' => $channel['linkedid'] ?? null
+                    ];
+                } elseif (!empty($channel['connected_line_num']) && empty($uniqueCalls[$callKey]['connected_to'])) {
+                    // Update if this channel has connection info and previous didn't
+                    $uniqueCalls[$callKey]['connected_to'] = $channel['connected_line_num'];
+                    $uniqueCalls[$callKey]['state'] = $channel['state_desc'];
+                }
             }
 
             $this->json([
                 'success' => true,
-                'data' => $calls,
-                'count' => count($calls),
+                'data' => array_values($uniqueCalls),
+                'count' => count($uniqueCalls),
                 'timestamp' => time()
             ]);
         } catch (\Exception $e) {

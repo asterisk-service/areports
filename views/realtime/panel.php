@@ -344,7 +344,6 @@
                     <th><?= $this->__('realtime.agent') ?></th>
                     <th><?= $this->__('realtime.logged_in') ?></th>
                     <th><?= $this->__('realtime.queues') ?></th>
-                    <th><?= $this->__('realtime.extension') ?></th>
                     <th class="text-center"><?= $this->__('realtime.pause_reason') ?></th>
                     <th class="text-center">Обсл.</th>
                     <th><?= $this->__('realtime.last_call') ?></th>
@@ -353,7 +352,7 @@
             </thead>
             <tbody id="agentsBody">
                 <tr class="no-data-row">
-                    <td colspan="8"><?= $this->__('realtime.no_agents_online') ?></td>
+                    <td colspan="7"><?= $this->__('realtime.no_agents_online') ?></td>
                 </tr>
             </tbody>
         </table>
@@ -747,7 +746,7 @@ var RealtimePanel = {
         $tbody.empty();
 
         if (!agents || agents.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="8">' + __t.no_agents_online + '</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="7">' + __t.no_agents_online + '</td></tr>');
             return;
         }
 
@@ -762,7 +761,7 @@ var RealtimePanel = {
         }
 
         if (filteredAgents.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="8">' + __t.no_agents_online + '</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="7">' + __t.no_agents_online + '</td></tr>');
             return;
         }
 
@@ -776,14 +775,26 @@ var RealtimePanel = {
             }
 
             var queueList = (agent.queues || []).join(', ') || '-';
-            var extension = agent.interface ? agent.interface.replace('PJSIP/', '').replace('SIP/', '') : '-';
+
+            // Extract extension number from interface
+            // LOCAL/202@from-queue/n -> 202
+            // PJSIP/100 -> 100
+            // SIP/200 -> 200
+            var extNumber = this.extractExtension(agent.interface);
+
+            // Build agent display: Name (Number) or just Number if no name
+            var agentDisplay = '';
+            if (agent.name && agent.name !== agent.interface) {
+                agentDisplay = agent.name + ' (' + extNumber + ')';
+            } else {
+                agentDisplay = extNumber;
+            }
 
             var $row = $('<tr>');
             $row.html(
-                '<td>' + this.escapeHtml(agent.name || agent.interface) + '</td>' +
+                '<td>' + this.escapeHtml(agentDisplay) + '</td>' +
                 '<td>' + this.formatLastLogin(agent.last_login) + '</td>' +
                 '<td>' + this.escapeHtml(queueList) + '</td>' +
-                '<td>' + this.escapeHtml(extension) + '</td>' +
                 '<td class="text-center ' + pauseClass + '">' + this.escapeHtml(pauseStatus) + '</td>' +
                 '<td class="text-center">' + (agent.calls_taken || 0) + '</td>' +
                 '<td>' + this.formatLastCall(agent.last_call) + '</td>' +
@@ -791,6 +802,18 @@ var RealtimePanel = {
             );
             $tbody.append($row);
         }, this);
+    },
+
+    extractExtension: function(iface) {
+        if (!iface) return '-';
+        // LOCAL/202@from-queue/n -> 202
+        var localMatch = iface.match(/LOCAL\/(\d+)@/);
+        if (localMatch) return localMatch[1];
+        // PJSIP/100 or SIP/200 -> 100 or 200
+        var sipMatch = iface.match(/(?:PJSIP|SIP)\/(\d+)/);
+        if (sipMatch) return sipMatch[1];
+        // Fallback: remove known prefixes
+        return iface.replace(/^(PJSIP|SIP|LOCAL)\//, '').replace(/@.*$/, '');
     },
 
     updateTimestamp: function() {
