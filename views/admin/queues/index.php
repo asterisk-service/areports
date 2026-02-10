@@ -23,6 +23,7 @@
                     <tr>
                         <th><?= $this->__('admin.queue_name') ?></th>
                         <th><?= $this->__('admin.display_name') ?></th>
+                        <th class="text-center"><?= $this->__('realtime.strategy') ?></th>
                         <th class="text-center"><?= $this->__('admin.sla_threshold') ?></th>
                         <th class="text-center">SLA Warning</th>
                         <th class="text-center">Monitored</th>
@@ -34,6 +35,22 @@
                     <tr>
                         <td><code><?= $this->e($queue['queue_number']) ?></code></td>
                         <td><strong><?= $this->e($queue['display_name']) ?></strong></td>
+                        <td class="text-center">
+                            <?php
+                            $strategy = $queueStrategies[$queue['queue_number']] ?? '-';
+                            $evenStrategies = ['rrmemory', 'leastrecent', 'fewestcalls', 'random', 'wrandom'];
+                            if (in_array($strategy, $evenStrategies)) {
+                                $badgeClass = 'bg-success';
+                            } elseif ($strategy === 'ringall') {
+                                $badgeClass = 'bg-warning text-dark';
+                            } elseif ($strategy === '-') {
+                                $badgeClass = 'bg-light text-muted';
+                            } else {
+                                $badgeClass = 'bg-secondary';
+                            }
+                            ?>
+                            <span class="badge <?= $badgeClass ?>"><?= $this->e($strategy) ?></span>
+                        </td>
                         <td class="text-center"><?= $queue['sla_threshold_seconds'] ?>s</td>
                         <td class="text-center"><?= $queue['warning_threshold_seconds'] ?>s</td>
                         <td class="text-center">
@@ -54,7 +71,7 @@
                     <?php endforeach; ?>
                     <?php if (empty($queues)): ?>
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No queues configured. Click "Sync Queues" to import from Asterisk.</td>
+                        <td colspan="7" class="text-center text-muted py-4">No queues configured. Click "Sync Queues" to import from Asterisk.</td>
                     </tr>
                     <?php endif; ?>
                 </tbody>

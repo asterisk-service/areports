@@ -7,6 +7,7 @@
 namespace aReports\Controllers\Admin;
 
 use aReports\Core\Controller;
+use aReports\Services\AMIService;
 use aReports\Services\QueueService;
 use aReports\Services\FreePBXService;
 
@@ -25,11 +26,24 @@ class QueueController extends Controller
         $freepbxService = new FreePBXService();
         $freepbxQueues = $freepbxService->getQueues();
 
+        // Get real-time queue strategies from AMI
+        $queueStrategies = [];
+        try {
+            $ami = new AMIService();
+            $queueStatus = $ami->getQueueStatus();
+            foreach ($queueStatus as $q) {
+                $queueStrategies[$q['name']] = $q['strategy'] ?? 'unknown';
+            }
+        } catch (\Exception $e) {
+            // AMI not available
+        }
+
         $this->render('admin/queues/index', [
             'title' => 'Queue Settings',
             'currentPage' => 'admin.queues',
             'queues' => $queues,
-            'freepbxQueues' => $freepbxQueues
+            'freepbxQueues' => $freepbxQueues,
+            'queueStrategies' => $queueStrategies
         ]);
     }
 

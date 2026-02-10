@@ -42,4 +42,9 @@ return [
     'my_recordings' => 'My Recordings',
     'no_extension' => 'No Extension Assigned',
     'no_extension_desc' => 'Your account does not have an extension assigned. Please contact the administrator.',
+    'caller' => 'Caller',
+    'callee' => 'Callee',
+    'did' => 'DID',
+    'pause_duration' => 'On pause',
+    'avg_duration' => 'Avg Duration',
 ];

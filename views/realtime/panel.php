@@ -262,11 +262,12 @@
                 <tr>
                     <th style="width: 30px;"></th>
                     <th><?= $this->__('realtime.queue') ?></th>
+                    <th class="text-center"><?= $this->__('realtime.strategy') ?></th>
                     <th class="text-center"><?= $this->__('realtime.agents_count') ?></th>
                     <th class="text-center"><?= $this->__('realtime.available') ?></th>
                     <th class="text-center"><?= $this->__('realtime.paused') ?></th>
-                    <th class="text-center">Недост.</th>
-                    <th class="text-center">Занят</th>
+                    <th class="text-center"><?= $this->__('realtime.unavailable') ?></th>
+                    <th class="text-center"><?= $this->__('realtime.busy') ?></th>
                     <th class="text-center"><?= $this->__('realtime.waiting') ?></th>
                     <th class="text-center"><?= $this->__('realtime.inbound') ?></th>
                     <th class="text-center"><?= $this->__('realtime.outbound') ?></th>
@@ -274,7 +275,7 @@
             </thead>
             <tbody id="queueSummaryBody">
                 <tr class="no-data-row">
-                    <td colspan="10"><?= $this->__('realtime.error_loading') ?>...</td>
+                    <td colspan="11"><?= $this->__('realtime.error_loading') ?>...</td>
                 </tr>
             </tbody>
         </table>
@@ -597,7 +598,7 @@ var RealtimePanel = {
         $tbody.empty();
 
         if (!queues || queues.length === 0) {
-            $tbody.html('<tr class="no-data-row"><td colspan="10">' + __t.error_loading + '</td></tr>');
+            $tbody.html('<tr class="no-data-row"><td colspan="11">' + __t.error_loading + '</td></tr>');
             $('#selectedQueues').text(__t.filter_all);
             return;
         }
@@ -640,10 +641,23 @@ var RealtimePanel = {
 
             var readyClass = stats.readyAgents === 0 ? 'highlight-zero' : '';
 
+            // Strategy badge - highlight non-even strategies
+            var strategy = queue.strategy || 'unknown';
+            var strategyBadge = '';
+            var evenStrategies = ['rrmemory', 'leastrecent', 'fewestcalls', 'random', 'wrandom'];
+            if (evenStrategies.indexOf(strategy) >= 0) {
+                strategyBadge = '<span class="badge bg-success">' + strategy + '</span>';
+            } else if (strategy === 'ringall') {
+                strategyBadge = '<span class="badge bg-warning text-dark">' + strategy + '</span>';
+            } else {
+                strategyBadge = '<span class="badge bg-secondary">' + strategy + '</span>';
+            }
+
             var $row = $('<tr>');
             $row.html(
                 '<td><span class="queue-icon"><i class="fas fa-layer-group"></i></span></td>' +
                 '<td>' + this.escapeHtml(queue.name) + '</td>' +
+                '<td class="text-center">' + strategyBadge + '</td>' +
                 '<td class="text-center">' + stats.totalAgents + '</td>' +
                 '<td class="text-center ' + readyClass + '">' + stats.readyAgents + '</td>' +
                 '<td class="text-center">' + stats.pausedAgents + '</td>' +
@@ -663,6 +677,7 @@ var RealtimePanel = {
             $summaryRow.html(
                 '<td></td>' +
                 '<td>' + __t.filter_all + '</td>' +
+                '<td></td>' +
                 '<td class="text-center">' + totals.agents + '</td>' +
                 '<td class="text-center ' + readyClass + '">' + totals.ready + '</td>' +
                 '<td class="text-center">' + totals.paused + '</td>' +

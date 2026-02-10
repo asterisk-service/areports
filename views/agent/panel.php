@@ -55,6 +55,7 @@
                     <div class="card-body text-center">
                         <h3 class="mb-0"><?= $this->formatDuration($todayStats['talk_time'] ?? 0) ?></h3>
                         <small><?= $this->__('agent.talk_time') ?></small>
+                        <br><small class="opacity-75"><?= $this->__('agent.avg_duration') ?>: <?= $this->formatDuration(round($todayStats['avg_duration'] ?? 0)) ?></small>
                     </div>
                 </div>
             </div>
@@ -75,7 +76,9 @@
                             <tr>
                                 <th><?= $this->__('agent.time') ?></th>
                                 <th><?= $this->__('agent.direction') ?></th>
-                                <th><?= $this->__('agent.number') ?></th>
+                                <th><?= $this->__('agent.caller') ?></th>
+                                <th><?= $this->__('agent.callee') ?></th>
+                                <th><?= $this->__('agent.did') ?></th>
                                 <th><?= $this->__('agent.duration') ?></th>
                                 <th><?= $this->__('agent.status') ?></th>
                             </tr>
@@ -83,16 +86,30 @@
                         <tbody>
                             <?php if (empty($recentCalls)): ?>
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
+                                <td colspan="7" class="text-center text-muted py-4">
                                     <?= $this->__('agent.no_calls_today') ?>
                                 </td>
                             </tr>
                             <?php else: ?>
                             <?php foreach (array_slice($recentCalls, 0, 15) as $call): ?>
                             <?php
-                                $isInbound = $call['dst'] === $extension || $call['cnum'] === $extension;
+                                // Determine direction: inbound if this extension is the destination/cnum
+                                $isInbound = ($call['dst'] === $extension || $call['cnum'] === $extension)
+                                             && $call['src'] !== $extension;
                                 $direction = $isInbound ? 'inbound' : 'outbound';
-                                $otherParty = $isInbound ? ($call['src'] ?: $call['cnum']) : $call['dst'];
+
+                                // Caller info
+                                $callerNum = $call['src'] ?: $call['cnum'] ?: '';
+                                $callerName = $call['cnam'] ?: '';
+                                $callerDisplay = $callerName ? "{$callerName} ({$callerNum})" : $callerNum;
+
+                                // Callee info
+                                $calleeNum = $call['dst'] ?: '';
+                                $calleeName = $call['dst_cnam'] ?: '';
+                                $calleeDisplay = $calleeName ? "{$calleeName} ({$calleeNum})" : $calleeNum;
+
+                                // DID
+                                $did = $call['did'] ?: '';
                             ?>
                             <tr>
                                 <td><?= date('H:i:s', strtotime($call['calldate'])) ?></td>
@@ -103,8 +120,10 @@
                                     <span class="badge bg-primary"><i class="fas fa-arrow-up"></i> <?= $this->__('agent.outbound') ?></span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?= $this->e($otherParty) ?></td>
-                                <td><?= $this->formatDuration($call['duration']) ?></td>
+                                <td><?= $this->e($callerDisplay) ?></td>
+                                <td><?= $this->e($calleeDisplay) ?></td>
+                                <td><?= $this->e($did) ?></td>
+                                <td><?= $this->formatDuration($call['billsec']) ?></td>
                                 <td>
                                     <?php
                                     $statusClass = match($call['disposition']) {
@@ -201,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const __t = {
         not_in_queue: '<?= $this->__('agent.not_in_queue') ?>',
         paused: '<?= $this->__('agent.paused') ?>',
+        pause_duration: '<?= $this->__('agent.pause_duration') ?>',
         available: '<?= $this->__('agent.available') ?>',
         busy: '<?= $this->__('agent.busy') ?>',
         ready: '<?= $this->__('agent.ready') ?>',
@@ -215,6 +235,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusContainer = document.getElementById('queue-status-container');
     const pauseModal = new bootstrap.Modal(document.getElementById('pauseModal'));
     let refreshInterval;
+    let pauseTimerInterval = null;
+    let serverTimeOffset = 0; // difference between server and client time
+
+    // Format seconds to HH:MM:SS
+    function formatPauseTime(seconds) {
+        if (seconds <= 0) return '0:00';
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        if (h > 0) {
+            return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+        return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    // Update all pause timers every second
+    function startPauseTimers() {
+        if (pauseTimerInterval) clearInterval(pauseTimerInterval);
+        pauseTimerInterval = setInterval(() => {
+            document.querySelectorAll('.pause-timer').forEach(el => {
+                const pauseStart = parseInt(el.dataset.pauseStart);
+                if (pauseStart > 0) {
+                    const now = Math.floor(Date.now() / 1000) - serverTimeOffset;
+                    const elapsed = now - pauseStart;
+                    el.textContent = formatPauseTime(elapsed > 0 ? elapsed : 0);
+                }
+            });
+        }, 1000);
+    }
 
     // Load queue status
     function loadQueueStatus() {
@@ -224,6 +273,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.error) {
                     statusContainer.innerHTML = `<div class="alert alert-danger m-3">${data.error}</div>`;
                     return;
+                }
+                // Calculate server time offset
+                if (data.server_time) {
+                    serverTimeOffset = Math.floor(Date.now() / 1000) - data.server_time;
                 }
                 renderQueueStatus(data.queues);
             })
@@ -239,19 +292,24 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        let hasPaused = false;
         let html = '<ul class="list-group list-group-flush">';
         queues.forEach(queue => {
             let statusBadge = '';
             let statusIcon = '';
-            let btnClass = '';
 
             if (!queue.in_queue) {
                 statusBadge = `<span class="badge bg-secondary">${__t.not_in_queue}</span>`;
                 statusIcon = 'fa-sign-out-alt text-secondary';
             } else if (queue.paused) {
+                hasPaused = true;
                 statusBadge = `<span class="badge bg-warning">${__t.paused}</span>`;
                 if (queue.paused_reason) {
                     statusBadge += ` <small class="text-muted">(${queue.paused_reason})</small>`;
+                }
+                // Pause timer
+                if (queue.last_pause && queue.last_pause > 0) {
+                    statusBadge += ` <span class="badge bg-warning text-dark pause-timer" data-pause-start="${queue.last_pause}"><i class="fas fa-clock me-1"></i>...</span>`;
                 }
                 statusIcon = 'fa-pause text-warning';
             } else if (queue.status === 'available') {
@@ -302,6 +360,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         html += '</ul>';
         statusContainer.innerHTML = html;
+
+        // Start pause timers if any agent is paused
+        if (hasPaused) {
+            startPauseTimers();
+        } else if (pauseTimerInterval) {
+            clearInterval(pauseTimerInterval);
+            pauseTimerInterval = null;
+        }
 
         // Attach event handlers
         attachQueueButtonHandlers();

@@ -30,29 +30,37 @@ class AgentPanelController extends Controller
             return;
         }
 
-        // Get agent's recent CDR
+        // Get agent's recent CDR - only calls involving this extension
+        // Use linkedid to avoid duplicate rows for the same call
         $cdrDb = App::getInstance()->getCdrDb();
+        $today = date('Y-m-d');
+
         $recentCalls = $cdrDb->fetchAll(
-            "SELECT * FROM cdr
-             WHERE src = ? OR dst = ? OR cnum = ?
+            "SELECT calldate, src, dst, did, cnum, cnam, outbound_cnum, dst_cnam,
+                    duration, billsec, disposition, dcontext, channel, dstchannel, linkedid
+             FROM cdr
+             WHERE (src = ? OR dst = ? OR cnum = ? OR dstchannel LIKE ?)
+             AND DATE(calldate) = ?
+             AND lastapp != 'Playback'
+             GROUP BY linkedid
              ORDER BY calldate DESC
              LIMIT 50",
-            [$extension, $extension, $extension]
+            [$extension, $extension, $extension, "%{$extension}%", $today]
         );
 
-        // Get today's stats
-        $today = date('Y-m-d');
+        // Get today's stats using billsec for actual talk time
         $todayStats = $cdrDb->fetch(
             "SELECT
-                COUNT(*) as total_calls,
-                SUM(CASE WHEN disposition = 'ANSWERED' THEN 1 ELSE 0 END) as answered,
-                SUM(CASE WHEN disposition != 'ANSWERED' THEN 1 ELSE 0 END) as missed,
-                SUM(CASE WHEN disposition = 'ANSWERED' THEN duration ELSE 0 END) as talk_time,
-                AVG(CASE WHEN disposition = 'ANSWERED' THEN duration ELSE NULL END) as avg_duration
+                COUNT(DISTINCT linkedid) as total_calls,
+                COUNT(DISTINCT CASE WHEN disposition = 'ANSWERED' THEN linkedid END) as answered,
+                COUNT(DISTINCT CASE WHEN disposition != 'ANSWERED' THEN linkedid END) as missed,
+                SUM(CASE WHEN disposition = 'ANSWERED' THEN billsec ELSE 0 END) as talk_time,
+                AVG(CASE WHEN disposition = 'ANSWERED' THEN billsec ELSE NULL END) as avg_duration
              FROM cdr
-             WHERE (src = ? OR dst = ? OR cnum = ?)
-             AND DATE(calldate) = ?",
-            [$extension, $extension, $extension, $today]
+             WHERE (src = ? OR dst = ? OR cnum = ? OR dstchannel LIKE ?)
+             AND DATE(calldate) = ?
+             AND lastapp != 'Playback'",
+            [$extension, $extension, $extension, "%{$extension}%", $today]
         );
 
         // Get queues the agent is a member of
@@ -136,6 +144,7 @@ class AgentPanelController extends Controller
                 $inQueue = false;
                 $paused = false;
                 $pausedReason = '';
+                $lastPause = 0;
                 $status = 'logged_out';
 
                 if (isset($queue['members'])) {
@@ -150,6 +159,7 @@ class AgentPanelController extends Controller
                             $inQueue = true;
                             $paused = isset($member['paused']) ? $member['paused'] : false;
                             $pausedReason = isset($member['paused_reason']) ? $member['paused_reason'] : '';
+                            $lastPause = isset($member['last_pause']) ? (int) $member['last_pause'] : 0;
 
                             if ($paused) {
                                 $status = 'paused';
@@ -182,6 +192,7 @@ class AgentPanelController extends Controller
                     'status' => $status,
                     'paused' => $paused,
                     'paused_reason' => $pausedReason,
+                    'last_pause' => $lastPause,
                     'calls_waiting' => isset($queue['calls']) ? $queue['calls'] : 0
                 ];
             }
@@ -189,7 +200,8 @@ class AgentPanelController extends Controller
             $this->json([
                 'success' => true,
                 'extension' => $extension,
-                'queues' => $agentQueues
+                'queues' => $agentQueues,
+                'server_time' => time()
             ]);
         } catch (\Exception $e) {
             $this->json(['error' => $e->getMessage()], 500);
