@@ -304,13 +304,13 @@
                 <tr>
                     <th><?= $this->__('realtime.queue') ?></th>
                     <th><?= $this->__('realtime.caller') ?></th>
-                    <th>Поступил</th>
+                    <th><?= $this->__('realtime.state') ?></th>
                     <th>IVR</th>
                     <th><?= $this->__('realtime.waiting') ?></th>
                     <th><?= $this->__('realtime.duration') ?></th>
                     <th><?= $this->__('realtime.agent') ?></th>
                     <th>MOH</th>
-                    <th>Обсл.</th>
+                    <th>-</th>
                 </tr>
             </thead>
             <tbody id="callsBody">
@@ -429,6 +429,7 @@ const __t = {
     available: '<?= $this->__('realtime.available') ?>',
     paused: '<?= $this->__('realtime.paused') ?>',
     waiting: '<?= $this->__('realtime.waiting') ?>',
+    waiting_label: '<?= $this->__('realtime.waiting') ?>',
     extension: '<?= $this->__('realtime.extension') ?>',
     status: '<?= $this->__('realtime.status') ?>',
     last_call: '<?= $this->__('realtime.last_call') ?>',
@@ -734,23 +735,54 @@ var RealtimePanel = {
 
         var activeCalls = calls || [];
 
+        // Filter by queue if needed
+        if (queueFilter) {
+            activeCalls = activeCalls.filter(function(c) {
+                return c.queue === queueFilter;
+            });
+        }
+
         if (activeCalls.length === 0) {
             $tbody.html('<tr class="no-data-row"><td colspan="9">' + __t.no_active_calls + '</td></tr>');
             return;
         }
 
         activeCalls.forEach(function(call) {
+            // Caller display: name (number) or just number
+            var callerDisplay = call.caller_id || '-';
+            if (call.caller_name && call.caller_name !== call.caller_id) {
+                callerDisplay = call.caller_name + ' (' + call.caller_id + ')';
+            }
+
+            // Agent display: name (ext) or just ext
+            var agentDisplay = call.connected_to || '-';
+            if (call.agent_name && call.connected_to) {
+                agentDisplay = call.agent_name + ' (' + call.connected_to + ')';
+            }
+
+            // State badge
+            var stateBadge = '';
+            if (call.state === 'waiting') {
+                stateBadge = '<span class="badge bg-warning text-dark">' + __t.waiting_label + '</span>';
+            } else if (call.state === 'talking' || call.state === 'up') {
+                stateBadge = '<span class="badge bg-success">' + __t.talking + '</span>';
+            } else if (call.state === 'ringing' || call.state === 'ring') {
+                stateBadge = '<span class="badge bg-info">' + __t.ringing + '</span>';
+            } else {
+                stateBadge = '<span class="badge bg-secondary">' + this.escapeHtml(call.state || '-') + '</span>';
+            }
+
             var $row = $('<tr>');
             $row.html(
-                '<td>' + this.escapeHtml(call.context || '-') + '</td>' +
-                '<td>' + this.escapeHtml(call.caller_id || call.caller_id_num || '-') + '</td>' +
-                '<td>' + this.formatTime(call.entered || 0) + '</td>' +
-                '<td>' + this.formatDuration(call.ivr_time || 0) + '</td>' +
-                '<td>' + this.formatDuration(call.wait || call.waiting || 0) + '</td>' +
+                '<td>' + this.escapeHtml(call.queue || '-') + '</td>' +
+                '<td>' + this.escapeHtml(callerDisplay) + '</td>' +
+                '<td>' + stateBadge + '</td>' +
+                '<td>-</td>' +
+                '<td>' + this.formatDuration(call.wait || 0) + '</td>' +
                 '<td class="call-duration">' + this.formatDuration(call.duration || 0) + '</td>' +
-                '<td>' + this.escapeHtml(call.connected_to || call.agent || '-') + '</td>' +
-                '<td>' + (call.moh ? 'Да' : '-') + '</td>' +
-                '<td>' + (call.srv || '-') + '</td>'
+                '<td>' + this.escapeHtml(agentDisplay) + '</td>' +
+                '<td>-</td>' +
+                '<td>-</td>'
             );
             $tbody.append($row);
         }, this);
