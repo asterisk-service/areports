@@ -328,9 +328,18 @@ class AMIService
 
             if (isset($data['Event'])) {
                 if ($data['Event'] === 'CoreShowChannel') {
+                    // Parse duration - AMI returns "HH:MM:SS" or seconds
+                    $rawDuration = $data['Duration'] ?? '0';
+                    $duration = 0;
+                    if (preg_match('/^(\d+):(\d+):(\d+)$/', $rawDuration, $dm)) {
+                        $duration = ($dm[1] * 3600) + ($dm[2] * 60) + $dm[3];
+                    } else {
+                        $duration = (int) $rawDuration;
+                    }
+
                     $channels[] = [
                         'channel' => $data['Channel'] ?? '',
-                        'uniqueid' => $data['Uniqueid'] ?? '',
+                        'uniqueid' => $data['Uniqueid'] ?? $data['UniqueID'] ?? '',
                         'context' => $data['Context'] ?? '',
                         'extension' => $data['Extension'] ?? '',
                         'priority' => $data['Priority'] ?? '',
@@ -338,12 +347,13 @@ class AMIService
                         'state_desc' => $data['ChannelStateDesc'] ?? '',
                         'application' => $data['Application'] ?? '',
                         'application_data' => $data['ApplicationData'] ?? '',
-                        'caller_id_num' => $data['CallerIDNum'] ?? '',
-                        'caller_id_name' => $data['CallerIDName'] ?? '',
+                        'caller_id_num' => $data['CallerIDnum'] ?? $data['CallerIDNum'] ?? '',
+                        'caller_id_name' => $data['CallerIDname'] ?? $data['CallerIDName'] ?? '',
                         'connected_line_num' => $data['ConnectedLineNum'] ?? '',
                         'connected_line_name' => $data['ConnectedLineName'] ?? '',
-                        'duration' => (int) ($data['Duration'] ?? 0),
-                        'bridge_id' => $data['BridgeId'] ?? ''
+                        'duration' => $duration,
+                        'bridge_id' => $data['BridgeId'] ?? '',
+                        'bridged_channel' => $data['BridgedChannel'] ?? ''
                     ];
                 } elseif ($data['Event'] === 'CoreShowChannelsComplete') {
                     break;
