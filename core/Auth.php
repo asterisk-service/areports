@@ -323,6 +323,15 @@ class Auth
     public function getLockoutTime(string $username): int
     {
         $security = $this->getSecurityConfig();
+
+        if (empty($security['rate_limiting_enabled'])) {
+            return 0;
+        }
+
+        if (!$this->isRateLimited($username)) {
+            return 0;
+        }
+
         $lockoutDuration = $security['lockout_duration'] ?? 60;
 
         $sql = "SELECT MAX(attempted_at) as last_attempt FROM login_attempts
