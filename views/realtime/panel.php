@@ -579,7 +579,27 @@ var RealtimePanel = {
             }
 
             if (callsData.success) {
-                self.renderCalls(callsData.data, queueFilter);
+                // Pass queue data to add waiting callers
+                var queueCallers = [];
+                if (queueData.success && queueData.data) {
+                    queueData.data.forEach(function(q) {
+                        if (q.callers && q.callers.length > 0) {
+                            q.callers.forEach(function(c) {
+                                queueCallers.push({
+                                    queue: q.name || '',
+                                    caller_id: c.caller_id_num || '',
+                                    caller_name: c.caller_id_name || '',
+                                    connected_to: '',
+                                    agent_name: '',
+                                    state: 'waiting',
+                                    duration: 0,
+                                    wait: c.wait || 0
+                                });
+                            });
+                        }
+                    });
+                }
+                self.renderCalls(queueCallers.concat(callsData.data || []), queueFilter);
             }
 
             self.updateTimestamp();

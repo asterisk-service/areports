@@ -107,8 +107,9 @@ class RealtimeController extends Controller
     }
 
     /**
-     * Get real-time active calls
-     * Combines queue callers (waiting) with active channels (connected)
+     * Get real-time active calls from channels
+     * Uses only CoreShowChannels (no extra QueueStatus call)
+     * Queue callers (waiting) are rendered from queue data on the JS side
      */
     public function calls(): void
     {
@@ -116,131 +117,146 @@ class RealtimeController extends Controller
 
         try {
             $ami = new AMIService();
-
-            // 1. Get queue status - includes callers waiting in queues
-            $queueStatus = $ami->getQueueStatus();
-
-            // 2. Get active channels for connected calls
             $channels = $ami->getActiveChannels();
 
-            // Build a map of active channels by caller number for matching
-            // Group channels by bridge to pair caller<->agent
+            // Group channels by bridge_id to pair caller<->agent
             $bridgeMap = [];
+            $unbridged = [];
             foreach ($channels as $ch) {
                 if (!empty($ch['bridge_id'])) {
                     $bridgeMap[$ch['bridge_id']][] = $ch;
+                } else {
+                    $unbridged[] = $ch;
                 }
             }
 
             $activeCalls = [];
+            $seenBridges = [];
 
-            // 3. Add callers waiting in queues
-            foreach ($queueStatus as $queue) {
-                $queueName = $queue['name'] ?? '';
-                if (!empty($queue['callers'])) {
-                    foreach ($queue['callers'] as $caller) {
-                        $activeCalls[] = [
-                            'queue' => $queueName,
-                            'caller_id' => $caller['caller_id_num'] ?: '',
-                            'caller_name' => $caller['caller_id_name'] ?: '',
-                            'connected_to' => '',
-                            'agent_name' => '',
-                            'state' => 'waiting',
-                            'duration' => 0,
-                            'wait' => $caller['wait'] ?? 0,
-                        ];
-                    }
-                }
-            }
-
-            // 4. Find connected calls - pair channels via bridge
-            $seenCallers = [];
+            // Process bridged channels (connected calls)
             foreach ($bridgeMap as $bridgeId => $bridgeChannels) {
                 if (count($bridgeChannels) < 2) continue;
+                if (isset($seenBridges[$bridgeId])) continue;
+                $seenBridges[$bridgeId] = true;
 
-                // Find the external (caller) and internal (agent) channels
+                // Separate channels: find external caller and internal agent
+                // Strategy: channel with ConnectedLineNum that looks like short ext = caller side
+                // Channel whose name contains PJSIP/ext or Local/ext@from-queue = agent side
                 $callerCh = null;
                 $agentCh = null;
+
                 foreach ($bridgeChannels as $ch) {
                     $chanName = $ch['channel'] ?? '';
-                    // Queue local channels and PJSIP/SIP channels to agents
-                    if (preg_match('/^Local\/\d+@from-queue/', $chanName) ||
-                        preg_match('/^(PJSIP|SIP)\/\d+/', $chanName)) {
-                        // This could be agent side
-                        if ($agentCh === null) {
-                            $agentCh = $ch;
-                        }
+                    // Skip Local channels (intermediary queue channels)
+                    if (strpos($chanName, 'Local/') === 0) continue;
+
+                    // PJSIP/SIP with short extension number = agent phone
+                    if (preg_match('/^(PJSIP|SIP)\/(\d{3,5})-/', $chanName)) {
+                        $agentCh = $ch;
                     } else {
-                        // External/trunk channel = caller
-                        if ($callerCh === null) {
-                            $callerCh = $ch;
+                        $callerCh = $ch;
+                    }
+                }
+
+                // Fallback: if both are PJSIP, use connected_line_num to determine
+                if (!$callerCh || !$agentCh) {
+                    $nonLocal = array_filter($bridgeChannels, function($c) {
+                        return strpos($c['channel'] ?? '', 'Local/') !== 0;
+                    });
+                    $nonLocal = array_values($nonLocal);
+                    if (count($nonLocal) >= 2) {
+                        $callerCh = $nonLocal[0];
+                        $agentCh = $nonLocal[1];
+                    } elseif (count($nonLocal) === 1) {
+                        // Only one non-local channel, use it as caller
+                        $callerCh = $nonLocal[0];
+                        // Agent might be a Local channel
+                        foreach ($bridgeChannels as $ch) {
+                            if (strpos($ch['channel'] ?? '', 'Local/') === 0) {
+                                $agentCh = $ch;
+                                break;
+                            }
                         }
                     }
                 }
 
-                // If we couldn't determine which is which, use first two
-                if (!$callerCh && !$agentCh && count($bridgeChannels) >= 2) {
-                    $callerCh = $bridgeChannels[0];
-                    $agentCh = $bridgeChannels[1];
-                } elseif (!$callerCh) {
-                    $callerCh = $bridgeChannels[0];
-                } elseif (!$agentCh) {
-                    $agentCh = $bridgeChannels[count($bridgeChannels) - 1];
-                }
+                if (!$callerCh) continue;
 
+                // Extract caller info
                 $callerNum = $callerCh['caller_id_num'] ?? '';
-                if (isset($seenCallers[$callerNum . '_' . $bridgeId])) continue;
-                $seenCallers[$callerNum . '_' . $bridgeId] = true;
+                $callerName = $callerCh['caller_id_name'] ?? '';
 
-                // Extract agent extension from channel name
+                // Extract agent info
                 $agentExt = '';
                 $agentName = '';
                 if ($agentCh) {
-                    if (preg_match('/(?:PJSIP|SIP|Local)\/(\d+)/', $agentCh['channel'] ?? '', $m)) {
+                    // Try to get ext from channel name: PJSIP/200-xxx
+                    if (preg_match('/(?:PJSIP|SIP)\/(\d+)/', $agentCh['channel'] ?? '', $m)) {
+                        $agentExt = $m[1];
+                    } elseif (preg_match('/Local\/(\d+)@/', $agentCh['channel'] ?? '', $m)) {
                         $agentExt = $m[1];
                     }
-                    $agentName = $agentCh['connected_line_name'] ?? '';
+                    // Agent name from connected_line_name of caller channel
+                    $agentName = $callerCh['connected_line_name'] ?? '';
+                    if (empty($agentName)) {
+                        $agentName = $agentCh['caller_id_name'] ?? '';
+                    }
+                    // If agent ext is empty, try connected_line_num from caller
+                    if (empty($agentExt)) {
+                        $agentExt = $callerCh['connected_line_num'] ?? '';
+                    }
                 }
 
-                // Determine queue from channel context or application data
+                // Try to find queue name from application data
                 $queueName = '';
                 foreach ($bridgeChannels as $ch) {
-                    $appData = $ch['application_data'] ?? '';
-                    if (stripos($ch['application'] ?? '', 'Queue') !== false && $appData) {
-                        // Queue application data format: "queuename,options..."
-                        $parts = explode(',', $appData);
+                    $app = $ch['application'] ?? '';
+                    if (stripos($app, 'Queue') !== false) {
+                        $parts = explode(',', $ch['application_data'] ?? '');
                         $queueName = $parts[0] ?? '';
                         break;
+                    }
+                    // Also check context for queue hint
+                    $ctx = $ch['context'] ?? '';
+                    if (strpos($ctx, 'from-queue') !== false && preg_match('/Local\/\d+@from-queue/', $ch['channel'] ?? '')) {
+                        // We know it's a queue call but don't know which queue
                     }
                 }
 
                 $activeCalls[] = [
                     'queue' => $queueName,
                     'caller_id' => $callerNum,
-                    'caller_name' => $callerCh['caller_id_name'] ?? '',
+                    'caller_name' => $callerName,
                     'connected_to' => $agentExt,
                     'agent_name' => $agentName,
                     'state' => 'talking',
-                    'duration' => max($callerCh['duration'] ?? 0, $agentCh['duration'] ?? 0),
+                    'duration' => $callerCh['duration'] ?? 0,
                     'wait' => 0,
                 ];
             }
 
-            // 5. Add unbridged channels that look like calls (ringing, etc.)
-            foreach ($channels as $ch) {
-                if (!empty($ch['bridge_id'])) continue; // already processed
+            // Process unbridged channels (ringing, waiting in queue, IVR)
+            foreach ($unbridged as $ch) {
+                $chanName = $ch['channel'] ?? '';
+                // Skip Local and internal channels
+                if (strpos($chanName, 'Local/') === 0) continue;
+
                 $app = strtolower($ch['application'] ?? '');
-                // Skip internal channels, playback, parking, etc.
-                if (in_array($app, ['', 'playback', 'park', 'mixmonitor', 'read', 'wait'])) continue;
-                if (strpos($ch['channel'] ?? '', 'Local/') === 0) continue;
+                // Skip non-call applications
+                if (in_array($app, ['', 'playback', 'park', 'mixmonitor', 'read', 'wait', 'answer'])) continue;
 
                 $callerNum = $ch['caller_id_num'] ?? '';
                 if (empty($callerNum)) continue;
 
+                // Determine queue and state
                 $queueName = '';
+                $state = strtolower($ch['state_desc'] ?? 'unknown');
                 if (stripos($app, 'queue') !== false) {
                     $parts = explode(',', $ch['application_data'] ?? '');
                     $queueName = $parts[0] ?? '';
+                    $state = 'waiting';
+                } elseif (stripos($app, 'dial') !== false) {
+                    $state = 'ringing';
                 }
 
                 $activeCalls[] = [
@@ -249,7 +265,7 @@ class RealtimeController extends Controller
                     'caller_name' => $ch['caller_id_name'] ?? '',
                     'connected_to' => $ch['connected_line_num'] ?? '',
                     'agent_name' => $ch['connected_line_name'] ?? '',
-                    'state' => strtolower($ch['state_desc'] ?? 'unknown'),
+                    'state' => $state,
                     'duration' => $ch['duration'] ?? 0,
                     'wait' => 0,
                 ];
