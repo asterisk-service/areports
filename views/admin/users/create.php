@@ -82,10 +82,10 @@
                         </div>
                     </div>
 
-                    <!-- Queue Assignment (for Agents) -->
+                    <!-- Queue Assignment -->
                     <div class="mb-3" id="queue-assignment-section">
                         <label class="form-label">Assigned Queues</label>
-                        <div class="form-text mb-2">Select which queues this agent can login to</div>
+                        <div class="form-text mb-2">Select which queues this user can view and manage</div>
                         <div class="row">
                             <?php foreach ($queues as $queue): ?>
                             <div class="col-md-4 mb-2">

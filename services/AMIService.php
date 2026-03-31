@@ -11,7 +11,7 @@ class AMIService
     private $socket = null;
     private array $config;
     private bool $authenticated = false;
-    private bool $debug = true;
+    private bool $debug = false;
     private string $logFile;
 
     public function __construct()

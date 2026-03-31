@@ -21,6 +21,52 @@ class QueueReportController extends Controller
     }
 
     /**
+     * Get queue list filtered to user's assigned queues
+     */
+    private function getFilteredQueueList(): array
+    {
+        $queueList = $this->queueService->getQueueList();
+        $allowedQueues = $this->getUserQueues();
+
+        if ($allowedQueues !== null) {
+            $queueList = array_filter($queueList, function ($q) use ($allowedQueues) {
+                return in_array($q['name'], $allowedQueues);
+            });
+            $queueList = array_values($queueList);
+        }
+
+        return $queueList;
+    }
+
+    /**
+     * Restrict queue filter parameter to user's assigned queues
+     */
+    private function restrictQueueFilter(mixed $queueFilter): mixed
+    {
+        $allowedQueues = $this->getUserQueues();
+        if ($allowedQueues === null) {
+            return $queueFilter; // Admin sees all
+        }
+
+        if (empty($allowedQueues)) {
+            return ['__none__']; // No queues assigned, force empty results
+        }
+
+        if ($queueFilter === null) {
+            return $allowedQueues; // Default to all allowed queues
+        }
+
+        // Intersect user's filter with allowed queues
+        if (is_array($queueFilter)) {
+            $filtered = array_values(array_intersect($queueFilter, $allowedQueues));
+            return empty($filtered) ? ['__none__'] : $filtered;
+        }
+
+        // Single queue filter
+        return in_array($queueFilter, $allowedQueues) ? $queueFilter : '__none__';
+    }
+
+    /**
      * Queue summary report (default)
      */
     public function index(): void
@@ -45,9 +91,10 @@ class QueueReportController extends Controller
                 $queueFilter = null;
             }
         }
+        $queueFilter = $this->restrictQueueFilter($queueFilter);
 
         $queues = $this->queueService->getQueueSummary($dateFrom, $dateTo, $queueFilter);
-        $queueList = $this->queueService->getQueueList();
+        $queueList = $this->getFilteredQueueList();
         $firstQueue = is_array($queueFilter) ? ($queueFilter[0] ?? null) : $queueFilter;
         $hourly = $this->queueService->getQueueHourly(date('Y-m-d'), $firstQueue);
 
@@ -99,8 +146,9 @@ class QueueReportController extends Controller
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $queueFilter = $this->get('queue');
 
+        $queueFilter = $this->restrictQueueFilter($queueFilter);
         $slaData = $this->queueService->getQueueSLA($dateFrom, $dateTo);
-        $queueList = $this->queueService->getQueueList();
+        $queueList = $this->getFilteredQueueList();
         $trend = $this->queueService->getDailyTrend($dateFrom, $dateTo, $queueFilter);
 
         $this->render('reports/queue/sla', [
@@ -128,8 +176,9 @@ class QueueReportController extends Controller
         $page = (int) $this->get('page', 1);
         $perPage = 50;
 
+        $queueFilter = $this->restrictQueueFilter($queueFilter);
         $result = $this->queueService->getAbandonedCalls($dateFrom, $dateTo, $queueFilter, $perPage, ($page - 1) * $perPage);
-        $queueList = $this->queueService->getQueueList();
+        $queueList = $this->getFilteredQueueList();
 
         $totalPages = ceil($result['total'] / $perPage);
 
@@ -159,8 +208,9 @@ class QueueReportController extends Controller
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $queueFilter = $this->get('queue');
 
+        $queueFilter = $this->restrictQueueFilter($queueFilter);
         $distribution = $this->queueService->getWaitTimeDistribution($dateFrom, $dateTo, $queueFilter);
-        $queueList = $this->queueService->getQueueList();
+        $queueList = $this->getFilteredQueueList();
         $queues = $this->queueService->getQueueSummary($dateFrom, $dateTo, $queueFilter);
 
         $this->render('reports/queue/wait-times', [
@@ -186,6 +236,7 @@ class QueueReportController extends Controller
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $queueFilter = $this->get('queue');
 
+        $queueFilter = $this->restrictQueueFilter($queueFilter);
         $csv = $this->queueService->exportToCSV($dateFrom, $dateTo, $queueFilter);
 
         header('Content-Type: text/csv');

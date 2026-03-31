@@ -14,6 +14,8 @@ abstract class Controller
     protected Session $session;
     protected Database $db;
     protected Database $cdrDb;
+    private ?array $userQueuesCache = null;
+    private bool $userQueuesCacheLoaded = false;
 
     public function __construct(App $app)
     {
@@ -349,5 +351,38 @@ abstract class Controller
     protected function setting(string $key, mixed $default = null): mixed
     {
         return $this->app->getSetting($key, $default);
+    }
+
+    /**
+     * Get current user's assigned queue numbers.
+     * Returns null for admin (all queues), array of queue_name strings for others.
+     * Empty array means no queues assigned (sees nothing).
+     */
+    protected function getUserQueues(): ?array
+    {
+        if ($this->userQueuesCacheLoaded) {
+            return $this->userQueuesCache;
+        }
+
+        $this->userQueuesCacheLoaded = true;
+
+        // Admin sees everything
+        if ($this->app->getAuth()->isAdmin()) {
+            $this->userQueuesCache = null;
+            return null;
+        }
+
+        if (!$this->user) {
+            $this->userQueuesCache = [];
+            return [];
+        }
+
+        $rows = $this->db->fetchAll(
+            "SELECT queue_name FROM user_queues WHERE user_id = ?",
+            [$this->user['id']]
+        );
+
+        $this->userQueuesCache = array_column($rows, 'queue_name');
+        return $this->userQueuesCache;
     }
 }

@@ -113,6 +113,15 @@ class WallboardController extends Controller
             "SELECT * FROM queue_settings WHERE is_monitored = 1 ORDER BY sort_order"
         );
 
+        // Filter to user's assigned queues (non-admin)
+        $allowedQueues = $this->getUserQueues();
+        if ($allowedQueues !== null && $queues) {
+            $queues = array_filter($queues, function ($q) use ($allowedQueues) {
+                return in_array($q['queue_number'], $allowedQueues);
+            });
+            $queues = array_values($queues);
+        }
+
         $result = [];
 
         foreach ($queues as $queue) {

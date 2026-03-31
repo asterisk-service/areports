@@ -21,6 +21,76 @@ class AgentReportController extends Controller
     }
 
     /**
+     * Get agent list filtered to user's assigned queues
+     */
+    private function getFilteredAgentList(): array
+    {
+        $agentList = $this->agentService->getAgentList();
+        $allowedAgents = $this->getAllowedAgents();
+
+        if ($allowedAgents === null) {
+            return $agentList; // Admin sees all
+        }
+
+        return array_values(array_filter($agentList, function ($a) use ($allowedAgents) {
+            return in_array($a['agent'], $allowedAgents);
+        }));
+    }
+
+    /**
+     * Get agents that belong to user's assigned queues.
+     * Returns null for admin (all agents).
+     */
+    private function getAllowedAgents(): ?array
+    {
+        $allowedQueues = $this->getUserQueues();
+        if ($allowedQueues === null) {
+            return null; // Admin
+        }
+        if (empty($allowedQueues)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($allowedQueues), '?'));
+        $rows = $this->cdrDb->fetchAll(
+            "SELECT DISTINCT agent FROM queuelog
+             WHERE queuename IN ($placeholders) AND agent != 'NONE' AND agent != '' AND agent IS NOT NULL",
+            $allowedQueues
+        );
+
+        return array_column($rows, 'agent');
+    }
+
+    /**
+     * Restrict agent filter to allowed agents
+     */
+    private function restrictAgentFilter(?string $agentFilter): ?string
+    {
+        $allowedAgents = $this->getAllowedAgents();
+        if ($allowedAgents === null) {
+            return $agentFilter; // Admin
+        }
+        if ($agentFilter === null) {
+            return null; // Will be filtered post-query
+        }
+        return in_array($agentFilter, $allowedAgents) ? $agentFilter : '__none__';
+    }
+
+    /**
+     * Filter agent results to allowed agents
+     */
+    private function filterAgentResults(array $agents): array
+    {
+        $allowedAgents = $this->getAllowedAgents();
+        if ($allowedAgents === null) {
+            return $agents;
+        }
+        return array_values(array_filter($agents, function ($a) use ($allowedAgents) {
+            return in_array($a['agent'] ?? '', $allowedAgents);
+        }));
+    }
+
+    /**
      * Agent performance report
      */
     public function performance(): void
@@ -31,8 +101,10 @@ class AgentReportController extends Controller
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $agentFilter = $this->get('agent');
 
+        $agentFilter = $this->restrictAgentFilter($agentFilter);
         $agents = $this->agentService->getAgentPerformance($dateFrom, $dateTo, $agentFilter);
-        $agentList = $this->agentService->getAgentList();
+        $agents = $this->filterAgentResults($agents);
+        $agentList = $this->getFilteredAgentList();
 
         // Calculate totals
         $totals = [
@@ -76,8 +148,9 @@ class AgentReportController extends Controller
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $agentFilter = $this->get('agent');
 
+        $agentFilter = $this->restrictAgentFilter($agentFilter);
         $activities = $this->agentService->getAgentActivity($dateFrom, $dateTo, $agentFilter);
-        $agentList = $this->agentService->getAgentList();
+        $agentList = $this->getFilteredAgentList();
 
         $this->render('reports/agent/activity', [
             'title' => 'Agent Activity',
@@ -101,8 +174,9 @@ class AgentReportController extends Controller
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $agentFilter = $this->get('agent');
 
+        $agentFilter = $this->restrictAgentFilter($agentFilter);
         $efficiency = $this->agentService->getAgentEfficiency($dateFrom, $dateTo, $agentFilter);
-        $agentList = $this->agentService->getAgentList();
+        $agentList = $this->getFilteredAgentList();
 
         // Get queue display names
         $queueService = new \aReports\Services\QueueService();
@@ -143,6 +217,12 @@ class AgentReportController extends Controller
     public function detail(string $agent): void
     {
         $this->requirePermission('reports.agent.view');
+
+        // Verify agent is in user's allowed queues
+        $allowedAgents = $this->getAllowedAgents();
+        if ($allowedAgents !== null && !in_array($agent, $allowedAgents)) {
+            $this->abort(403, 'Access Denied');
+        }
 
         $dateFrom = $this->get('date_from', date('Y-m-d'));
         $dateTo = $this->get('date_to', date('Y-m-d'));
@@ -185,6 +265,7 @@ class AgentReportController extends Controller
         $dateTo = $this->get('date_to', date('Y-m-d'));
         $agentFilter = $this->get('agent');
 
+        $agentFilter = $this->restrictAgentFilter($agentFilter);
         $csv = $this->agentService->exportToCSV($dateFrom, $dateTo, $agentFilter);
 
         header('Content-Type: text/csv');

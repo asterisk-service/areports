@@ -560,50 +560,39 @@ var RealtimePanel = {
         var queueFilter = $('#filterQueues').val();
         var agentFilter = $('#filterAgents').val();
 
-        // Load all data in parallel
-        $.when(
-            $.get('/areports/api/realtime/queues'),
-            $.get('/areports/api/realtime/agents'),
-            $.get('/areports/api/realtime/calls')
-        ).done(function(queueRes, agentRes, callsRes) {
-            var queueData = queueRes[0];
-            var agentData = agentRes[0];
-            var callsData = callsRes[0];
+        // Single API call - one AMI connection for all data
+        $.get('/areports/api/realtime/data').done(function(res) {
+            if (res.success && res.data) {
+                self.renderQueues(res.data.queues || [], queueFilter);
+                self.renderAgents(res.data.agents || [], agentFilter);
 
-            if (queueData.success) {
-                self.renderQueues(queueData.data, queueFilter);
-            }
-
-            if (agentData.success) {
-                self.renderAgents(agentData.data, agentFilter);
-            }
-
-            if (callsData.success) {
-                // Pass queue data to add waiting callers
+                // Build waiting callers from queue data
                 var queueCallers = [];
-                if (queueData.success && queueData.data) {
-                    queueData.data.forEach(function(q) {
-                        if (q.callers && q.callers.length > 0) {
-                            q.callers.forEach(function(c) {
-                                queueCallers.push({
-                                    queue: q.name || '',
-                                    caller_id: c.caller_id_num || '',
-                                    caller_name: c.caller_id_name || '',
-                                    connected_to: '',
-                                    agent_name: '',
-                                    state: 'waiting',
-                                    duration: 0,
-                                    wait: c.wait || 0
-                                });
+                (res.data.queues || []).forEach(function(q) {
+                    if (q.callers && q.callers.length > 0) {
+                        q.callers.forEach(function(c) {
+                            queueCallers.push({
+                                queue: q.name || '',
+                                caller_id: c.caller_id_num || '',
+                                caller_name: c.caller_id_name || '',
+                                connected_to: '',
+                                agent_name: '',
+                                state: 'waiting',
+                                duration: 0,
+                                wait: c.wait || 0
                             });
-                        }
-                    });
-                }
-                self.renderCalls(queueCallers.concat(callsData.data || []), queueFilter);
+                        });
+                    }
+                });
+                self.renderCalls(queueCallers.concat(res.data.calls || []), queueFilter);
+
+                self.setConnectionStatus(true);
+            } else {
+                self.setConnectionStatus(false);
+                aReports.toast(res.error || __t.error_loading, 'error');
             }
 
             self.updateTimestamp();
-            self.setConnectionStatus(true);
 
         }).fail(function() {
             self.setConnectionStatus(false);

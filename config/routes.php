@@ -34,6 +34,7 @@ $router->group(['middleware' => ['aReports\\Middleware\\AuthMiddleware']], funct
     $router->get('/wallboard/data', 'WallboardController@getData', 'wallboard.data');
 
     // Real-time API
+    $router->get('/api/realtime/data', 'RealtimeController@data', 'api.realtime.data');
     $router->get('/api/realtime/queues', 'RealtimeController@queues', 'api.realtime.queues');
     $router->get('/api/realtime/agents', 'RealtimeController@agents', 'api.realtime.agents');
     $router->get('/api/realtime/calls', 'RealtimeController@calls', 'api.realtime.calls');

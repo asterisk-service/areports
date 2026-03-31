@@ -26,6 +26,15 @@ class RealtimeController extends Controller
             "SELECT * FROM queue_settings WHERE is_monitored = 1 ORDER BY display_name ASC"
         );
 
+        // Filter to user's assigned queues (non-admin)
+        $allowedQueues = $this->getUserQueues();
+        if ($allowedQueues !== null && $queues) {
+            $queues = array_filter($queues, function ($q) use ($allowedQueues) {
+                return in_array($q['queue_number'], $allowedQueues);
+            });
+            $queues = array_values($queues);
+        }
+
         $this->render('realtime/panel', [
             'title' => 'Realtime Panel',
             'currentPage' => 'realtime',
@@ -130,9 +139,9 @@ class RealtimeController extends Controller
                 // Skip Local channels (intermediary queue channels)
                 if (strpos($chanName, 'Local/') === 0) continue;
 
-                // Skip non-call applications
+                // Only show Queue and Dial applications (actual calls)
                 $appLower = strtolower($app);
-                if (in_array($appLower, ['', 'playback', 'park', 'mixmonitor', 'read', 'wait', 'answer', 'appdial', 'appqueue'])) continue;
+                if ($appLower !== 'queue' && $appLower !== 'dial') continue;
 
                 $callerNum = $ch['caller_id_num'] ?? '';
                 if (empty($callerNum)) continue;
@@ -188,6 +197,156 @@ class RealtimeController extends Controller
             $this->json([
                 'success' => false,
                 'error' => 'Failed to connect to AMI',
+                'timestamp' => time()
+            ]);
+        }
+    }
+
+    /**
+     * Get all realtime data in a single AMI connection
+     * Combines queues, agents, and calls to avoid multiple concurrent AMI sessions
+     */
+    public function data(): void
+    {
+        $this->requirePermission('realtime.view');
+
+        try {
+            $ami = new AMIService();
+
+            // 1. Get queue status (includes members and callers) - single AMI connection
+            $queues = $ami->getQueueStatus();
+
+            // 2. Get active channels from the SAME connection
+            $channels = $ami->getActiveChannels();
+
+            // 2b. Filter queues by user's assigned queues (non-admin)
+            $allowedQueues = $this->getUserQueues();
+            if ($allowedQueues !== null) {
+                $queues = array_filter($queues, function ($q) use ($allowedQueues) {
+                    return in_array($q['name'], $allowedQueues);
+                });
+                $queues = array_values($queues);
+            }
+
+            // 3. Extract agents from queue data (already filtered by allowed queues)
+            $agents = [];
+            foreach ($queues as $queue) {
+                foreach ($queue['members'] as $member) {
+                    $interface = $member['interface'];
+                    if (!isset($agents[$interface])) {
+                        $agents[$interface] = [
+                            'interface' => $interface,
+                            'name' => $member['name'],
+                            'status' => $member['status'],
+                            'status_text' => $member['status_text'],
+                            'paused' => $member['paused'],
+                            'paused_reason' => $member['paused_reason'],
+                            'in_call' => $member['in_call'],
+                            'calls_taken' => $member['calls_taken'],
+                            'last_call' => $member['last_call'],
+                            'queues' => []
+                        ];
+                    }
+                    $agents[$interface]['queues'][] = $queue['name'];
+                }
+            }
+
+            // 4. Extract active calls from channels
+            $activeCalls = [];
+            $seen = [];
+
+            foreach ($channels as $ch) {
+                $chanName = $ch['channel'] ?? '';
+                $app = $ch['application'] ?? '';
+                $stateDesc = $ch['state_desc'] ?? '';
+
+                // Skip Local channels (intermediary queue channels)
+                if (strpos($chanName, 'Local/') === 0) continue;
+
+                // Only show Queue and Dial applications (actual calls)
+                $appLower = strtolower($app);
+                if ($appLower !== 'queue' && $appLower !== 'dial') continue;
+
+                $callerNum = $ch['caller_id_num'] ?? '';
+                if (empty($callerNum)) continue;
+
+                // Deduplicate by caller number + uniqueid
+                $dedupKey = $callerNum . '_' . ($ch['uniqueid'] ?? '');
+                if (isset($seen[$dedupKey])) continue;
+                $seen[$dedupKey] = true;
+
+                // Determine queue name and state
+                $queueName = '';
+                $state = strtolower($stateDesc ?: 'unknown');
+                $agentExt = $ch['connected_line_num'] ?? '';
+                $agentName = $ch['connected_line_name'] ?? '';
+
+                if ($appLower === 'queue') {
+                    $parts = explode(',', $ch['application_data'] ?? '');
+                    $queueName = $parts[0] ?? '';
+
+                    if ($stateDesc === 'Up' && !empty($agentExt)) {
+                        $state = 'talking';
+                    } elseif ($stateDesc === 'Up') {
+                        $state = 'waiting';
+                    } else {
+                        $state = 'ringing';
+                    }
+                } else {
+                    // Dial application
+                    $state = ($stateDesc === 'Up') ? 'talking' : 'ringing';
+                }
+
+                $activeCalls[] = [
+                    'queue' => $queueName,
+                    'caller_id' => $callerNum,
+                    'caller_name' => $ch['caller_id_name'] ?? '',
+                    'connected_to' => $agentExt,
+                    'agent_name' => $agentName,
+                    'state' => $state,
+                    'duration' => $ch['duration'] ?? 0,
+                    'wait' => 0,
+                ];
+            }
+
+            // 5. Filter calls by allowed queues (non-admin)
+            if ($allowedQueues !== null) {
+                // Collect agent extensions from allowed queues
+                $allowedAgentExts = [];
+                foreach ($agents as $agent) {
+                    $iface = $agent['interface'];
+                    if (preg_match('/(?:SIP|PJSIP|Local)\/(\d+)/', $iface, $m)) {
+                        $allowedAgentExts[] = $m[1];
+                    }
+                }
+
+                $activeCalls = array_filter($activeCalls, function ($call) use ($allowedQueues, $allowedAgentExts) {
+                    // Queue calls: filter by queue name
+                    if (!empty($call['queue'])) {
+                        return in_array($call['queue'], $allowedQueues);
+                    }
+                    // Dial calls (outbound): filter by agent extension
+                    if (!empty($call['caller_id'])) {
+                        return in_array($call['caller_id'], $allowedAgentExts);
+                    }
+                    return false;
+                });
+                $activeCalls = array_values($activeCalls);
+            }
+
+            $this->json([
+                'success' => true,
+                'data' => [
+                    'queues' => $queues,
+                    'agents' => array_values($agents),
+                    'calls' => $activeCalls
+                ],
+                'timestamp' => time()
+            ]);
+        } catch (\Exception $e) {
+            $this->json([
+                'success' => false,
+                'error' => 'Failed to connect to AMI: ' . $e->getMessage(),
                 'timestamp' => time()
             ]);
         }
