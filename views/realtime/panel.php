@@ -840,8 +840,13 @@ var RealtimePanel = {
 
             // Build agent display: Name (Number) or just Number if no name
             var agentDisplay = '';
-            if (agent.name && agent.name !== agent.interface) {
-                agentDisplay = agent.name + ' (' + extNumber + ')';
+            var agentName = agent.name || '';
+            // Treat <unknown> or interface-like names as no name
+            if (agentName === '<unknown>' || agentName === agent.interface) {
+                agentName = '';
+            }
+            if (agentName) {
+                agentDisplay = agentName + ' (' + extNumber + ')';
             } else {
                 agentDisplay = extNumber;
             }
@@ -861,15 +866,15 @@ var RealtimePanel = {
     },
 
     extractExtension: function(iface) {
-        if (!iface) return '-';
-        // LOCAL/202@from-queue/n -> 202
-        var localMatch = iface.match(/LOCAL\/(\d+)@/);
+        if (!iface || iface === '<unknown>') return '-';
+        // Local/202@from-queue/n -> 202 (case-insensitive)
+        var localMatch = iface.match(/local\/(\d+)@/i);
         if (localMatch) return localMatch[1];
-        // PJSIP/100 or SIP/200 -> 100 or 200
-        var sipMatch = iface.match(/(?:PJSIP|SIP)\/(\d+)/);
+        // PJSIP/100 or SIP/200 -> 100 or 200 (case-insensitive)
+        var sipMatch = iface.match(/(?:PJSIP|SIP)\/(\d+)/i);
         if (sipMatch) return sipMatch[1];
         // Fallback: remove known prefixes
-        return iface.replace(/^(PJSIP|SIP|LOCAL)\//, '').replace(/@.*$/, '');
+        return iface.replace(/^(PJSIP|SIP|LOCAL)\//i, '').replace(/@.*$/, '');
     },
 
     updateTimestamp: function() {

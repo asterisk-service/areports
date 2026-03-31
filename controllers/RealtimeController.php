@@ -228,15 +228,33 @@ class RealtimeController extends Controller
                 $queues = array_values($queues);
             }
 
-            // 3. Extract agents from queue data (already filtered by allowed queues)
+            // 3. Load agent display names from agent_settings
+            $agentNames = [];
+            $agentRows = $this->db->fetchAll("SELECT extension, display_name FROM agent_settings WHERE display_name != ''");
+            foreach ($agentRows ?: [] as $row) {
+                $agentNames[$row['extension']] = $row['display_name'];
+            }
+
+            // 4. Extract agents from queue data (already filtered by allowed queues)
             $agents = [];
             foreach ($queues as $queue) {
                 foreach ($queue['members'] as $member) {
                     $interface = $member['interface'];
                     if (!isset($agents[$interface])) {
+                        // Resolve display name: agent_settings > AMI name > extension
+                        $name = $member['name'];
+                        $ext = '';
+                        if (preg_match('/(?:SIP|PJSIP|Local)\/(\d+)/i', $interface, $m)) {
+                            $ext = $m[1];
+                        }
+                        // If AMI name is useless (same as interface or <unknown>), use agent_settings
+                        if ($name === $interface || $name === '<unknown>' || empty($name)) {
+                            $name = $agentNames[$ext] ?? '';
+                        }
+
                         $agents[$interface] = [
                             'interface' => $interface,
-                            'name' => $member['name'],
+                            'name' => $name,
                             'status' => $member['status'],
                             'status_text' => $member['status_text'],
                             'paused' => $member['paused'],
