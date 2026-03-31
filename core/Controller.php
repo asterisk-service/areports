@@ -355,8 +355,8 @@ abstract class Controller
 
     /**
      * Get current user's assigned queue numbers.
-     * Returns null for admin (all queues), array of queue_name strings for others.
-     * Empty array means no queues assigned (sees nothing).
+     * Returns null for admin or users with no specific queues assigned (all queues).
+     * Returns array of queue_name strings when user has explicit queue assignments.
      */
     protected function getUserQueues(): ?array
     {
@@ -373,8 +373,8 @@ abstract class Controller
         }
 
         if (!$this->user) {
-            $this->userQueuesCache = [];
-            return [];
+            $this->userQueuesCache = null;
+            return null;
         }
 
         $rows = $this->db->fetchAll(
@@ -382,7 +382,10 @@ abstract class Controller
             [$this->user['id']]
         );
 
-        $this->userQueuesCache = array_column($rows, 'queue_name');
+        $queues = array_column($rows, 'queue_name');
+
+        // No queues assigned = no restriction (show all)
+        $this->userQueuesCache = empty($queues) ? null : $queues;
         return $this->userQueuesCache;
     }
 }
