@@ -11,6 +11,77 @@ use aReports\Core\Controller;
 class CDRController extends Controller
 {
     /**
+     * Get agent extensions allowed for current user.
+     * Returns null for admin/unrestricted, array of extensions otherwise.
+     */
+    private function getAllowedExtensions(): ?array
+    {
+        $allowedQueues = $this->getUserQueues();
+        if ($allowedQueues === null) {
+            return null; // Admin or unrestricted — see all
+        }
+        if (empty($allowedQueues)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($allowedQueues), '?'));
+        $rows = $this->cdrDb->fetchAll(
+            "SELECT DISTINCT agent FROM queuelog
+             WHERE queuename IN ($placeholders) AND agent != 'NONE' AND agent != '' AND agent IS NOT NULL",
+            $allowedQueues
+        );
+
+        // Extract numeric extension from agent strings (e.g. "302-TLV" → "302", "304" → "304")
+        $extensions = [];
+        foreach ($rows ?: [] as $row) {
+            $agent = $row['agent'];
+            if (preg_match('/^(\d+)/', $agent, $m)) {
+                $extensions[] = $m[1];
+            }
+        }
+
+        return array_unique($extensions);
+    }
+
+    /**
+     * Add queue/agent restriction to WHERE clause for CDR queries.
+     * Filters to calls involving the supervisor's queues or agents.
+     */
+    private function addAccessFilter(array &$where, array &$params): void
+    {
+        $allowedQueues = $this->getUserQueues();
+        if ($allowedQueues === null) {
+            return; // Admin or unrestricted
+        }
+
+        $extensions = $this->getAllowedExtensions();
+        $conditions = [];
+
+        // Calls TO queues (inbound queue calls)
+        if (!empty($allowedQueues)) {
+            $ph = implode(',', array_fill(0, count($allowedQueues), '?'));
+            $conditions[] = "dst IN ($ph)";
+            $params = array_merge($params, $allowedQueues);
+        }
+
+        // Calls FROM or TO agent extensions
+        if (!empty($extensions)) {
+            $ph = implode(',', array_fill(0, count($extensions), '?'));
+            $conditions[] = "src IN ($ph)";
+            $params = array_merge($params, $extensions);
+            $conditions[] = "dst IN ($ph)";
+            $params = array_merge($params, $extensions);
+        }
+
+        if (!empty($conditions)) {
+            $where[] = '(' . implode(' OR ', $conditions) . ')';
+        } else {
+            // No queues and no agents — show nothing
+            $where[] = '1=0';
+        }
+    }
+
+    /**
      * Show CDR list
      */
     public function index(): void
@@ -20,14 +91,21 @@ class CDRController extends Controller
         // Get filter parameters
         $filters = $this->getFilters();
 
-        // Get queues for filter dropdown
+        // Get queues for filter dropdown, filtered by user access
         $queues = $this->db->fetchAll("SELECT * FROM queue_settings ORDER BY sort_order");
+        $allowedQueues = $this->getUserQueues();
+        if ($allowedQueues !== null && $queues) {
+            $queues = array_filter($queues, function ($q) use ($allowedQueues) {
+                return in_array($q['queue_number'], $allowedQueues);
+            });
+            $queues = array_values($queues);
+        }
 
         $this->render('reports/cdr/list', [
             'title' => 'Call Detail Records',
             'currentPage' => 'reports.cdr',
             'filters' => $filters,
-            'queues' => $queues
+            'queues' => $queues ?: []
         ]);
     }
 
@@ -52,6 +130,9 @@ class CDRController extends Controller
         // Build query
         $where = [];
         $params = [];
+
+        // Queue/agent access restriction for non-admin users
+        $this->addAccessFilter($where, $params);
 
         // Date range filter
         if ($filters['date_from']) {
@@ -106,9 +187,13 @@ class CDRController extends Controller
 
         $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
 
-        // Get total count
-        $totalSql = "SELECT COUNT(*) FROM cdr";
-        $totalRecords = (int) $this->cdrDb->fetchColumn($totalSql);
+        // Get total count (with access filter applied)
+        $accessWhere = [];
+        $accessParams = [];
+        $this->addAccessFilter($accessWhere, $accessParams);
+        $totalWhereClause = !empty($accessWhere) ? 'WHERE ' . implode(' AND ', $accessWhere) : '';
+        $totalSql = "SELECT COUNT(*) FROM cdr {$totalWhereClause}";
+        $totalRecords = (int) $this->cdrDb->fetchColumn($totalSql, $accessParams);
 
         // Get filtered count
         $filteredSql = "SELECT COUNT(*) FROM cdr {$whereClause}";
@@ -173,6 +258,18 @@ class CDRController extends Controller
             $this->abort(404, 'Call record not found');
         }
 
+        // Verify access: supervisor can only view calls related to their queues/agents
+        $extensions = $this->getAllowedExtensions();
+        if ($extensions !== null) {
+            $allowedQueues = $this->getUserQueues() ?: [];
+            $canAccess = in_array($cdr['src'], $extensions)
+                      || in_array($cdr['dst'], $extensions)
+                      || in_array($cdr['dst'], $allowedQueues);
+            if (!$canAccess) {
+                $this->abort(403, 'Access Denied');
+            }
+        }
+
         // Get related calls (same linkedid)
         $relatedCalls = [];
         if ($cdr['linkedid']) {
@@ -203,6 +300,9 @@ class CDRController extends Controller
         // Build query (same as data method)
         $where = [];
         $params = [];
+
+        // Queue/agent access restriction for non-admin users
+        $this->addAccessFilter($where, $params);
 
         if ($filters['date_from']) {
             $where[] = "calldate >= ?";

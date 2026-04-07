@@ -349,8 +349,8 @@ class AMIService
                         'application_data' => $data['ApplicationData'] ?? '',
                         'caller_id_num' => $data['CallerIDnum'] ?? $data['CallerIDNum'] ?? '',
                         'caller_id_name' => $data['CallerIDname'] ?? $data['CallerIDName'] ?? '',
-                        'connected_line_num' => $data['ConnectedLineNum'] ?? '',
-                        'connected_line_name' => $data['ConnectedLineName'] ?? '',
+                        'connected_line_num' => $data['ConnectedLineNum'] ?? $data['ConnectedLinenum'] ?? '',
+                        'connected_line_name' => $data['ConnectedLineName'] ?? $data['ConnectedLinename'] ?? '',
                         'duration' => $duration,
                         'bridge_id' => $data['BridgeId'] ?? '',
                         'bridged_channel' => $data['BridgedChannel'] ?? ''

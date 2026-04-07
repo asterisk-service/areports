@@ -765,8 +765,12 @@ var RealtimePanel = {
 
             // Agent display: name (ext) or just ext
             var agentDisplay = call.connected_to || '-';
-            if (call.agent_name && call.connected_to) {
-                agentDisplay = call.agent_name + ' (' + call.connected_to + ')';
+            var callAgentName = call.agent_name || '';
+            if (callAgentName === '<unknown>' || callAgentName === '<Unknown>') {
+                callAgentName = '';
+            }
+            if (callAgentName && call.connected_to) {
+                agentDisplay = callAgentName + ' (' + call.connected_to + ')';
             }
 
             // State badge

@@ -157,6 +157,11 @@ class RealtimeController extends Controller
                 $agentExt = $ch['connected_line_num'] ?? '';
                 $agentName = $ch['connected_line_name'] ?? '';
 
+                // Clean up <unknown> agent name
+                if ($agentName === '<unknown>' || $agentName === '<Unknown>' || empty($agentName)) {
+                    $agentName = '';
+                }
+
                 if (strcasecmp($app, 'Queue') === 0) {
                     // Trunk channel in a queue
                     // ApplicationData format: "602,t,,custom/ElenaMiro1,3600,,,,,"
@@ -298,6 +303,14 @@ class RealtimeController extends Controller
                 $state = strtolower($stateDesc ?: 'unknown');
                 $agentExt = $ch['connected_line_num'] ?? '';
                 $agentName = $ch['connected_line_name'] ?? '';
+
+                // Clean up <unknown> agent name and resolve from agent_settings
+                if ($agentName === '<unknown>' || $agentName === '<Unknown>' || empty($agentName)) {
+                    $agentName = '';
+                }
+                if (empty($agentName) && !empty($agentExt)) {
+                    $agentName = $agentNames[$agentExt] ?? '';
+                }
 
                 if ($appLower === 'queue') {
                     $parts = explode(',', $ch['application_data'] ?? '');
