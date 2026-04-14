@@ -50,36 +50,36 @@
     <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.calls_handled') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
-                    <div class="metric-desc"><?= $this->__('reports.desc_calls_handled') ?></div></h6>
+                <h6 class="card-title"><?= $this->__('reports.calls_handled') ?> <button class="metric-help" onclick="$(this).parent().siblings('.metric-desc').toggleClass('show')">?</button></h6>
                 <h2 class="mb-0"><?= number_format($totals['calls_handled']) ?></h2>
+                <div class="metric-desc"><?= $this->__('reports.desc_calls_handled') ?></div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card bg-warning text-dark">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.calls_missed') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
-                    <div class="metric-desc"><?= $this->__('reports.desc_calls_missed') ?></div></h6>
+                <h6 class="card-title"><?= $this->__('reports.calls_missed') ?> <button class="metric-help" onclick="$(this).parent().siblings('.metric-desc').toggleClass('show')">?</button></h6>
                 <h2 class="mb-0"><?= number_format($totals['calls_missed']) ?></h2>
+                <div class="metric-desc"><?= $this->__('reports.desc_calls_missed') ?></div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
-                    <div class="metric-desc"><?= $this->__('reports.desc_answer_rate') ?></div></h6>
+                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?> <button class="metric-help" onclick="$(this).parent().siblings('.metric-desc').toggleClass('show')">?</button></h6>
                 <h2 class="mb-0"><?= $totals['answer_rate'] ?>%</h2>
+                <div class="metric-desc"><?= $this->__('reports.desc_answer_rate') ?></div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.total_talk_time') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
-                    <div class="metric-desc"><?= $this->__('reports.desc_total_talk_time') ?></div></h6>
+                <h6 class="card-title"><?= $this->__('reports.total_talk_time') ?> <button class="metric-help" onclick="$(this).parent().siblings('.metric-desc').toggleClass('show')">?</button></h6>
                 <h2 class="mb-0"><?= $this->formatDuration($totals['total_talk_time']) ?></h2>
+                <div class="metric-desc"><?= $this->__('reports.desc_total_talk_time') ?></div>
             </div>
         </div>
     </div>

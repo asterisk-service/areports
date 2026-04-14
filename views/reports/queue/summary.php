@@ -53,38 +53,38 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.total_calls') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
-                    <div class="metric-desc"><?= $this->__('reports.desc_total_calls') ?></div></h6>
+                <h6 class="card-title"><?= $this->__('reports.total_calls') ?> <button class="metric-help" onclick="$(this).parent().siblings('.metric-desc').toggleClass('show')">?</button></h6>
                 <h2 class="mb-0"><?= number_format($totals['total_calls']) ?></h2>
+                <div class="metric-desc"><?= $this->__('reports.desc_total_calls') ?></div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.answered') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
-                    <div class="metric-desc"><?= $this->__('reports.desc_answered') ?></div></h6>
+                <h6 class="card-title"><?= $this->__('reports.answered') ?> <button class="metric-help" onclick="$(this).parent().siblings('.metric-desc').toggleClass('show')">?</button></h6>
                 <h2 class="mb-0"><?= number_format($totals['answered']) ?></h2>
                 <small><?= $totals['answer_rate'] ?>%</small>
+                <div class="metric-desc"><?= $this->__('reports.desc_answered') ?></div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card bg-danger text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.abandoned') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
-                    <div class="metric-desc"><?= $this->__('reports.desc_abandoned') ?></div></h6>
+                <h6 class="card-title"><?= $this->__('reports.abandoned') ?> <button class="metric-help" onclick="$(this).parent().siblings('.metric-desc').toggleClass('show')">?</button></h6>
                 <h2 class="mb-0"><?= number_format($totals['abandoned']) ?></h2>
                 <small><?= $totals['abandon_rate'] ?>%</small>
+                <div class="metric-desc"><?= $this->__('reports.desc_abandoned') ?></div>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
-                    <div class="metric-desc"><?= $this->__('reports.desc_queue_answer_rate') ?></div></h6>
+                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?> <button class="metric-help" onclick="$(this).parent().siblings('.metric-desc').toggleClass('show')">?</button></h6>
                 <h2 class="mb-0"><?= $totals['answer_rate'] ?>%</h2>
+                <div class="metric-desc"><?= $this->__('reports.desc_queue_answer_rate') ?></div>
             </div>
         </div>
     </div>
