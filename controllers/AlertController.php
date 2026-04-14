@@ -42,13 +42,13 @@ class AlertController extends Controller
         $page = (int) $this->get('page', 1);
         $perPage = 50;
 
+        $offset = ($page - 1) * $perPage;
         $history = $this->db->fetchAll(
             "SELECT ah.*, a.name as alert_name
              FROM alert_history ah
              JOIN alerts a ON ah.alert_id = a.id
              ORDER BY ah.triggered_at DESC
-             LIMIT ? OFFSET ?",
-            [$perPage, ($page - 1) * $perPage]
+             LIMIT {$perPage} OFFSET {$offset}",
         );
 
         $total = $this->db->count('alert_history');

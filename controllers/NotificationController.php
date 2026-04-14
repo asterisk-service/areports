@@ -27,12 +27,13 @@ class NotificationController extends Controller
         $page = (int) $this->get('page', 1);
         $perPage = 50;
 
+        $offset = ($page - 1) * $perPage;
         $notifications = $this->db->fetchAll(
             "SELECT * FROM browser_notifications
              WHERE user_id = ?
              ORDER BY created_at DESC
-             LIMIT ? OFFSET ?",
-            [$this->user['id'], $perPage, ($page - 1) * $perPage]
+             LIMIT {$perPage} OFFSET {$offset}",
+            [$this->user['id']]
         );
 
         $total = $this->db->fetchColumn(

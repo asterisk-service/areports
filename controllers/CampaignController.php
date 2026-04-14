@@ -279,9 +279,8 @@ class CampaignController extends Controller
             $params[] = $status;
         }
 
-        $sql .= " ORDER BY cl.created_at DESC LIMIT ? OFFSET ?";
-        $params[] = $perPage;
-        $params[] = ($page - 1) * $perPage;
+        $offset = ($page - 1) * $perPage;
+        $sql .= " ORDER BY cl.created_at DESC LIMIT {$perPage} OFFSET {$offset}";
 
         $leads = $this->db->fetchAll($sql, $params);
 

@@ -148,6 +148,7 @@ class QualityController extends Controller
         $page = (int) $this->get('page', 1);
         $perPage = 50;
 
+        $offset = ($page - 1) * $perPage;
         $evaluations = $this->db->fetchAll(
             "SELECT ce.*, u.first_name, u.last_name, ef.name as form_name
              FROM call_evaluations ce
@@ -155,8 +156,8 @@ class QualityController extends Controller
              JOIN evaluation_forms ef ON ce.form_id = ef.id
              WHERE DATE(ce.created_at) BETWEEN ? AND ?
              ORDER BY ce.created_at DESC
-             LIMIT ? OFFSET ?",
-            [$dateFrom, $dateTo, $perPage, ($page - 1) * $perPage]
+             LIMIT {$perPage} OFFSET {$offset}",
+            [$dateFrom, $dateTo]
         );
 
         $totalCount = $this->db->count('call_evaluations');

@@ -42,14 +42,15 @@ class AuditController extends Controller
             $params[] = $userId;
         }
 
+        $offset = ($page - 1) * $perPage;
         $logs = $this->db->fetchAll(
             "SELECT al.*, u.username, u.first_name, u.last_name
              FROM audit_log al
              LEFT JOIN users u ON al.user_id = u.id
              WHERE {$where}
              ORDER BY al.created_at DESC
-             LIMIT ? OFFSET ?",
-            array_merge($params, [$perPage, ($page - 1) * $perPage])
+             LIMIT {$perPage} OFFSET {$offset}",
+            $params
         );
 
         // Get total count
