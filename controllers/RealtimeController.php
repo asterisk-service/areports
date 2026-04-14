@@ -240,21 +240,43 @@ class RealtimeController extends Controller
                 $agentNames[$row['extension']] = $row['display_name'];
             }
 
+            // 3b. Build extension→name map from PJSIP channel CallerIDName (FreePBX names)
+            // This provides display names even when agent_settings is empty
+            $extNameMap = [];
+            $bridgeAgentMap = [];
+            foreach ($channels as $ch) {
+                $chanName = $ch['channel'] ?? '';
+                $bridgeId = $ch['bridge_id'] ?? '';
+
+                // Map BridgeId → agent extension from Local/XXXX@from-queue channels
+                if ($bridgeId && preg_match('/^Local\/(\d+)@from-queue/i', $chanName, $m)) {
+                    $bridgeAgentMap[$bridgeId] = $m[1];
+                }
+
+                // Map extension → display name from PJSIP/XXXX channels
+                if (preg_match('/^PJSIP\/(\d{3,5})-/', $chanName, $m)) {
+                    $cidName = $ch['caller_id_name'] ?? '';
+                    if ($cidName && $cidName !== '<unknown>' && $cidName !== $chanName) {
+                        $extNameMap[$m[1]] = $cidName;
+                    }
+                }
+            }
+
             // 4. Extract agents from queue data (already filtered by allowed queues)
             $agents = [];
             foreach ($queues as $queue) {
                 foreach ($queue['members'] as $member) {
                     $interface = $member['interface'];
                     if (!isset($agents[$interface])) {
-                        // Resolve display name: agent_settings > AMI name > extension
+                        // Resolve display name: agent_settings > AMI name > FreePBX CallerID
                         $name = $member['name'];
                         $ext = '';
                         if (preg_match('/(?:SIP|PJSIP|Local)\/(\d+)/i', $interface, $m)) {
                             $ext = $m[1];
                         }
-                        // If AMI name is useless (same as interface or <unknown>), use agent_settings
+                        // If AMI name is useless (same as interface or <unknown>), try fallbacks
                         if ($name === $interface || $name === '<unknown>' || empty($name)) {
-                            $name = $agentNames[$ext] ?? '';
+                            $name = $agentNames[$ext] ?? $extNameMap[$ext] ?? '';
                         }
 
                         $agents[$interface] = [
@@ -274,7 +296,7 @@ class RealtimeController extends Controller
                 }
             }
 
-            // 4. Extract active calls from channels
+            // 4b. Extract active calls from channels
             $activeCalls = [];
             $seen = [];
 
@@ -304,12 +326,23 @@ class RealtimeController extends Controller
                 $agentExt = $ch['connected_line_num'] ?? '';
                 $agentName = $ch['connected_line_name'] ?? '';
 
-                // Clean up <unknown> agent name and resolve from agent_settings
+                // Clean up <unknown> values
+                if ($agentExt === '<unknown>' || $agentExt === '<Unknown>') {
+                    $agentExt = '';
+                }
                 if ($agentName === '<unknown>' || $agentName === '<Unknown>' || empty($agentName)) {
                     $agentName = '';
                 }
+
+                // If agent ext is still unknown, resolve via BridgeId matching
+                $bridgeId = $ch['bridge_id'] ?? '';
+                if (empty($agentExt) && $bridgeId && isset($bridgeAgentMap[$bridgeId])) {
+                    $agentExt = $bridgeAgentMap[$bridgeId];
+                }
+
+                // Resolve agent display name: agent_settings → FreePBX CallerIDName → empty
                 if (empty($agentName) && !empty($agentExt)) {
-                    $agentName = $agentNames[$agentExt] ?? '';
+                    $agentName = $agentNames[$agentExt] ?? $extNameMap[$agentExt] ?? '';
                 }
 
                 if ($appLower === 'queue') {
