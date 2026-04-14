@@ -40,6 +40,25 @@ $cdrDb = $app->getCdrDb();
 $userId = $argv[1] ?? 17; // Default: elena
 echo "=== Report Debug for user_id={$userId} ===\n\n";
 
+// 0. Check CDR database connection
+echo "0. CDR Database check:\n";
+try {
+    $testDb = $cdrDb->fetchAll("SELECT DATABASE() as db");
+    echo "   Connected to: {$testDb[0]['db']}\n";
+    $tables = $cdrDb->fetchAll("SHOW TABLES");
+    echo "   Tables: " . implode(', ', array_map(fn($t) => array_values($t)[0], $tables)) . "\n";
+    $qlCount = $cdrDb->fetchColumn("SELECT COUNT(*) FROM queuelog");
+    echo "   queuelog rows: {$qlCount}\n";
+    $qlSample = $cdrDb->fetchAll("SELECT queuename, event, agent FROM queuelog ORDER BY id DESC LIMIT 5");
+    echo "   Last 5 entries:\n";
+    foreach ($qlSample as $r) {
+        echo "     queue={$r['queuename']} event={$r['event']} agent={$r['agent']}\n";
+    }
+} catch (\Exception $e) {
+    echo "   ERROR: {$e->getMessage()}\n";
+}
+echo "\n";
+
 // 1. User info
 $user = $db->fetch("SELECT u.*, r.name as role_name FROM users u JOIN roles r ON r.id = u.role_id WHERE u.id = ?", [$userId]);
 echo "1. User: {$user['username']}, role: {$user['role_name']}, ext: {$user['extension']}\n";
