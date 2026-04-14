@@ -20,7 +20,7 @@
     <!-- Toastr -->
     <link href="/areports/vendor/toastr/toastr.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/areports/css/app.css" rel="stylesheet">
+    <link href="/areports/css/app.css?v=<?= filemtime(BASE_PATH . '/public/css/app.css') ?>" rel="stylesheet">
 
     <?php if ($this->hasSection('styles')): ?>
     <?php $this->yield('styles'); ?>
@@ -327,7 +327,7 @@
     <script src="/areports/vendor/daterangepicker/daterangepicker.min.js"></script>
     <script src="/areports/vendor/select2/select2.min.js"></script>
     <script src="/areports/vendor/toastr/toastr.min.js"></script>
-    <script src="/areports/js/app.js"></script>
+    <script src="/areports/js/app.js?v=<?= filemtime(BASE_PATH . '/public/js/app.js') ?>"></script>
 
     <?php if ($this->hasSection('scripts')): ?>
     <?php $this->yield('scripts'); ?>
