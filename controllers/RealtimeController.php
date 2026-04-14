@@ -233,16 +233,32 @@ class RealtimeController extends Controller
                 $queues = array_values($queues);
             }
 
-            // 3. Load agent display names from agent_settings
+            // 3. Build unified extension→name map from multiple sources
+            // Priority: agent_settings > users table > FreePBX CallerIDName > extension number
             $agentNames = [];
+
+            // Source 1: agent_settings table (highest priority)
             $agentRows = $this->db->fetchAll("SELECT extension, display_name FROM agent_settings WHERE display_name != ''");
             foreach ($agentRows ?: [] as $row) {
                 $agentNames[$row['extension']] = $row['display_name'];
             }
 
-            // 3b. Build extension→name map from PJSIP channel CallerIDName (FreePBX names)
-            // This provides display names even when agent_settings is empty
-            $extNameMap = [];
+            // Source 2: users table (first_name + last_name by extension)
+            $userRows = $this->db->fetchAll(
+                "SELECT extension, first_name, last_name FROM users WHERE extension IS NOT NULL AND extension != ''"
+            );
+            foreach ($userRows ?: [] as $row) {
+                $ext = $row['extension'];
+                if (!isset($agentNames[$ext])) {
+                    $fullName = trim(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? ''));
+                    // Skip if name equals extension (not a real name)
+                    if ($fullName && $fullName !== $ext) {
+                        $agentNames[$ext] = $fullName;
+                    }
+                }
+            }
+
+            // Source 3: FreePBX CallerIDName from active PJSIP channels
             $bridgeAgentMap = [];
             foreach ($channels as $ch) {
                 $chanName = $ch['channel'] ?? '';
@@ -255,9 +271,12 @@ class RealtimeController extends Controller
 
                 // Map extension → display name from PJSIP/XXXX channels
                 if (preg_match('/^PJSIP\/(\d{3,5})-/', $chanName, $m)) {
-                    $cidName = $ch['caller_id_name'] ?? '';
-                    if ($cidName && $cidName !== '<unknown>' && $cidName !== $chanName) {
-                        $extNameMap[$m[1]] = $cidName;
+                    $ext = $m[1];
+                    if (!isset($agentNames[$ext])) {
+                        $cidName = $ch['caller_id_name'] ?? '';
+                        if ($cidName && $cidName !== '<unknown>' && $cidName !== $chanName) {
+                            $agentNames[$ext] = $cidName;
+                        }
                     }
                 }
             }
@@ -268,7 +287,6 @@ class RealtimeController extends Controller
                 foreach ($queue['members'] as $member) {
                     $interface = $member['interface'];
                     if (!isset($agents[$interface])) {
-                        // Resolve display name: agent_settings > AMI name > FreePBX CallerID
                         $name = $member['name'];
                         $ext = '';
                         if (preg_match('/(?:SIP|PJSIP|Local)\/(\d+)/i', $interface, $m)) {
@@ -276,7 +294,8 @@ class RealtimeController extends Controller
                         }
                         // If AMI name is useless (same as interface or <unknown>), try fallbacks
                         if ($name === $interface || $name === '<unknown>' || empty($name)) {
-                            $name = $agentNames[$ext] ?? $extNameMap[$ext] ?? '';
+                            // Use unified name map, fall back to extension number
+                            $name = $agentNames[$ext] ?? $ext;
                         }
 
                         $agents[$interface] = [
@@ -340,9 +359,9 @@ class RealtimeController extends Controller
                     $agentExt = $bridgeAgentMap[$bridgeId];
                 }
 
-                // Resolve agent display name: agent_settings → FreePBX CallerIDName → empty
+                // Resolve agent display name from unified name map
                 if (empty($agentName) && !empty($agentExt)) {
-                    $agentName = $agentNames[$agentExt] ?? $extNameMap[$agentExt] ?? '';
+                    $agentName = $agentNames[$agentExt] ?? '';
                 }
 
                 if ($appLower === 'queue') {
