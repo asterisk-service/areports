@@ -24,45 +24,49 @@
         <div class="stat-card primary">
             <i class="fas fa-phone stat-icon"></i>
             <div class="stat-value" id="stat-total"><?= number_format($stats['total_calls']) ?></div>
-            <div class="stat-label"><?= $this->__('dashboard.total_calls') ?></div>
+            <div class="stat-label"><?= $this->__('dashboard.total_calls') ?> <button class="metric-help" onclick="$(this).closest('.stat-card').find('.metric-desc').toggle()">?</button></div>
             <div class="stat-change">
                 <?php if ($stats['calls_change'] >= 0): ?>
                 <i class="fas fa-arrow-up"></i> <?= $stats['calls_change'] ?>%
                 <?php else: ?>
                 <i class="fas fa-arrow-down"></i> <?= abs($stats['calls_change']) ?>%
                 <?php endif; ?>
-                vs yesterday
+                <?= $this->__('dashboard.vs_yesterday') ?>
             </div>
+            <div class="metric-desc"><?= $this->__('dashboard.desc_total_calls') ?></div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card success">
             <i class="fas fa-phone-alt stat-icon"></i>
             <div class="stat-value" id="stat-answered"><?= number_format($stats['answered_calls']) ?></div>
-            <div class="stat-label"><?= $this->__('dashboard.answered') ?></div>
+            <div class="stat-label"><?= $this->__('dashboard.answered') ?> <button class="metric-help" onclick="$(this).closest('.stat-card').find('.metric-desc').toggle()">?</button></div>
             <div class="stat-change">
                 <?= $stats['answer_rate'] ?>% <?= $this->__('dashboard.answer_rate') ?>
             </div>
+            <div class="metric-desc"><?= $this->__('dashboard.desc_answered') ?></div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card warning">
             <i class="fas fa-phone-slash stat-icon"></i>
             <div class="stat-value" id="stat-abandoned"><?= number_format($stats['abandoned_calls']) ?></div>
-            <div class="stat-label"><?= $this->__('dashboard.abandoned') ?></div>
+            <div class="stat-label"><?= $this->__('dashboard.abandoned') ?> <button class="metric-help" onclick="$(this).closest('.stat-card').find('.metric-desc').toggle()">?</button></div>
             <div class="stat-change">
-                <?= 100 - $stats['answer_rate'] ?>% of total
+                <?= 100 - $stats['answer_rate'] ?>% <?= $this->__('dashboard.of_total') ?>
             </div>
+            <div class="metric-desc"><?= $this->__('dashboard.desc_abandoned') ?></div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="stat-card info">
             <i class="fas fa-clock stat-icon"></i>
             <div class="stat-value" id="stat-avgtime"><?= $this->formatDuration($stats['avg_talk_time']) ?></div>
-            <div class="stat-label"><?= $this->__('dashboard.avg_talk') ?></div>
+            <div class="stat-label"><?= $this->__('dashboard.avg_talk') ?> <button class="metric-help" onclick="$(this).closest('.stat-card').find('.metric-desc').toggle()">?</button></div>
             <div class="stat-change">
-                <?= $this->formatDuration($stats['avg_duration']) ?> total duration
+                <?= $this->formatDuration($stats['avg_duration']) ?> <?= $this->__('dashboard.total_duration') ?>
             </div>
+            <div class="metric-desc"><?= $this->__('dashboard.desc_avg_talk') ?></div>
         </div>
     </div>
 </div>

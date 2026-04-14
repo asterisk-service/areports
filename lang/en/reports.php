@@ -220,6 +220,28 @@ return [
     'other_calls_from' => 'Other calls from',
     'other_calls_to' => 'Other calls to',
 
+    // Metric Descriptions (shown on ? button click)
+    'desc_calls_handled' => 'Number of calls successfully answered by the agent (CONNECT events in queue log).',
+    'desc_calls_missed' => 'Number of times the agent\'s phone rang but was not answered (RINGNOANSWER events). Note: one call can generate multiple missed events if it rings several agents before being answered.',
+    'desc_answer_rate' => 'Percentage of answered calls out of total ring attempts. Formula: Calls Handled / (Calls Handled + Calls Missed) × 100%.',
+    'desc_total_talk_time' => 'Total time spent talking on calls (sum of billable seconds for all completed calls).',
+    'desc_avg_talk' => 'Average call duration calculated from completed calls only.',
+    'desc_total_hold_time' => 'Total time callers waited in queue before being connected to the agent.',
+    'desc_avg_hold' => 'Average time a caller waited in queue before this agent answered.',
+    'desc_total_calls' => 'Total calls that entered the queue (ENTERQUEUE events).',
+    'desc_answered' => 'Calls successfully connected to an agent (CONNECT events).',
+    'desc_abandoned' => 'Calls where the caller hung up while waiting in queue (ABANDON events).',
+    'desc_queue_answer_rate' => 'Percentage of calls answered out of total calls entering the queue. Formula: Answered / Total Calls × 100%.',
+    'desc_abandon_rate' => 'Percentage of calls abandoned out of total calls. Formula: Abandoned / Total Calls × 100%.',
+    'desc_avg_wait_time' => 'Average time callers waited in queue before being connected (from CONNECT events, data1 field).',
+    'desc_avg_talk_time' => 'Average talk time for completed calls (from COMPLETE events, data2 field).',
+    'desc_max_wait_time' => 'Longest wait time recorded for any call in the queue.',
+    'desc_agents_count' => 'Number of unique agents who handled at least one call in this queue.',
+    'desc_sla_pct' => 'Percentage of calls answered within the SLA threshold (default 60 seconds).',
+    'desc_timeout' => 'Calls that exited the queue due to timeout or empty queue.',
+    'desc_pct_of_total' => 'Percentage of this queue\'s calls relative to the agent\'s total calls.',
+    'desc_avg_call' => 'Average ring time before the agent answered the call.',
+
     // General
     'my_report' => 'My Report',
     'all_calls' => 'All Calls',

@@ -12,6 +12,9 @@
         }
     });
 
+    // Initialize Bootstrap tooltips for metric help buttons
+    $('[title].metric-help').tooltip({ placement: 'top', trigger: 'hover' });
+
     // Initialize application
     $(document).ready(function() {
         initSidebar();

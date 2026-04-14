@@ -53,7 +53,8 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.total_calls') ?></h6>
+                <h6 class="card-title"><?= $this->__('reports.total_calls') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
+                    <div class="metric-desc"><?= $this->__('reports.desc_total_calls') ?></div></h6>
                 <h2 class="mb-0"><?= number_format($totals['total_calls']) ?></h2>
             </div>
         </div>
@@ -61,7 +62,8 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.answered') ?></h6>
+                <h6 class="card-title"><?= $this->__('reports.answered') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
+                    <div class="metric-desc"><?= $this->__('reports.desc_answered') ?></div></h6>
                 <h2 class="mb-0"><?= number_format($totals['answered']) ?></h2>
                 <small><?= $totals['answer_rate'] ?>%</small>
             </div>
@@ -70,7 +72,8 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-danger text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.abandoned') ?></h6>
+                <h6 class="card-title"><?= $this->__('reports.abandoned') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
+                    <div class="metric-desc"><?= $this->__('reports.desc_abandoned') ?></div></h6>
                 <h2 class="mb-0"><?= number_format($totals['abandoned']) ?></h2>
                 <small><?= $totals['abandon_rate'] ?>%</small>
             </div>
@@ -79,7 +82,8 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
     <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?></h6>
+                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
+                    <div class="metric-desc"><?= $this->__('reports.desc_queue_answer_rate') ?></div></h6>
                 <h2 class="mb-0"><?= $totals['answer_rate'] ?>%</h2>
             </div>
         </div>
@@ -102,15 +106,15 @@ $selectedQueues = is_array($queueFilter) ? $queueFilter : ($queueFilter ? [$queu
                 <thead>
                     <tr>
                         <th><?= $this->__('reports.queue') ?></th>
-                        <th class="text-center"><?= $this->__('reports.total_calls') ?></th>
-                        <th class="text-center"><?= $this->__('reports.answered') ?></th>
-                        <th class="text-center"><?= $this->__('reports.abandoned') ?></th>
-                        <th class="text-center"><?= $this->__('reports.timeout') ?></th>
-                        <th class="text-center"><?= $this->__('reports.answer_rate') ?></th>
-                        <th class="text-center"><?= $this->__('reports.avg_wait_time') ?></th>
-                        <th class="text-center"><?= $this->__('reports.avg_talk_time') ?></th>
-                        <th class="text-center"><?= $this->__('reports.max_wait_time') ?></th>
-                        <th class="text-center"><?= $this->__('reports.agents_count') ?></th>
+                        <th class="text-center"><?= $this->__('reports.total_calls') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_total_calls')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.answered') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_answered')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.abandoned') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_abandoned')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.timeout') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_timeout')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.answer_rate') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_queue_answer_rate')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.avg_wait_time') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_avg_wait_time')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.avg_talk_time') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_avg_talk_time')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.max_wait_time') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_max_wait_time')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.agents_count') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_agents_count')) ?>">?</button></th>
                     </tr>
                 </thead>
                 <tbody>

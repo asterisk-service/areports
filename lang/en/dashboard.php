@@ -25,4 +25,11 @@ return [
     'this_month' => 'This month',
     'top_agents' => 'Top Agents',
     'top_queues' => 'Top Queues',
+    'vs_yesterday' => 'vs yesterday',
+    'of_total' => 'of total',
+    'total_duration' => 'total duration',
+    'desc_total_calls' => 'Total calls from CDR for today (all dispositions).',
+    'desc_answered' => 'Calls with ANSWERED disposition from CDR.',
+    'desc_abandoned' => 'Calls with NO ANSWER, BUSY, or FAILED disposition.',
+    'desc_avg_talk' => 'Average billable seconds (talk time) for answered calls.',
 ];

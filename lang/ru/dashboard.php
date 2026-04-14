@@ -25,4 +25,11 @@ return [
     'this_month' => 'Этот месяц',
     'top_agents' => 'Лучшие операторы',
     'top_queues' => 'Лучшие очереди',
+    'vs_yesterday' => 'к вчера',
+    'of_total' => 'от общего',
+    'total_duration' => 'общая длительность',
+    'desc_total_calls' => 'Всего звонков из CDR за сегодня (все статусы).',
+    'desc_answered' => 'Звонки со статусом ANSWERED из CDR.',
+    'desc_abandoned' => 'Звонки со статусом NO ANSWER, BUSY или FAILED.',
+    'desc_avg_talk' => 'Среднее оплачиваемое время (разговор) для отвеченных звонков.',
 ];

@@ -50,7 +50,8 @@
     <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.calls_handled') ?></h6>
+                <h6 class="card-title"><?= $this->__('reports.calls_handled') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
+                    <div class="metric-desc"><?= $this->__('reports.desc_calls_handled') ?></div></h6>
                 <h2 class="mb-0"><?= number_format($totals['calls_handled']) ?></h2>
             </div>
         </div>
@@ -58,7 +59,8 @@
     <div class="col-md-3">
         <div class="card bg-warning text-dark">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.calls_missed') ?></h6>
+                <h6 class="card-title"><?= $this->__('reports.calls_missed') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
+                    <div class="metric-desc"><?= $this->__('reports.desc_calls_missed') ?></div></h6>
                 <h2 class="mb-0"><?= number_format($totals['calls_missed']) ?></h2>
             </div>
         </div>
@@ -66,7 +68,8 @@
     <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?></h6>
+                <h6 class="card-title"><?= $this->__('reports.answer_rate') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
+                    <div class="metric-desc"><?= $this->__('reports.desc_answer_rate') ?></div></h6>
                 <h2 class="mb-0"><?= $totals['answer_rate'] ?>%</h2>
             </div>
         </div>
@@ -74,7 +77,8 @@
     <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body">
-                <h6 class="card-title"><?= $this->__('reports.total_talk_time') ?></h6>
+                <h6 class="card-title"><?= $this->__('reports.total_talk_time') ?> <button class="metric-help" onclick="$(this).next('.metric-desc').toggle()">?</button>
+                    <div class="metric-desc"><?= $this->__('reports.desc_total_talk_time') ?></div></h6>
                 <h2 class="mb-0"><?= $this->formatDuration($totals['total_talk_time']) ?></h2>
             </div>
         </div>
@@ -89,13 +93,13 @@
                 <thead>
                     <tr>
                         <th><?= $this->__('reports.agent') ?></th>
-                        <th class="text-center"><?= $this->__('reports.calls_handled') ?></th>
-                        <th class="text-center"><?= $this->__('reports.calls_missed') ?></th>
-                        <th class="text-center"><?= $this->__('reports.answer_rate') ?></th>
-                        <th class="text-center"><?= $this->__('reports.total_talk_time') ?></th>
-                        <th class="text-center"><?= $this->__('reports.avg_talk') ?></th>
-                        <th class="text-center"><?= $this->__('reports.total_hold_time') ?></th>
-                        <th class="text-center"><?= $this->__('reports.avg_hold') ?></th>
+                        <th class="text-center"><?= $this->__('reports.calls_handled') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_calls_handled')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.calls_missed') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_calls_missed')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.answer_rate') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_answer_rate')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.total_talk_time') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_total_talk_time')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.avg_talk') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_avg_talk')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.total_hold_time') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_total_hold_time')) ?>">?</button></th>
+                        <th class="text-center"><?= $this->__('reports.avg_hold') ?> <button class="metric-help" title="<?= $this->e($this->__('reports.desc_avg_hold')) ?>">?</button></th>
                         <th><?= $this->__('common.actions') ?></th>
                     </tr>
                 </thead>
