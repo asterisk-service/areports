@@ -4,8 +4,30 @@
  * Debug: test supervisor report filtering
  * Run: php tools/debug_reports.php [user_id]
  */
-chdir('/var/www/html/areports');
-require_once 'config/app.php';
+define('BASE_PATH', dirname(__DIR__));
+chdir(BASE_PATH);
+
+// Autoloader from index.php
+spl_autoload_register(function ($class) {
+    $prefix = 'aReports\\';
+    $baseDir = BASE_PATH . '/';
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) return;
+    $relativeClass = substr($class, $len);
+    $file = $baseDir . str_replace('\\', '/', lcfirst($relativeClass)) . '.php';
+    $mappings = [
+        'Core\\' => 'core/', 'Controllers\\' => 'controllers/',
+        'Models\\' => 'models/', 'Services\\' => 'services/', 'Middleware\\' => 'middleware/',
+    ];
+    foreach ($mappings as $nsPrefix => $dir) {
+        if (strncmp($nsPrefix, $relativeClass, strlen($nsPrefix)) === 0) {
+            $classFile = substr($relativeClass, strlen($nsPrefix));
+            $file = $baseDir . $dir . str_replace('\\', '/', $classFile) . '.php';
+            break;
+        }
+    }
+    if (file_exists($file)) require $file;
+});
 
 use aReports\Core\App;
 use aReports\Services\QueueService;
